@@ -1,0 +1,66 @@
+import Link from "next/link";
+import { Container } from "@/components/container";
+
+/**
+ * Contact email and service area are real, customer-facing claims — they
+ * must never show a fabricated value. Both only render if explicitly
+ * configured via environment variables. If unset, we log a visible
+ * development-time warning instead of guessing.
+ */
+function getFooterContactInfo() {
+  const contactEmail = process.env.CONTACT_EMAIL;
+  const serviceArea = process.env.SERVICE_AREA;
+
+  if (process.env.NODE_ENV !== "production") {
+    if (!contactEmail) {
+      console.warn(
+        "[site-footer] CONTACT_EMAIL is not set — the footer will omit the contact email rather than show an unverified placeholder."
+      );
+    }
+    if (!serviceArea) {
+      console.warn(
+        "[site-footer] SERVICE_AREA is not set — the footer will omit the service area rather than show an unverified placeholder."
+      );
+    }
+  }
+
+  return { contactEmail, serviceArea };
+}
+
+export function SiteFooter() {
+  const { contactEmail, serviceArea } = getFooterContactInfo();
+
+  return (
+    <footer className="border-t border-line py-12">
+      <Container>
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-[15px] font-medium tracking-[0.14em] text-ink">
+              RENOMA
+            </p>
+            <p className="mt-1 text-sm text-muted">Wir stehen auf Ihrer Seite.</p>
+          </div>
+          <nav
+            aria-label="Rechtliches"
+            className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted"
+          >
+            {contactEmail && (
+              <a href={`mailto:${contactEmail}`} className="hover:text-ink">
+                {contactEmail}
+              </a>
+            )}
+            <Link href="/impressum" className="hover:text-ink">
+              Impressum
+            </Link>
+            <Link href="/datenschutz" className="hover:text-ink">
+              Datenschutz
+            </Link>
+          </nav>
+        </div>
+        {serviceArea && (
+          <p className="mt-6 text-sm text-muted">Servicegebiet: {serviceArea}</p>
+        )}
+      </Container>
+    </footer>
+  );
+}
