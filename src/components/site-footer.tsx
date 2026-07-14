@@ -31,34 +31,43 @@ export function SiteFooter() {
   const { contactEmail, serviceArea } = getFooterContactInfo();
 
   return (
-    <footer className="border-t border-line py-12">
+    <footer className="border-t border-line py-14 sm:py-16">
       <Container>
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-[15px] font-medium tracking-[0.14em] text-ink">
               RENOMA
             </p>
-            <p className="mt-1 text-sm text-muted">Wir stehen auf Ihrer Seite.</p>
+            <p className="mt-2 text-sm text-muted">Wir stehen auf Ihrer Seite.</p>
           </div>
           <nav
             aria-label="Rechtliches"
-            className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted"
+            className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted"
           >
             {contactEmail && (
-              <a href={`mailto:${contactEmail}`} className="hover:text-ink">
+              <a
+                href={`mailto:${contactEmail}`}
+                className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+              >
                 {contactEmail}
               </a>
             )}
-            <Link href="/impressum" className="hover:text-ink">
+            <Link
+              href="/impressum"
+              className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+            >
               Impressum
             </Link>
-            <Link href="/datenschutz" className="hover:text-ink">
+            <Link
+              href="/datenschutz"
+              className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+            >
               Datenschutz
             </Link>
           </nav>
         </div>
         {serviceArea && (
-          <p className="mt-6 text-sm text-muted">Servicegebiet: {serviceArea}</p>
+          <p className="mt-8 text-sm text-muted">Servicegebiet: {serviceArea}</p>
         )}
       </Container>
     </footer>

@@ -2,15 +2,9 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import type { NavLink } from "@/lib/nav-links";
 
-const navLinks = [
-  { href: "#warum-renoma", label: "Warum RENOMA" },
-  { href: "#referenzen", label: "Referenzen" },
-  { href: "#ablauf", label: "So begleiten wir Sie" },
-  { href: "#ueber-renoma", label: "Über RENOMA" },
-];
-
-export function MobileNav() {
+export function MobileNav({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -30,7 +24,7 @@ export function MobileNav() {
   }, [open]);
 
   return (
-    <div className="sm:hidden">
+    <div className="lg:hidden">
       <button
         ref={buttonRef}
         type="button"
@@ -38,9 +32,8 @@ export function MobileNav() {
         aria-controls={panelId}
         aria-label={open ? "Menü schließen" : "Menü öffnen"}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-ink outline-none focus-visible:ring-2 focus-visible:ring-clay"
+        className="flex h-11 w-11 items-center justify-center rounded-full text-ink outline-none focus-visible:ring-2 focus-visible:ring-clay"
       >
-        <span className="sr-only">{open ? "Menü schließen" : "Menü öffnen"}</span>
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
@@ -63,7 +56,7 @@ export function MobileNav() {
           className="absolute inset-x-0 top-full border-b border-line bg-paper px-6 py-6 shadow-sm"
         >
           <nav aria-label="Hauptnavigation" className="flex flex-col gap-1">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}

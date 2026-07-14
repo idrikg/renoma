@@ -3,24 +3,24 @@ import { Container } from "@/components/container";
 
 export function ProjectAssistantTeaser() {
   return (
-    <section className="border-t border-line bg-paper-dim py-24 sm:py-32">
+    <section className="border-t border-line bg-paper-dim py-14 sm:py-16">
       <Container>
-        <div className="mx-auto max-w-xl text-center">
-          <h2 className="text-3xl font-medium tracking-tight text-ink sm:text-4xl">
-            Erzählen Sie uns von Ihrem Projekt.
-          </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted">
-            Ein paar Angaben genügen. Danach schauen wir uns Ihr Vorhaben
-            persönlich an und melden uns bei Ihnen.
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/projekt-starten"
-              className="inline-flex rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper transition-colors hover:bg-ink-soft"
-            >
-              Projekt starten
-            </Link>
+        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+          <div className="max-w-md">
+            <h2 className="text-xl font-medium text-ink sm:text-2xl">
+              Erzählen Sie uns von Ihrem Projekt.
+            </h2>
+            <p className="mt-2 text-[15px] leading-relaxed text-muted">
+              Ein paar Angaben genügen. Danach schauen wir uns Ihr Vorhaben
+              persönlich an und melden uns bei Ihnen.
+            </p>
           </div>
+          <Link
+            href="/projekt-starten"
+            className="shrink-0 rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-paper-dim"
+          >
+            Projekt starten
+          </Link>
         </div>
       </Container>
     </section>

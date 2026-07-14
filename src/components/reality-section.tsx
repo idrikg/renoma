@@ -2,23 +2,20 @@ import { Container } from "@/components/container";
 
 export function RealitySection() {
   return (
-    <section className="py-24 sm:py-32">
+    <section className="py-20 sm:py-28 lg:py-32">
       <Container>
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-medium leading-tight tracking-tight text-ink sm:text-4xl">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-20">
+          <h2 className="text-display-2 text-ink">
             Renovieren sollte kein Vollzeitjob sein.
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-muted">
-            Verschiedene Gewerke. Unterschiedliche Termine. Viele
-            Entscheidungen.
-          </p>
-          <p className="mt-4 text-lg leading-relaxed text-muted">
-            Sie können all das selbst koordinieren.
-          </p>
-          <p className="mt-4 text-lg leading-relaxed text-ink">
-            Oder Sie übergeben den Weg zu Ihrem neuen Zuhause einem Partner,
-            der sich darum kümmert.
-          </p>
+          <div className="max-w-md space-y-5 text-lg leading-relaxed text-muted lg:pt-3">
+            <p>Verschiedene Gewerke. Unterschiedliche Termine. Viele Entscheidungen.</p>
+            <p>Sie können all das selbst koordinieren.</p>
+            <p className="text-ink">
+              Oder Sie übergeben den Weg zu Ihrem neuen Zuhause einem
+              Partner, der sich darum kümmert.
+            </p>
+          </div>
         </div>
       </Container>
     </section>

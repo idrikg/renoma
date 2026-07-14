@@ -34,24 +34,30 @@ const faqs = [
 
 export function FaqSection() {
   return (
-    <section id="faq" className="border-t border-line py-24 sm:py-32">
+    <section id="faq" className="border-t border-line py-20 sm:py-28 lg:py-32">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
           <h2 className="text-3xl font-medium tracking-tight text-ink sm:text-4xl">
             Häufige Fragen.
           </h2>
-          <dl className="divide-y divide-line">
+          <div className="divide-y divide-line">
             {faqs.map((faq) => (
-              <div key={faq.question} className="py-6 first:pt-0">
-                <dt className="text-lg font-medium text-ink">
+              <details key={faq.question} className="group py-5 first:pt-0">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-ink outline-none focus-visible:ring-2 focus-visible:ring-clay">
                   {faq.question}
-                </dt>
-                <dd className="mt-2 max-w-xl text-[15px] leading-relaxed text-muted">
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 text-2xl leading-none text-clay transition-transform duration-200 motion-reduce:transition-none group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted">
                   {faq.answer}
-                </dd>
-              </div>
+                </p>
+              </details>
             ))}
-          </dl>
+          </div>
         </div>
       </Container>
     </section>

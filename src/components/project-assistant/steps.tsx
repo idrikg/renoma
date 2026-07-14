@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import {
   budgetOptions,
   contactPreferenceOptions,
@@ -17,6 +17,8 @@ import {
 } from "@/components/project-assistant/field-controls";
 import type { LocalImage, WizardData } from "@/components/project-assistant/types";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 type StepProps = {
   data: WizardData;
   update: (patch: Partial<WizardData>) => void;
@@ -25,7 +27,8 @@ type StepProps = {
 };
 
 export function StepCategories({ data, update, onNext }: StepProps) {
-  const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
+  const isValid = data.categories.length > 0;
 
   function toggle(value: string) {
     const next = data.categories.includes(value)
@@ -36,11 +39,10 @@ export function StepCategories({ data, update, onNext }: StepProps) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (data.categories.length === 0) {
-      setError("Bitte wählen Sie mindestens einen Bereich aus.");
+    if (!isValid) {
+      setShowError(true);
       return;
     }
-    setError(null);
     onNext();
   }
 
@@ -52,7 +54,11 @@ export function StepCategories({ data, update, onNext }: StepProps) {
         values={data.categories}
         onToggle={toggle}
       />
-      {error && <p className="text-sm text-clay">{error}</p>}
+      {showError && !isValid && (
+        <p role="alert" className="text-sm text-clay">
+          Bitte wählen Sie mindestens einen Bereich aus.
+        </p>
+      )}
 
       {/* Honeypot — hidden from real visitors, a naive bot may fill it. */}
       <div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
@@ -67,7 +73,7 @@ export function StepCategories({ data, update, onNext }: StepProps) {
         />
       </div>
 
-      <StepNav />
+      <StepNav nextDisabled={!isValid} />
     </StepShell>
   );
 }
@@ -81,10 +87,11 @@ export function StepWishes({ data, update, onNext, onBack }: StepProps) {
   return (
     <StepShell title="Ihre Wünsche" onSubmit={handleSubmit}>
       <div>
-        <label className="text-sm font-medium tracking-[0.04em] text-muted">
+        <label htmlFor="wishes" className="text-sm font-medium tracking-[0.04em] text-muted">
           Erzählen Sie uns einfach, was Sie sich wünschen.
         </label>
         <textarea
+          id="wishes"
           rows={6}
           value={data.wishes}
           onChange={(event) => update({ wishes: event.target.value })}
@@ -117,6 +124,22 @@ export function StepImages({
     onNext();
   }
 
+  // No persistent file storage is configured yet. Rather than let visitors
+  // upload files that are never actually saved, the upload UI itself is
+  // only shown outside production (for continued development/testing).
+  // Production visitors see an honest, customer-friendly explanation
+  // instead — see docs/CREATIVE-REVISION.md and MVP-SCOPE.md.
+  if (isProduction) {
+    return (
+      <StepShell title="Bilder" onSubmit={handleSubmit}>
+        <p className="text-[15px] leading-relaxed text-muted">
+          Bilder können Sie uns nach dem persönlichen Erstkontakt senden.
+        </p>
+        <StepNav onBack={onBack} />
+      </StepShell>
+    );
+  }
+
   return (
     <StepShell
       title="Bilder"
@@ -126,7 +149,7 @@ export function StepImages({
       <div>
         <label
           htmlFor={inputId}
-          className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-10 text-center text-[15px] text-muted transition-colors hover:border-clay"
+          className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-10 text-center text-[15px] text-muted outline-none transition-colors hover:border-clay focus-within:ring-2 focus-within:ring-clay"
         >
           Bilder auswählen
           <span className="mt-1 text-sm text-muted">JPG, PNG — mehrere Dateien möglich</span>
@@ -167,9 +190,9 @@ export function StepImages({
         )}
 
         <p className="mt-4 text-sm text-muted">
-          Hinweis: Der permanente Bild-Upload ist technisch noch nicht
-          angebunden. Ihre Bilder werden aktuell nur lokal in Ihrem Browser
-          angezeigt und nicht dauerhaft gespeichert.
+          [Entwicklungsansicht] Der permanente Bild-Upload ist technisch
+          noch nicht angebunden. Ihre Bilder werden aktuell nur lokal in
+          Ihrem Browser angezeigt und nicht dauerhaft gespeichert.
         </p>
       </div>
       <StepNav onBack={onBack} />
@@ -179,6 +202,12 @@ export function StepImages({
 
 export function StepObject({ data, update, onNext, onBack }: StepProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const postalCodeRef = useRef<HTMLInputElement>(null);
+  const cityRef = useRef<HTMLInputElement>(null);
+  const isValid =
+    data.postalCode.trim().length >= 4 &&
+    data.city.trim().length >= 2 &&
+    Boolean(data.propertyType);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -193,13 +222,16 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
       nextErrors.propertyType = "Bitte wählen Sie eine Objektart aus.";
     }
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length === 0) onNext();
+    if (nextErrors.postalCode) postalCodeRef.current?.focus();
+    else if (nextErrors.city) cityRef.current?.focus();
+    else if (Object.keys(nextErrors).length === 0) onNext();
   }
 
   return (
     <StepShell title="Angaben zum Objekt" onSubmit={handleSubmit}>
       <div className="grid gap-6 sm:grid-cols-2">
         <TextField
+          ref={postalCodeRef}
           label="PLZ"
           value={data.postalCode}
           onChange={(value) => update({ postalCode: value })}
@@ -208,6 +240,7 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
           error={errors.postalCode}
         />
         <TextField
+          ref={cityRef}
           label="Ort"
           value={data.city}
           onChange={(value) => update({ city: value })}
@@ -221,8 +254,8 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
         options={propertyTypes}
         value={data.propertyType}
         onChange={(value) => update({ propertyType: value })}
+        error={errors.propertyType}
       />
-      {errors.propertyType && <p className="text-sm text-clay">{errors.propertyType}</p>}
       <div className="grid gap-6 sm:grid-cols-2">
         <TextField
           label="Ungefähre Fläche (m²)"
@@ -237,21 +270,21 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
           type="text"
         />
       </div>
-      <StepNav onBack={onBack} />
+      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
 export function StepTiming({ data, update, onNext, onBack }: StepProps) {
-  const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
+  const isValid = Boolean(data.desiredStart);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!data.desiredStart) {
-      setError("Bitte wählen Sie den gewünschten Start aus.");
+    if (!isValid) {
+      setShowError(true);
       return;
     }
-    setError(null);
     onNext();
   }
 
@@ -262,23 +295,23 @@ export function StepTiming({ data, update, onNext, onBack }: StepProps) {
         options={desiredStartOptions}
         value={data.desiredStart}
         onChange={(value) => update({ desiredStart: value })}
+        error={showError && !isValid ? "Bitte wählen Sie den gewünschten Start aus." : undefined}
       />
-      {error && <p className="text-sm text-clay">{error}</p>}
-      <StepNav onBack={onBack} />
+      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
 export function StepBudget({ data, update, onNext, onBack }: StepProps) {
-  const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
+  const isValid = Boolean(data.budgetRange);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!data.budgetRange) {
-      setError("Bitte wählen Sie einen Investitionsrahmen aus.");
+    if (!isValid) {
+      setShowError(true);
       return;
     }
-    setError(null);
     onNext();
   }
 
@@ -289,35 +322,58 @@ export function StepBudget({ data, update, onNext, onBack }: StepProps) {
         options={budgetOptions}
         value={data.budgetRange}
         onChange={(value) => update({ budgetRange: value })}
+        error={showError && !isValid ? "Bitte wählen Sie einen Investitionsrahmen aus." : undefined}
       />
-      {error && <p className="text-sm text-clay">{error}</p>}
-      <StepNav onBack={onBack} />
+      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function StepContact({ data, update, onNext, onBack }: StepProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const isValid =
+    data.firstName.trim().length >= 2 &&
+    data.lastName.trim().length >= 2 &&
+    EMAIL_PATTERN.test(data.email.trim()) &&
+    Boolean(data.preferredContact) &&
+    (data.preferredContact !== "phone" || data.phone.trim().length >= 4);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors: Record<string, string> = {};
     if (data.firstName.trim().length < 2) nextErrors.firstName = "Bitte geben Sie Ihren Vornamen an.";
     if (data.lastName.trim().length < 2) nextErrors.lastName = "Bitte geben Sie Ihren Nachnamen an.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) {
+    if (!EMAIL_PATTERN.test(data.email.trim())) {
       nextErrors.email = "Bitte geben Sie eine gültige E-Mail-Adresse an.";
+    }
+    // A confirmation email always goes out, so email stays required
+    // regardless of preference. When the preferred contact method is
+    // "Telefon", a reachable phone number is additionally required.
+    if (data.preferredContact === "phone" && data.phone.trim().length < 4) {
+      nextErrors.phone = "Bitte geben Sie eine Telefonnummer an.";
     }
     if (!data.preferredContact) {
       nextErrors.preferredContact = "Bitte wählen Sie einen bevorzugten Kontaktweg aus.";
     }
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length === 0) onNext();
+    if (nextErrors.firstName) firstNameRef.current?.focus();
+    else if (nextErrors.lastName) lastNameRef.current?.focus();
+    else if (nextErrors.email) emailRef.current?.focus();
+    else if (nextErrors.phone) phoneRef.current?.focus();
+    else if (Object.keys(nextErrors).length === 0) onNext();
   }
 
   return (
     <StepShell title="Persönliche Angaben" onSubmit={handleSubmit}>
       <div className="grid gap-6 sm:grid-cols-2">
         <TextField
+          ref={firstNameRef}
           label="Vorname"
           value={data.firstName}
           onChange={(value) => update({ firstName: value })}
@@ -326,6 +382,7 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
           error={errors.firstName}
         />
         <TextField
+          ref={lastNameRef}
           label="Nachname"
           value={data.lastName}
           onChange={(value) => update({ lastName: value })}
@@ -334,6 +391,7 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
           error={errors.lastName}
         />
         <TextField
+          ref={emailRef}
           label="E-Mail"
           value={data.email}
           onChange={(value) => update({ email: value })}
@@ -343,11 +401,14 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
           error={errors.email}
         />
         <TextField
-          label="Telefon (optional)"
+          ref={phoneRef}
+          label={data.preferredContact === "phone" ? "Telefon" : "Telefon (optional)"}
           value={data.phone}
           onChange={(value) => update({ phone: value })}
           type="tel"
           autoComplete="tel"
+          required={data.preferredContact === "phone"}
+          error={errors.phone}
         />
       </div>
       <OptionCardGroup
@@ -355,9 +416,9 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
         options={contactPreferenceOptions}
         value={data.preferredContact}
         onChange={(value) => update({ preferredContact: value })}
+        error={errors.preferredContact}
       />
-      {errors.preferredContact && <p className="text-sm text-clay">{errors.preferredContact}</p>}
-      <StepNav onBack={onBack} />
+      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }

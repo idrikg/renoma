@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { sendProjectRequestEmails } from "@/lib/email";
+import { logServerError } from "@/lib/logger";
 import { isRateLimited } from "@/lib/rate-limit";
 import {
   projectRequestSchema,
@@ -77,7 +78,7 @@ export async function submitProjectRequest(
   try {
     await sendProjectRequestEmails(parsed.data);
   } catch (error) {
-    console.error("[actions] Failed to process project request:", error);
+    logServerError("[actions] Failed to process project request:", error);
     return {
       status: "error",
       message:

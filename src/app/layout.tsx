@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Manrope: functional UI, navigation, body copy, forms.
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
+});
+
+// Newsreader: the editorial display serif, used selectively for emotional
+// brand statements (hero headline, "Wir kümmern uns.", "Wir stehen auf
+// Ihrer Seite.", the manifesto, the final CTA) — never for every heading.
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma.de";
@@ -44,7 +54,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={`${geistSans.variable} antialiased`}>
+    <html
+      lang="de"
+      className={`${manrope.variable} ${newsreader.variable} antialiased`}
+    >
       <body className="min-h-full">{children}</body>
     </html>
   );

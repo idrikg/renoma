@@ -55,7 +55,7 @@ function values<T extends ReadonlyArray<{ value: string }>>(
   return options.map((option) => option.value) as [string, ...string[]];
 }
 
-export const projectRequestSchema = z.object({
+const baseProjectRequestSchema = z.object({
   categories: z
     .array(z.enum(values(renovationCategories)))
     .min(1, "Bitte wählen Sie mindestens einen Bereich aus."),
@@ -98,7 +98,19 @@ export const projectRequestSchema = z.object({
   company: z.string().max(0).optional().or(z.literal("")),
 });
 
-export type ProjectRequestInput = z.infer<typeof projectRequestSchema>;
+// A confirmation email always goes out, so `email` stays required for
+// everyone regardless of preference (enforced above). When "Telefon" is
+// chosen as the preferred contact method, a reachable phone number is
+// additionally required — mirrors the client-side check in steps.tsx.
+export const projectRequestSchema = baseProjectRequestSchema.refine(
+  (data) => data.preferredContact !== "phone" || (data.phone ?? "").trim().length >= 4,
+  {
+    message: "Bitte geben Sie eine Telefonnummer an.",
+    path: ["phone"],
+  }
+);
+
+export type ProjectRequestInput = z.infer<typeof baseProjectRequestSchema>;
 
 export type ProjectRequestFieldErrors = Partial<
   Record<keyof ProjectRequestInput, string>

@@ -28,6 +28,28 @@ import {
 
 const TOTAL_STEPS = 8;
 
+const STEP_TITLES = [
+  "Was möchten Sie verändern?",
+  "Ihre Wünsche",
+  "Bilder",
+  "Angaben zum Objekt",
+  "Gewünschter Start",
+  "Investitionsrahmen",
+  "Persönliche Angaben",
+  "Zusammenfassung",
+];
+
+function hasMeaningfulData(data: WizardData): boolean {
+  return (
+    data.categories.length > 0 ||
+    data.wishes.trim().length > 0 ||
+    data.postalCode.trim().length > 0 ||
+    data.city.trim().length > 0 ||
+    data.firstName.trim().length > 0 ||
+    data.email.trim().length > 0
+  );
+}
+
 type PersistedState = {
   data: WizardData;
   step: number;
@@ -65,6 +87,18 @@ export function ProjectAssistant() {
     if (!hydrated) return;
     saveWizardData(data, step);
   }, [data, step, hydrated]);
+
+  // Warn before an accidental tab close/navigation once the visitor has
+  // entered anything meaningful, until they've successfully submitted.
+  useEffect(() => {
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+      if (submitState.status !== "success" && hasMeaningfulData(data)) {
+        event.preventDefault();
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [data, submitState.status]);
 
   function setStep(next: number | ((current: number) => number)) {
     setPersisted((current) => ({
@@ -125,7 +159,7 @@ export function ProjectAssistant() {
 
   return (
     <div>
-      <ProgressIndicator step={step} total={TOTAL_STEPS} />
+      <ProgressIndicator step={step} total={TOTAL_STEPS} label={STEP_TITLES[step - 1]} />
 
       {step === 1 && (
         <StepCategories data={data} update={update} onNext={goNext} />

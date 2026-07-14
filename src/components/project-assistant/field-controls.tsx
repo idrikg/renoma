@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 
 export function StepShell({
   title,
@@ -12,7 +12,7 @@ export function StepShell({
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) {
   return (
-    <form onSubmit={onSubmit} className="space-y-8" noValidate>
+    <form onSubmit={onSubmit} className="space-y-7 sm:space-y-8" noValidate>
       <div>
         <h1 className="text-2xl font-medium tracking-tight text-ink sm:text-3xl">
           {title}
@@ -42,12 +42,12 @@ export function StepNav({
   pending?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between pt-4">
+    <div className="flex items-center justify-between pt-2">
       {onBack ? (
         <button
           type="button"
           onClick={onBack}
-          className="text-[15px] font-medium text-muted transition-colors hover:text-ink"
+          className="rounded-sm text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
         >
           {backLabel}
         </button>
@@ -57,7 +57,8 @@ export function StepNav({
       <button
         type="submit"
         disabled={nextDisabled || pending}
-        className="rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper transition-colors hover:bg-ink-soft disabled:opacity-50"
+        aria-disabled={nextDisabled || pending}
+        className="rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
       >
         {pending ? "Wird gesendet…" : nextLabel}
       </button>
@@ -65,54 +66,67 @@ export function StepNav({
   );
 }
 
-export function TextField({
-  label,
-  value,
-  onChange,
-  type = "text",
-  autoComplete,
-  required,
-  error,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  type?: string;
-  autoComplete?: string;
-  required?: boolean;
-  error?: string;
-  placeholder?: string;
-}) {
+export const TextField = forwardRef<
+  HTMLInputElement,
+  {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    type?: string;
+    autoComplete?: string;
+    required?: boolean;
+    error?: string;
+    placeholder?: string;
+    id?: string;
+  }
+>(function TextField(
+  { label, value, onChange, type = "text", autoComplete, required, error, placeholder, id },
+  ref
+) {
+  const inputId = id ?? `field-${label.replace(/\s+/g, "-").toLowerCase()}`;
+  const errorId = `${inputId}-error`;
+
   return (
     <div>
-      <label className="text-sm font-medium tracking-[0.04em] text-muted">
+      <label htmlFor={inputId} className="text-sm font-medium tracking-[0.04em] text-muted">
         {label}
       </label>
       <input
+        ref={ref}
+        id={inputId}
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         autoComplete={autoComplete}
         required={required}
         placeholder={placeholder}
-        className="mt-2 w-full border-b border-line bg-transparent py-2 text-[15px] text-ink outline-none transition-colors focus:border-clay"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
+        className={`mt-2 w-full border-b bg-transparent py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-clay ${
+          error ? "border-clay" : "border-line"
+        }`}
       />
-      {error && <p className="mt-1.5 text-sm text-clay">{error}</p>}
+      {error && (
+        <p id={errorId} role="alert" className="mt-1.5 text-sm text-clay">
+          {error}
+        </p>
+      )}
     </div>
   );
-}
+});
 
 export function OptionCardGroup<T extends string>({
   legend,
   options,
   value,
   onChange,
+  error,
 }: {
   legend: string;
   options: readonly { value: T; label: string }[];
   value: T | "";
   onChange: (value: T) => void;
+  error?: string;
 }) {
   return (
     <fieldset>
@@ -125,12 +139,20 @@ export function OptionCardGroup<T extends string>({
           return (
             <label
               key={option.value}
-              className={`flex cursor-pointer items-center rounded-xl border px-4 py-3 text-[15px] transition-colors ${
+              className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-clay ${
                 checked
                   ? "border-clay bg-paper-dim text-ink"
                   : "border-line text-muted hover:border-clay-soft"
               }`}
             >
+              <span
+                aria-hidden="true"
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
+                  checked ? "border-clay bg-clay" : "border-line"
+                }`}
+              >
+                {checked && <span className="h-1.5 w-1.5 rounded-full bg-paper" />}
+              </span>
               <input
                 type="radio"
                 name={legend}
@@ -144,6 +166,11 @@ export function OptionCardGroup<T extends string>({
           );
         })}
       </div>
+      {error && (
+        <p role="alert" className="mt-2 text-sm text-clay">
+          {error}
+        </p>
+      )}
     </fieldset>
   );
 }
@@ -170,7 +197,7 @@ export function CategoryToggleGroup({
           return (
             <label
               key={option.value}
-              className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition-colors ${
+              className={`cursor-pointer rounded-full border px-4 py-2.5 text-sm outline-none transition-colors focus-within:ring-2 focus-within:ring-clay ${
                 checked
                   ? "border-clay bg-ink text-paper"
                   : "border-line text-muted hover:border-clay-soft"

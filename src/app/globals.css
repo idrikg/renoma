@@ -13,9 +13,11 @@
   --color-muted: #6f6a62;
   --color-line: #e1d9c9;
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-newsreader);
 
   --container-content: 72rem;
+  --container-narrow: 40rem;
 }
 
 html {
@@ -51,6 +53,98 @@ body {
     );
 }
 
+/*
+ * Premium neutral treatment for the hero (and other) media frame while no
+ * authentic photograph has been supplied yet. Layered warm gradients
+ * suggest soft daylight in a room rather than a flat empty box. Paired
+ * with `.media-frame-grain` for a faint texture so it reads as a designed
+ * surface, not a placeholder.
+ */
+.media-frame-warm {
+  background-image: radial-gradient(
+      circle at 28% 24%,
+      rgba(255, 246, 232, 0.95),
+      transparent 52%
+    ),
+    radial-gradient(circle at 78% 82%, rgba(168, 112, 63, 0.4), transparent 60%),
+    linear-gradient(155deg, #f5ebdc 0%, #e7d5b8 48%, #c99b6c 100%);
+}
+
+.media-frame-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+}
+
+/*
+ * Editorial display type scale. Font size scales fluidly with the
+ * viewport via clamp() instead of jumping between fixed breakpoint
+ * sizes. Used selectively on emotional brand statements — see
+ * docs/CREATIVE-REVISION.md for exactly which sections.
+ *
+ * German compound nouns (e.g. "Renovierungsprojekt") are long, single,
+ * unbreakable words. Without hyphenation, a large display size can force
+ * that single word wider than its column, overflowing into whatever sits
+ * next to it. `hyphens: auto` (with `lang="de"` set on <html>) lets the
+ * browser break the word gracefully; `overflow-wrap` is a hard fallback
+ * for the rare browser that ignores hyphenation.
+ */
+.text-display-1,
+.text-display-2,
+.text-display-3 {
+  font-family: var(--font-display);
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+.text-display-1 {
+  font-size: clamp(2.25rem, 1.85rem + 2vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.text-display-2 {
+  font-size: clamp(2rem, 1.7rem + 1.5vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.text-display-3 {
+  font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
+  line-height: 1.32;
+}
+
+.text-supporting {
+  font-size: clamp(1.125rem, 1.02rem + 0.45vw, 1.5rem);
+  line-height: 1.4;
+}
+
+/*
+ * Hero headline only. Deliberately its own class, separate from the
+ * shared .text-display-* scale used elsewhere, so this fix cannot affect
+ * any other section.
+ *
+ * "Renovierungsprojekt" is a single, unbreakable German compound word.
+ * Auto-hyphenation (hyphens: auto) split it as "Renovie-/rungsprojekt.",
+ * which must never happen. Hyphenation is explicitly disabled here, and
+ * the line break between "Ihr" and "Renovierungsprojekt." is authored
+ * manually in the markup rather than left to the browser. The max size
+ * is intentionally more conservative than a typical display headline:
+ * at this word length, correct, unbroken rendering takes priority over
+ * hitting a larger but unsafe font size.
+ */
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 1.5rem + 2.2vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  hyphens: none;
+  -webkit-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: normal;
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -76,6 +170,14 @@ body {
 
 .animate-delay-3 {
   animation-delay: 0.24s;
+}
+
+summary {
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

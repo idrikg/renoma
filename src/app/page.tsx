@@ -12,8 +12,11 @@ import { FaqSection } from "@/components/faq-section";
 import { ProjectAssistantTeaser } from "@/components/project-assistant-teaser";
 import { FinalCtaSection } from "@/components/final-cta-section";
 import { SiteFooter } from "@/components/site-footer";
+import { hasPublishedReferences } from "@/lib/references-data";
 
 export default function Home() {
+  const showReferences = hasPublishedReferences();
+
   return (
     <>
       <SiteHeader />
@@ -23,7 +26,7 @@ export default function Home() {
         <PivotSection />
         <PositioningStatement />
         <BenefitsSection />
-        <ReferencesSection />
+        {showReferences && <ReferencesSection />}
         <ProcessSection />
         <FounderSection />
         <ManifestoSection />

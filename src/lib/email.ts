@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { logServerError } from "@/lib/logger";
 import {
   budgetLabel,
   categoryLabels,
@@ -76,10 +77,10 @@ export async function sendProjectRequestEmails(input: ProjectRequestInput) {
   const [notification, confirmation] = results;
 
   if (notification.status === "rejected") {
-    console.error("[email] Failed to send lead notification:", notification.reason);
+    logServerError("[email] Failed to send lead notification:", notification.reason);
   }
   if (confirmation.status === "rejected") {
-    console.error("[email] Failed to send customer confirmation:", confirmation.reason);
+    logServerError("[email] Failed to send customer confirmation:", confirmation.reason);
   }
 
   return {

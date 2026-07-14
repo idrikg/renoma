@@ -86,7 +86,7 @@ export function StepSummary({
             <button
               type="button"
               onClick={() => onGoToStep(STEP_FOR_FIELD[row.field])}
-              className="shrink-0 text-sm font-medium text-clay underline underline-offset-4"
+              className="shrink-0 rounded-sm text-sm font-medium text-clay underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-clay"
             >
               Bearbeiten
             </button>
@@ -96,14 +96,23 @@ export function StepSummary({
 
       <ConsentCheckbox checked={data.consent} onChange={onConsentChange} />
 
-      {consentError && <p className="text-sm text-clay">{consentError}</p>}
+      {consentError && (
+        <p role="alert" className="text-sm text-clay">
+          {consentError}
+        </p>
+      )}
       {submitError && (
         <p role="alert" className="text-sm text-clay">
           {submitError}
         </p>
       )}
 
-      <StepNav onBack={onBack} nextLabel="Anfrage absenden" pending={pending} />
+      <StepNav
+        onBack={onBack}
+        nextLabel="Projekt starten"
+        nextDisabled={!data.consent}
+        pending={pending}
+      />
     </StepShell>
   );
 }
@@ -116,11 +125,12 @@ function ConsentCheckbox({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line px-4 py-4 text-[15px] leading-relaxed text-ink">
+    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line px-4 py-4 text-[15px] leading-relaxed text-ink outline-none focus-within:ring-2 focus-within:ring-clay">
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
+        required
         className="mt-0.5 h-4 w-4 accent-clay"
       />
       <span>
