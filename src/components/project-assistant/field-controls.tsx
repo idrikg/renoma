@@ -1,13 +1,16 @@
+import { Check } from "lucide-react";
 import { forwardRef, type ReactNode } from "react";
 
 export function StepShell({
   title,
   description,
+  descriptionClassName,
   children,
   onSubmit,
 }: {
   title: string;
   description?: string;
+  descriptionClassName?: string;
   children: ReactNode;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) {
@@ -18,7 +21,12 @@ export function StepShell({
           {title}
         </h1>
         {description && (
-          <p className="mt-2 text-[15px] leading-relaxed text-muted">
+          <p
+            className={
+              descriptionClassName ??
+              "mt-2 text-[15px] leading-relaxed text-muted"
+            }
+          >
             {description}
           </p>
         )}
@@ -34,23 +42,33 @@ export function StepNav({
   nextLabel = "Weiter",
   nextDisabled,
   pending,
+  statusLabel,
 }: {
   onBack?: () => void;
   backLabel?: string;
   nextLabel?: string;
   nextDisabled?: boolean;
   pending?: boolean;
+  statusLabel?: string;
 }) {
   return (
-    <div className="flex items-center justify-between pt-2">
+    <div
+      className={`flex pt-2 ${
+        statusLabel
+          ? "flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+          : "items-center justify-between"
+      }`}
+    >
       {onBack ? (
         <button
           type="button"
           onClick={onBack}
-          className="rounded-sm text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+          className="rounded-sm text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
         >
           {backLabel}
         </button>
+      ) : statusLabel ? (
+        <p className="text-[15px] text-muted">{statusLabel}</p>
       ) : (
         <span />
       )}
@@ -58,7 +76,9 @@ export function StepNav({
         type="submit"
         disabled={nextDisabled || pending}
         aria-disabled={nextDisabled || pending}
-        className="rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
+        className={`rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${
+          statusLabel ? "w-full sm:w-auto" : ""
+        }`}
       >
         {pending ? "Wird gesendet…" : nextLabel}
       </button>
@@ -121,38 +141,58 @@ export function OptionCardGroup<T extends string>({
   value,
   onChange,
   error,
+  icons,
+  large,
 }: {
   legend: string;
   options: readonly { value: T; label: string }[];
   value: T | "";
   onChange: (value: T) => void;
   error?: string;
+  icons?: Record<string, import("lucide-react").LucideIcon>;
+  /** Bigger touch target + icon-forward layout, for a small set of
+   *  high-level choices (e.g. Haus / Wohnung / Gewerbe). */
+  large?: boolean;
 }) {
   return (
     <fieldset>
       <legend className="text-sm font-medium tracking-[0.04em] text-muted">
         {legend}
       </legend>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      <div className={`mt-3 grid gap-3 ${large ? "sm:grid-cols-3" : "gap-2 sm:grid-cols-2"}`}>
         {options.map((option) => {
           const checked = value === option.value;
+          const Icon = icons?.[option.value];
           return (
             <label
               key={option.value}
-              className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-clay ${
+              className={`flex cursor-pointer items-center gap-3 rounded-xl border outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
+                large
+                  ? "flex-col justify-center gap-2 px-5 py-6 text-center text-[15px]"
+                  : "px-4 py-3 text-[15px]"
+              } ${
                 checked
-                  ? "border-clay bg-paper-dim text-ink"
+                  ? "border-sage bg-soft-sage text-ink"
                   : "border-line text-muted hover:border-clay-soft"
               }`}
             >
-              <span
-                aria-hidden="true"
-                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
-                  checked ? "border-clay bg-clay" : "border-line"
-                }`}
-              >
-                {checked && <span className="h-1.5 w-1.5 rounded-full bg-paper" />}
-              </span>
+              {Icon && (
+                <Icon
+                  aria-hidden="true"
+                  className={`${large ? "h-6 w-6" : "h-4 w-4"} shrink-0 ${checked ? "text-sage-deep" : "text-muted"}`}
+                  strokeWidth={1.5}
+                />
+              )}
+              {!large && (
+                <span
+                  aria-hidden="true"
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                    checked ? "border-sage bg-sage" : "border-line"
+                  }`}
+                >
+                  {checked && <Check className="h-3.5 w-3.5 text-paper" strokeWidth={2.5} />}
+                </span>
+              )}
               <input
                 type="radio"
                 name={legend}
@@ -161,7 +201,10 @@ export function OptionCardGroup<T extends string>({
                 onChange={() => onChange(option.value)}
                 className="sr-only"
               />
-              {option.label}
+              <span className={large ? "font-medium" : ""}>{option.label}</span>
+              {large && checked && (
+                <Check className="h-4 w-4 text-sage-deep" strokeWidth={2.5} aria-hidden="true" />
+              )}
             </label>
           );
         })}
@@ -175,44 +218,155 @@ export function OptionCardGroup<T extends string>({
   );
 }
 
-export function CategoryToggleGroup({
+type IconMap = Record<string, import("lucide-react").LucideIcon>;
+
+/**
+ * Large, scannable selection rows — one per category — each with a
+ * restrained line icon, the label, and an explicit check indicator.
+ * Two columns on desktop, one full-width column on mobile/tablet with
+ * comfortably large touch targets.
+ */
+export function CategoryCardGroup({
   legend,
   options,
   values,
   onToggle,
+  icons,
 }: {
   legend: string;
   options: readonly { value: string; label: string }[];
   values: string[];
   onToggle: (value: string) => void;
+  icons: IconMap;
 }) {
   return (
     <fieldset>
-      <legend className="text-sm font-medium tracking-[0.04em] text-muted">
-        {legend}
-      </legend>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <legend className="sr-only">{legend}</legend>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
         {options.map((option) => {
           const checked = values.includes(option.value);
+          const Icon = icons[option.value];
           return (
             <label
               key={option.value}
-              className={`cursor-pointer rounded-full border px-4 py-2.5 text-sm outline-none transition-colors focus-within:ring-2 focus-within:ring-clay ${
+              className={`flex min-h-16 cursor-pointer items-center gap-4 rounded-xl border px-5 py-4 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
                 checked
-                  ? "border-clay bg-ink text-paper"
-                  : "border-line text-muted hover:border-clay-soft"
+                  ? "border-sage bg-soft-sage text-ink"
+                  : "border-line text-ink hover:border-clay-soft"
               }`}
             >
+              {Icon && (
+                <Icon
+                  aria-hidden="true"
+                  className={`h-5 w-5 shrink-0 ${checked ? "text-sage-deep" : "text-muted"}`}
+                  strokeWidth={1.5}
+                />
+              )}
+              <span className="min-w-0 flex-1 font-medium">{option.label}</span>
+              <span
+                aria-hidden="true"
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                  checked ? "border-sage bg-sage" : "border-line"
+                }`}
+              >
+                {checked && <Check className="h-3.5 w-3.5 text-paper" strokeWidth={2.5} />}
+              </span>
               <input
                 type="checkbox"
                 checked={checked}
                 onChange={() => onToggle(option.value)}
                 className="sr-only"
               />
-              {option.label}
             </label>
           );
         })}
+      </div>
+    </fieldset>
+  );
+}
+
+type CategoryOption = { value: string; label: string };
+
+/**
+ * Grouped category selection for Step 1 — calm section labels, subtle
+ * dividers, two columns per group on desktop, one column on mobile.
+ */
+export function GroupedCategoryCardGroup({
+  legend,
+  groups,
+  options,
+  values,
+  onToggle,
+  icons,
+}: {
+  legend: string;
+  groups: readonly { label: string; optionValues: readonly string[] }[];
+  options: readonly CategoryOption[];
+  values: string[];
+  onToggle: (value: string) => void;
+  icons: IconMap;
+}) {
+  const optionsByValue = new Map(options.map((option) => [option.value, option]));
+
+  return (
+    <fieldset>
+      <legend className="sr-only">{legend}</legend>
+      <div className="space-y-8">
+        {groups.map((group, groupIndex) => (
+          <div
+            key={group.label}
+            className={groupIndex > 0 ? "border-t border-line pt-8" : undefined}
+          >
+            <p className="text-xs font-medium tracking-[0.14em] text-clay uppercase">
+              {group.label}
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {group.optionValues.map((value) => {
+                const option = optionsByValue.get(value);
+                if (!option) return null;
+
+                const checked = values.includes(option.value);
+                const Icon = icons[option.value];
+
+                return (
+                  <label
+                    key={option.value}
+                    className={`flex min-h-16 cursor-pointer items-center gap-4 rounded-xl border px-5 py-4 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
+                      checked
+                        ? "border-sage bg-soft-sage text-ink"
+                        : "border-line text-ink hover:border-clay-soft"
+                    }`}
+                  >
+                    {Icon && (
+                      <Icon
+                        aria-hidden="true"
+                        className={`h-5 w-5 shrink-0 ${checked ? "text-sage-deep" : "text-muted"}`}
+                        strokeWidth={1.5}
+                      />
+                    )}
+                    <span className="min-w-0 flex-1 font-medium">{option.label}</span>
+                    <span
+                      aria-hidden="true"
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                        checked ? "border-sage bg-sage" : "border-line"
+                      }`}
+                    >
+                      {checked && (
+                        <Check className="h-3.5 w-3.5 text-paper" strokeWidth={2.5} />
+                      )}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => onToggle(option.value)}
+                      className="sr-only"
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </fieldset>
   );

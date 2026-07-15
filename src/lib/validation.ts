@@ -1,30 +1,93 @@
 import { z } from "zod";
 
 export const renovationCategories = [
-  { value: "bad", label: "Bad" },
+  { value: "bad-sanitaer", label: "Bad & Sanitär" },
   { value: "kueche", label: "Küche" },
-  { value: "boden", label: "Boden" },
-  { value: "fenster", label: "Fenster" },
-  { value: "tueren", label: "Türen" },
+  { value: "boden", label: "Böden" },
+  { value: "waende-decken", label: "Wände & Decken" },
+  { value: "fenster-tueren", label: "Fenster & Türen" },
   { value: "elektrik", label: "Elektrik" },
-  { value: "photovoltaik", label: "Photovoltaik" },
-  { value: "waermepumpe", label: "Wärmepumpe" },
-  { value: "garten", label: "Garten" },
-  { value: "pool", label: "Pool" },
   { value: "smart_home", label: "Smart Home" },
-  { value: "anbau", label: "Anbau" },
+  { value: "heizung-waermepumpe", label: "Heizung & Wärmepumpe" },
+  { value: "photovoltaik", label: "Photovoltaik" },
+  { value: "dach-fassade", label: "Dach & Fassade" },
+  { value: "garten-aussenbereich", label: "Garten & Außenbereich" },
+  { value: "pool", label: "Pool" },
+  { value: "anbau-erweiterung", label: "Anbau & Erweiterung" },
   { value: "komplettsanierung", label: "Komplettsanierung" },
   { value: "sonstiges", label: "Sonstiges" },
 ] as const;
 
-export const propertyTypes = [
+/** Visual grouping for Step 1 — labels are display-only, not submitted. */
+export const renovationCategoryGroups = [
+  {
+    label: "Innenräume",
+    optionValues: [
+      "bad-sanitaer",
+      "kueche",
+      "boden",
+      "waende-decken",
+      "fenster-tueren",
+      "elektrik",
+      "smart_home",
+    ],
+  },
+  {
+    label: "Energie & Gebäude",
+    optionValues: ["heizung-waermepumpe", "photovoltaik", "dach-fassade"],
+  },
+  {
+    label: "Außenbereich",
+    optionValues: ["garten-aussenbereich", "pool"],
+  },
+  {
+    label: "Gesamtprojekt",
+    optionValues: ["anbau-erweiterung", "komplettsanierung", "sonstiges"],
+  },
+] as const;
+
+/** Maps pre-revision stored values to their current equivalents. */
+const LEGACY_CATEGORY_VALUES: Record<string, string> = {
+  bad: "bad-sanitaer",
+  fenster: "fenster-tueren",
+  tueren: "fenster-tueren",
+  waermepumpe: "heizung-waermepumpe",
+  garten: "garten-aussenbereich",
+  anbau: "anbau-erweiterung",
+};
+
+const VALID_CATEGORY_VALUES = new Set<string>(
+  renovationCategories.map((category) => category.value)
+);
+
+/**
+ * Normalizes category selections from older funnel drafts so saved
+ * session state and legacy submissions do not break the current schema.
+ */
+export function normalizeCategories(categories: readonly string[]): string[] {
+  const normalized = new Set<string>();
+  for (const value of categories) {
+    const mapped = LEGACY_CATEGORY_VALUES[value] ?? value;
+    if (VALID_CATEGORY_VALUES.has(mapped)) {
+      normalized.add(mapped);
+    }
+  }
+  return [...normalized];
+}
+
+export const objectTypes = [
+  { value: "haus", label: "Haus" },
+  { value: "wohnung", label: "Wohnung" },
+  { value: "gewerbe", label: "Gewerbe" },
+] as const;
+
+/** Only relevant when `objectType` is "haus" — see StepObject. */
+export const houseSubtypes = [
   { value: "einfamilienhaus", label: "Einfamilienhaus" },
   { value: "doppelhaushaelfte", label: "Doppelhaushälfte" },
   { value: "reihenhaus", label: "Reihenhaus" },
   { value: "mehrfamilienhaus", label: "Mehrfamilienhaus" },
-  { value: "eigentumswohnung", label: "Eigentumswohnung" },
-  { value: "gewerbeobjekt", label: "Gewerbeobjekt" },
-  { value: "sonstiges", label: "Sonstiges" },
+  { value: "sonstiges_haus", label: "Sonstiges Haus" },
 ] as const;
 
 export const desiredStartOptions = [
@@ -56,9 +119,12 @@ function values<T extends ReadonlyArray<{ value: string }>>(
 }
 
 const baseProjectRequestSchema = z.object({
-  categories: z
-    .array(z.enum(values(renovationCategories)))
-    .min(1, "Bitte wählen Sie mindestens einen Bereich aus."),
+  categories: z.preprocess(
+    (value) => (Array.isArray(value) ? normalizeCategories(value as string[]) : value),
+    z
+      .array(z.enum(values(renovationCategories)))
+      .min(1, "Bitte wählen Sie mindestens einen Bereich aus.")
+  ),
   wishes: z.string().trim().max(2000, "Die Nachricht ist zu lang.").optional().or(z.literal("")),
   imageCount: z.coerce.number().int().min(0).max(30).optional().default(0),
   postalCode: z
@@ -67,9 +133,11 @@ const baseProjectRequestSchema = z.object({
     .min(4, "Bitte geben Sie eine gültige Postleitzahl an.")
     .max(10, "Bitte geben Sie eine gültige Postleitzahl an."),
   city: z.string().trim().min(2, "Bitte geben Sie Ihren Ort an.").max(100),
-  propertyType: z.enum(values(propertyTypes), {
+  objectType: z.enum(values(objectTypes), {
     message: "Bitte wählen Sie eine Objektart aus.",
   }),
+  // Only required when objectType is "haus" — enforced via .refine below.
+  houseSubtype: z.string().trim().optional().or(z.literal("")),
   areaSqm: z.string().trim().max(20).optional().or(z.literal("")),
   constructionYear: z.string().trim().max(4).optional().or(z.literal("")),
   desiredStart: z.enum(values(desiredStartOptions), {
@@ -102,13 +170,23 @@ const baseProjectRequestSchema = z.object({
 // everyone regardless of preference (enforced above). When "Telefon" is
 // chosen as the preferred contact method, a reachable phone number is
 // additionally required — mirrors the client-side check in steps.tsx.
-export const projectRequestSchema = baseProjectRequestSchema.refine(
-  (data) => data.preferredContact !== "phone" || (data.phone ?? "").trim().length >= 4,
-  {
-    message: "Bitte geben Sie eine Telefonnummer an.",
-    path: ["phone"],
-  }
-);
+export const projectRequestSchema = baseProjectRequestSchema
+  .refine(
+    (data) => data.preferredContact !== "phone" || (data.phone ?? "").trim().length >= 4,
+    {
+      message: "Bitte geben Sie eine Telefonnummer an.",
+      path: ["phone"],
+    }
+  )
+  .refine(
+    (data) =>
+      data.objectType !== "haus" ||
+      houseSubtypes.some((subtype) => subtype.value === data.houseSubtype),
+    {
+      message: "Bitte wählen Sie eine Hausart aus.",
+      path: ["houseSubtype"],
+    }
+  );
 
 export type ProjectRequestInput = z.infer<typeof baseProjectRequestSchema>;
 
@@ -124,11 +202,25 @@ function labelFor<T extends ReadonlyArray<{ value: string; label: string }>>(
 }
 
 export function categoryLabels(selected: readonly string[]): string[] {
-  return selected.map((value) => labelFor(renovationCategories, value));
+  return normalizeCategories(selected).map((value) =>
+    labelFor(renovationCategories, value)
+  );
 }
 
-export function propertyTypeLabel(value: string): string {
-  return labelFor(propertyTypes, value);
+export function objectTypeLabel(value: string): string {
+  return labelFor(objectTypes, value);
+}
+
+export function houseSubtypeLabel(value: string): string {
+  return labelFor(houseSubtypes, value);
+}
+
+/** Combined, human-readable object description, e.g. "Haus – Einfamilienhaus". */
+export function objectDescription(objectType: string, houseSubtype: string): string {
+  if (objectType === "haus" && houseSubtype) {
+    return `${objectTypeLabel(objectType)} – ${houseSubtypeLabel(houseSubtype)}`;
+  }
+  return objectTypeLabel(objectType);
 }
 
 export function desiredStartLabel(value: string): string {

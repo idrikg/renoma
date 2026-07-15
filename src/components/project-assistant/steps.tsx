@@ -5,11 +5,17 @@ import {
   budgetOptions,
   contactPreferenceOptions,
   desiredStartOptions,
-  propertyTypes,
+  houseSubtypes,
+  objectTypes,
   renovationCategories,
+  renovationCategoryGroups,
 } from "@/lib/validation";
 import {
-  CategoryToggleGroup,
+  categoryIcons,
+  objectTypeIcons,
+} from "@/components/project-assistant/category-icons";
+import {
+  GroupedCategoryCardGroup,
   OptionCardGroup,
   StepNav,
   StepShell,
@@ -28,7 +34,8 @@ type StepProps = {
 
 export function StepCategories({ data, update, onNext }: StepProps) {
   const [showError, setShowError] = useState(false);
-  const isValid = data.categories.length > 0;
+  const selectedCount = data.categories.length;
+  const isValid = selectedCount > 0;
 
   function toggle(value: string) {
     const next = data.categories.includes(value)
@@ -46,13 +53,27 @@ export function StepCategories({ data, update, onNext }: StepProps) {
     onNext();
   }
 
+  const statusLabel =
+    selectedCount === 1
+      ? "1 Bereich ausgewählt"
+      : selectedCount > 1
+        ? `${selectedCount} Bereiche ausgewählt`
+        : undefined;
+
   return (
-    <StepShell title="Was möchten Sie verändern?" onSubmit={handleSubmit}>
-      <CategoryToggleGroup
+    <StepShell
+      title="Was möchten Sie verändern?"
+      description="Wählen Sie alle Bereiche aus, die zu Ihrem Vorhaben gehören. Mehrfachauswahl möglich."
+      descriptionClassName="mt-4 max-w-md text-base leading-relaxed text-muted sm:text-[17px]"
+      onSubmit={handleSubmit}
+    >
+      <GroupedCategoryCardGroup
         legend="Bereiche auswählen"
+        groups={renovationCategoryGroups}
         options={renovationCategories}
         values={data.categories}
         onToggle={toggle}
+        icons={categoryIcons}
       />
       {showError && !isValid && (
         <p role="alert" className="text-sm text-clay">
@@ -73,33 +94,7 @@ export function StepCategories({ data, update, onNext }: StepProps) {
         />
       </div>
 
-      <StepNav nextDisabled={!isValid} />
-    </StepShell>
-  );
-}
-
-export function StepWishes({ data, update, onNext, onBack }: StepProps) {
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    onNext();
-  }
-
-  return (
-    <StepShell title="Ihre Wünsche" onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="wishes" className="text-sm font-medium tracking-[0.04em] text-muted">
-          Erzählen Sie uns einfach, was Sie sich wünschen.
-        </label>
-        <textarea
-          id="wishes"
-          rows={6}
-          value={data.wishes}
-          onChange={(event) => update({ wishes: event.target.value })}
-          className="mt-2 w-full resize-none rounded-xl border border-line bg-transparent p-4 text-[15px] leading-relaxed text-ink outline-none transition-colors focus:border-clay"
-          placeholder="Optional — Sie können diesen Schritt auch überspringen."
-        />
-      </div>
-      <StepNav onBack={onBack} />
+      <StepNav nextDisabled={!isValid} statusLabel={statusLabel} />
     </StepShell>
   );
 }
@@ -124,22 +119,6 @@ export function StepImages({
     onNext();
   }
 
-  // No persistent file storage is configured yet. Rather than let visitors
-  // upload files that are never actually saved, the upload UI itself is
-  // only shown outside production (for continued development/testing).
-  // Production visitors see an honest, customer-friendly explanation
-  // instead — see docs/CREATIVE-REVISION.md and MVP-SCOPE.md.
-  if (isProduction) {
-    return (
-      <StepShell title="Bilder" onSubmit={handleSubmit}>
-        <p className="text-[15px] leading-relaxed text-muted">
-          Bilder können Sie uns nach dem persönlichen Erstkontakt senden.
-        </p>
-        <StepNav onBack={onBack} />
-      </StepShell>
-    );
-  }
-
   return (
     <StepShell
       title="Bilder"
@@ -149,7 +128,7 @@ export function StepImages({
       <div>
         <label
           htmlFor={inputId}
-          className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-10 text-center text-[15px] text-muted outline-none transition-colors hover:border-clay focus-within:ring-2 focus-within:ring-clay"
+          className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-10 text-center text-[15px] text-muted outline-none transition-colors hover:border-clay focus-within:ring-2 focus-within:ring-sage"
         >
           Bilder auswählen
           <span className="mt-1 text-sm text-muted">JPG, PNG — mehrere Dateien möglich</span>
@@ -180,7 +159,7 @@ export function StepImages({
                   type="button"
                   onClick={() => onRemoveImage(image.id)}
                   aria-label={`${image.name} entfernen`}
-                  className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-ink/80 text-paper outline-none focus-visible:ring-2 focus-visible:ring-clay"
+                  className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-ink/80 text-paper outline-none focus-visible:ring-2 focus-visible:ring-sage"
                 >
                   ×
                 </button>
@@ -189,10 +168,18 @@ export function StepImages({
           </ul>
         )}
 
+        {/*
+         * No persistent file storage is configured yet. The selection/
+         * preview/removal experience itself stays available in every
+         * environment — only the explanatory copy changes: production
+         * visitors get an honest, customer-friendly note; development
+         * gets the technical detail. Never implies files were uploaded
+         * permanently.
+         */}
         <p className="mt-4 text-sm text-muted">
-          [Entwicklungsansicht] Der permanente Bild-Upload ist technisch
-          noch nicht angebunden. Ihre Bilder werden aktuell nur lokal in
-          Ihrem Browser angezeigt und nicht dauerhaft gespeichert.
+          {isProduction
+            ? "Bilder können Sie optional auswählen. Falls die Übertragung noch nicht möglich ist, können Sie uns die Bilder nach dem persönlichen Erstkontakt senden."
+            : "[Entwicklungsansicht] Der permanente Bild-Upload ist technisch noch nicht angebunden. Ihre Bilder werden aktuell nur lokal in Ihrem Browser angezeigt und nicht dauerhaft gespeichert."}
         </p>
       </div>
       <StepNav onBack={onBack} />
@@ -207,7 +194,8 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
   const isValid =
     data.postalCode.trim().length >= 4 &&
     data.city.trim().length >= 2 &&
-    Boolean(data.propertyType);
+    Boolean(data.objectType) &&
+    (data.objectType !== "haus" || Boolean(data.houseSubtype));
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -218,8 +206,10 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
     if (data.city.trim().length < 2) {
       nextErrors.city = "Bitte geben Sie Ihren Ort an.";
     }
-    if (!data.propertyType) {
-      nextErrors.propertyType = "Bitte wählen Sie eine Objektart aus.";
+    if (!data.objectType) {
+      nextErrors.objectType = "Bitte wählen Sie eine Objektart aus.";
+    } else if (data.objectType === "haus" && !data.houseSubtype) {
+      nextErrors.houseSubtype = "Bitte wählen Sie eine Hausart aus.";
     }
     setErrors(nextErrors);
     if (nextErrors.postalCode) postalCodeRef.current?.focus();
@@ -229,6 +219,28 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
 
   return (
     <StepShell title="Angaben zum Objekt" onSubmit={handleSubmit}>
+      <OptionCardGroup
+        legend="Objektart"
+        options={objectTypes}
+        value={data.objectType}
+        onChange={(value) =>
+          update({ objectType: value, houseSubtype: value === "haus" ? data.houseSubtype : "" })
+        }
+        error={errors.objectType}
+        icons={objectTypeIcons}
+        large
+      />
+
+      {data.objectType === "haus" && (
+        <OptionCardGroup
+          legend="Hausart"
+          options={houseSubtypes}
+          value={data.houseSubtype}
+          onChange={(value) => update({ houseSubtype: value })}
+          error={errors.houseSubtype}
+        />
+      )}
+
       <div className="grid gap-6 sm:grid-cols-2">
         <TextField
           ref={postalCodeRef}
@@ -249,16 +261,9 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
           error={errors.city}
         />
       </div>
-      <OptionCardGroup
-        legend="Objektart"
-        options={propertyTypes}
-        value={data.propertyType}
-        onChange={(value) => update({ propertyType: value })}
-        error={errors.propertyType}
-      />
       <div className="grid gap-6 sm:grid-cols-2">
         <TextField
-          label="Ungefähre Fläche (m²)"
+          label="Ungefähre Fläche (optional)"
           value={data.areaSqm}
           onChange={(value) => update({ areaSqm: value })}
           type="text"
@@ -419,6 +424,33 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
         error={errors.preferredContact}
       />
       <StepNav onBack={onBack} nextDisabled={!isValid} />
+    </StepShell>
+  );
+}
+
+export function StepWishes({ data, update, onNext, onBack }: StepProps) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    onNext();
+  }
+
+  return (
+    <StepShell
+      title="Ihre Wünsche"
+      description="Möchten Sie uns noch etwas mitgeben?"
+      onSubmit={handleSubmit}
+    >
+      <div>
+        <textarea
+          id="wishes"
+          rows={5}
+          value={data.wishes}
+          onChange={(event) => update({ wishes: event.target.value })}
+          className="w-full resize-none rounded-xl border border-line bg-transparent p-4 text-[15px] leading-relaxed text-ink outline-none transition-colors focus:border-clay"
+        />
+        <p className="mt-2 text-sm text-muted">Dieser Schritt ist optional.</p>
+      </div>
+      <StepNav onBack={onBack} />
     </StepShell>
   );
 }

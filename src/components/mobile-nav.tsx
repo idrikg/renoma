@@ -32,7 +32,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
         aria-controls={panelId}
         aria-label={open ? "Menü schließen" : "Menü öffnen"}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-11 w-11 items-center justify-center rounded-full text-ink outline-none focus-visible:ring-2 focus-visible:ring-clay"
+        className="flex h-11 w-11 items-center justify-center rounded-full text-ink outline-none focus-visible:ring-2 focus-visible:ring-sage"
       >
         <svg
           aria-hidden="true"
@@ -61,7 +61,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-base font-medium text-ink outline-none hover:bg-paper-dim focus-visible:ring-2 focus-visible:ring-clay"
+                className="rounded-lg px-3 py-3 text-base font-medium text-ink outline-none hover:bg-paper-dim focus-visible:ring-2 focus-visible:ring-sage"
               >
                 {link.label}
               </a>
@@ -69,7 +69,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
             <Link
               href="/projekt-starten"
               onClick={() => setOpen(false)}
-              className="mt-3 rounded-full bg-ink px-5 py-3 text-center text-base font-medium text-paper outline-none focus-visible:ring-2 focus-visible:ring-clay"
+              className="mt-3 rounded-full bg-ink px-5 py-3 text-center text-base font-medium text-paper outline-none focus-visible:ring-2 focus-visible:ring-sage"
             >
               Projekt starten
             </Link>

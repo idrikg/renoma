@@ -18,7 +18,7 @@ export default async function Image() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "flex-start",
-          backgroundColor: "#14110f",
+          backgroundColor: "#252422",
           padding: "96px",
           fontFamily: "sans-serif",
         }}
@@ -27,7 +27,7 @@ export default async function Image() {
           style={{
             fontSize: 28,
             letterSpacing: 6,
-            color: "#cfa06c",
+            color: "#b58a63",
             marginBottom: 40,
           }}
         >
@@ -37,7 +37,7 @@ export default async function Image() {
           style={{
             fontSize: 64,
             lineHeight: 1.2,
-            color: "#faf7f2",
+            color: "#f7f4ee",
             fontWeight: 600,
             maxWidth: 900,
           }}
@@ -47,12 +47,12 @@ export default async function Image() {
         <div
           style={{
             fontSize: 28,
-            color: "rgba(250,247,242,0.6)",
+            color: "rgba(247,244,238,0.65)",
             marginTop: 32,
             maxWidth: 800,
           }}
         >
-          Renovieren, ohne sich darum kümmern zu müssen.
+          Sie freuen sich auf Ihr neues Zuhause. Wir kümmern uns um den Weg dorthin.
         </div>
       </div>
     ),

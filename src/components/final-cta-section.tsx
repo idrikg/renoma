@@ -16,7 +16,7 @@ export function FinalCtaSection() {
           <div className="mt-10">
             <Link
               href="/projekt-starten"
-              className="inline-flex rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="inline-flex rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               Projekt starten
             </Link>

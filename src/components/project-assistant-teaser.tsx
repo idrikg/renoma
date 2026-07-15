@@ -17,7 +17,7 @@ export function ProjectAssistantTeaser() {
           </div>
           <Link
             href="/projekt-starten"
-            className="shrink-0 rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-paper-dim"
+            className="shrink-0 rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper-dim"
           >
             Projekt starten
           </Link>

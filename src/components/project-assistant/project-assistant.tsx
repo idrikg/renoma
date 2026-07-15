@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { submitProjectRequest } from "@/lib/actions";
+import { normalizeCategories } from "@/lib/validation";
 import { ProgressIndicator } from "@/components/project-assistant/progress-indicator";
 import { Confirmation } from "@/components/project-assistant/confirmation";
 import { StepSummary } from "@/components/project-assistant/step-summary";
@@ -30,12 +31,12 @@ const TOTAL_STEPS = 8;
 
 const STEP_TITLES = [
   "Was möchten Sie verändern?",
-  "Ihre Wünsche",
   "Bilder",
   "Angaben zum Objekt",
   "Gewünschter Start",
   "Investitionsrahmen",
   "Persönliche Angaben",
+  "Ihre Wünsche",
   "Zusammenfassung",
 ];
 
@@ -76,11 +77,17 @@ export function ProjectAssistant() {
   useEffect(() => {
     const stored = loadWizardData();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional one-time hydration from a client-only store; see comment above.
-    setPersisted((current) => ({
-      data: stored?.data ?? current.data,
-      step: stored ? Math.min(Math.max(stored.step, 1), TOTAL_STEPS) : current.step,
-      hydrated: true,
-    }));
+    setPersisted((current) => {
+      const loaded = stored?.data ?? current.data;
+      return {
+        data: {
+          ...loaded,
+          categories: normalizeCategories(loaded.categories),
+        },
+        step: stored ? Math.min(Math.max(stored.step, 1), TOTAL_STEPS) : current.step,
+        hydrated: true,
+      };
+    });
   }, []);
 
   useEffect(() => {
@@ -140,7 +147,11 @@ export function ProjectAssistant() {
   }
 
   function handleFinalSubmit() {
-    const payload = { ...data, imageCount: images.length };
+    const payload = {
+      ...data,
+      categories: normalizeCategories(data.categories),
+      imageCount: images.length,
+    };
     startTransition(async () => {
       const result = await submitProjectRequest(payload);
       if (result.status === "success") {
@@ -165,9 +176,6 @@ export function ProjectAssistant() {
         <StepCategories data={data} update={update} onNext={goNext} />
       )}
       {step === 2 && (
-        <StepWishes data={data} update={update} onNext={goNext} onBack={goBack} />
-      )}
-      {step === 3 && (
         <StepImages
           onNext={goNext}
           onBack={goBack}
@@ -176,17 +184,20 @@ export function ProjectAssistant() {
           onRemoveImage={removeImage}
         />
       )}
-      {step === 4 && (
+      {step === 3 && (
         <StepObject data={data} update={update} onNext={goNext} onBack={goBack} />
       )}
-      {step === 5 && (
+      {step === 4 && (
         <StepTiming data={data} update={update} onNext={goNext} onBack={goBack} />
       )}
-      {step === 6 && (
+      {step === 5 && (
         <StepBudget data={data} update={update} onNext={goNext} onBack={goBack} />
       )}
-      {step === 7 && (
+      {step === 6 && (
         <StepContact data={data} update={update} onNext={goNext} onBack={goBack} />
+      )}
+      {step === 7 && (
+        <StepWishes data={data} update={update} onNext={goNext} onBack={goBack} />
       )}
       {step === 8 && (
         <StepSummary

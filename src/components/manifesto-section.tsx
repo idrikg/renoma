@@ -5,22 +5,26 @@ export function ManifestoSection() {
     <section className="py-24 sm:py-32 lg:py-40">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-display-3 text-ink">
-            Wir glauben, dass niemand seine Abende damit verbringen sollte,
-            Handwerkern hinterherzutelefonieren.
+          <p className="text-display-2 text-ink">
+            Wir glauben, dass Renovieren{" "}
+            <span className="text-sage-deep">Vorfreude auslösen darf.</span>
           </p>
-          <p className="text-display-3 mt-10 text-ink">
-            Wir glauben, dass ein Zuhause Vorfreude auslösen sollte.{" "}
-            <em className="text-clay not-italic">Nicht Baustress.</em>
+          <p className="text-display-3 mt-8 text-ink">
+            Wir glauben, dass aus vielen Entscheidungen ein klarer Weg
+            werden kann.
           </p>
-          <p className="text-display-3 mt-10 text-ink">
+          <p className="mt-8 max-w-lg text-lg leading-relaxed text-muted mx-auto">
             Wir glauben, dass jedes Renovierungsprojekt einen persönlichen
-            Ansprechpartner verdient.
+            Ansprechpartner verdient, der zuhört, mitdenkt und sich
+            kümmert.
           </p>
-          <p className="mt-14 text-lg leading-relaxed text-muted">
-            Deshalb kümmern wir uns.
+          <p className="mt-12 text-lg leading-relaxed text-ink">
+            Deshalb begleiten wir Sie.
+          </p>
+          <p className="mt-2 text-lg leading-relaxed text-muted">
+            Persönlich.
             <br />
-            Gemeinsam mit Ihnen.
+            Gemeinsam.
             <br />
             Von der ersten Idee bis zu Ihrem neuen Zuhause.
           </p>

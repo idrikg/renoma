@@ -12,8 +12,8 @@ export function Confirmation() {
         Ihr persönlicher Ansprechpartner meldet sich schnellstmöglich bei
         Ihnen.
       </p>
-      <div className="mx-auto mt-10 max-w-sm rounded-2xl border border-line bg-paper-dim px-6 py-5 text-left">
-        <p className="text-sm font-medium tracking-[0.04em] text-muted uppercase">
+      <div className="mx-auto mt-10 max-w-sm rounded-2xl border border-sage/40 bg-soft-sage px-6 py-5 text-left">
+        <p className="text-sm font-medium tracking-[0.04em] text-sage-deep uppercase">
           Was jetzt passiert
         </p>
         <p className="mt-2 text-[15px] leading-relaxed text-ink">
@@ -24,7 +24,7 @@ export function Confirmation() {
       </div>
       <Link
         href="/"
-        className="mt-10 inline-block rounded-sm text-[15px] font-medium text-muted underline underline-offset-4 outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+        className="mt-10 inline-block rounded-sm text-[15px] font-medium text-muted underline underline-offset-4 outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
       >
         Zurück zur Startseite
       </Link>

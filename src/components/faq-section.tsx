@@ -43,7 +43,7 @@ export function FaqSection() {
           <div className="divide-y divide-line">
             {faqs.map((faq) => (
               <details key={faq.question} className="group py-5 first:pt-0">
-                <summary className="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-ink outline-none focus-visible:ring-2 focus-visible:ring-clay">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-ink outline-none focus-visible:ring-2 focus-visible:ring-sage">
                   {faq.question}
                   <span
                     aria-hidden="true"

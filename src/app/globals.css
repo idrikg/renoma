@@ -1,17 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  /* Near-black ink, warm paper, and a single restrained clay accent.
-     No system dark-mode flip — the brand controls the palette. */
-  --color-ink: #14110f;
-  --color-ink-soft: #322c26;
-  --color-paper: #faf7f2;
-  --color-paper-dim: #f1ece3;
-  --color-sand: #eae2d4;
-  --color-clay: #a8703f;
-  --color-clay-soft: #cfa06c;
-  --color-muted: #6f6a62;
-  --color-line: #e1d9c9;
+  /*
+   * Final RENOMA brand palette. Six named colors — everything else is a
+   * semantic alias onto these, so no component hardcodes a hex value.
+   * No system dark-mode flip — the brand controls the palette.
+   *
+   * Roles (see docs/CREATIVE-REVISION.md):
+   * - warm-white:  primary background, calm main surfaces
+   * - greige:      alternate sections, subtle cards/dividers
+   * - anthracite:  primary typography, primary buttons, dark sections
+   * - bronze:      eyebrows, numbers, dividers, restrained editorial accents
+   * - sage:        selected states, focus rings, success/trust accents
+   * - soft-sage:   selected-option backgrounds, confirmation surfaces
+   *
+   * The page stays primarily warm-white/greige — bronze and sage are used
+   * deliberately, not everywhere.
+   */
+  --color-warm-white: #f7f4ee;
+  --color-greige: #e7e1d7;
+  --color-anthracite: #252422;
+  --color-anthracite-soft: #3a3835;
+  --color-bronze: #9a6b3f;
+  --color-bronze-soft: #b58a63;
+  --color-sage: #87947d;
+  --color-sage-deep: #6d7a63;
+  --color-soft-sage: #e1e6dd;
+
+  /* Text tone and divider, derived from the palette above rather than a
+     separate hardcoded gray, so everything still traces back to the six
+     named brand colors. */
+  --color-muted: #5a564f;
+  --color-line: #dcd3c3;
+
+  /* Semantic aliases: existing component classnames (bg-ink, text-clay,
+     bg-paper-dim, ...) keep working and now resolve to the new palette. */
+  --color-paper: var(--color-warm-white);
+  --color-paper-dim: var(--color-greige);
+  --color-ink: var(--color-anthracite);
+  --color-ink-soft: var(--color-anthracite-soft);
+  --color-clay: var(--color-bronze);
+  --color-clay-soft: var(--color-bronze-soft);
 
   --font-sans: var(--font-manrope);
   --font-display: var(--font-newsreader);
@@ -31,43 +60,48 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-clay-soft);
-  color: var(--color-ink);
+  background-color: var(--color-bronze-soft);
+  color: var(--color-warm-white);
 }
 
 .bg-hero-glow {
   background-image: radial-gradient(
       circle at 22% 18%,
-      rgba(168, 112, 63, 0.28),
+      rgba(154, 107, 63, 0.24),
       transparent 55%
     ),
-    radial-gradient(circle at 78% 8%, rgba(168, 112, 63, 0.16), transparent 50%),
-    radial-gradient(circle at 60% 70%, rgba(20, 17, 15, 0.08), transparent 60%);
+    radial-gradient(circle at 78% 8%, rgba(154, 107, 63, 0.14), transparent 50%),
+    radial-gradient(circle at 60% 70%, rgba(37, 36, 34, 0.06), transparent 60%);
 }
 
 .bg-statement-glow {
   background-image: radial-gradient(
       circle at 50% 0%,
-      rgba(207, 160, 108, 0.14),
+      rgba(181, 138, 99, 0.14),
       transparent 60%
     );
 }
 
 /*
- * Premium neutral treatment for the hero (and other) media frame while no
- * authentic photograph has been supplied yet. Layered warm gradients
- * suggest soft daylight in a room rather than a flat empty box. Paired
- * with `.media-frame-grain` for a faint texture so it reads as a designed
+ * Premium neutral treatment for a media frame while no authentic
+ * photograph has been supplied yet. Layered warm gradients suggest soft
+ * daylight in a room rather than a flat empty box. Paired with
+ * `.media-frame-grain` for a faint texture so it reads as a designed
  * surface, not a placeholder.
  */
 .media-frame-warm {
   background-image: radial-gradient(
       circle at 28% 24%,
-      rgba(255, 246, 232, 0.95),
+      rgba(247, 244, 238, 0.95),
       transparent 52%
     ),
-    radial-gradient(circle at 78% 82%, rgba(168, 112, 63, 0.4), transparent 60%),
-    linear-gradient(155deg, #f5ebdc 0%, #e7d5b8 48%, #c99b6c 100%);
+    radial-gradient(circle at 78% 82%, rgba(154, 107, 63, 0.35), transparent 60%),
+    linear-gradient(
+      155deg,
+      var(--color-warm-white) 0%,
+      var(--color-greige) 48%,
+      var(--color-bronze-soft) 100%
+    );
 }
 
 .media-frame-grain {
@@ -170,6 +204,21 @@ body {
 
 .animate-delay-3 {
   animation-delay: 0.24s;
+}
+
+@keyframes reference-slide {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-reference-slide {
+  animation: reference-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 summary {

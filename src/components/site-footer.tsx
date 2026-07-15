@@ -47,20 +47,20 @@ export function SiteFooter() {
             {contactEmail && (
               <a
                 href={`mailto:${contactEmail}`}
-                className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+                className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
               >
                 {contactEmail}
               </a>
             )}
             <Link
               href="/impressum"
-              className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+              className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
             >
               Impressum
             </Link>
             <Link
               href="/datenschutz"
-              className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-clay"
+              className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
             >
               Datenschutz
             </Link>

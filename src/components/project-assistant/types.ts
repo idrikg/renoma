@@ -3,7 +3,9 @@ export type WizardData = {
   wishes: string;
   postalCode: string;
   city: string;
-  propertyType: string;
+  objectType: string;
+  /** Only meaningful when objectType === "haus". */
+  houseSubtype: string;
   areaSqm: string;
   constructionYear: string;
   desiredStart: string;
@@ -23,7 +25,8 @@ export const defaultWizardData: WizardData = {
   wishes: "",
   postalCode: "",
   city: "",
-  propertyType: "",
+  objectType: "",
+  houseSubtype: "",
   areaSqm: "",
   constructionYear: "",
   desiredStart: "",

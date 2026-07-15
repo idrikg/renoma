@@ -6,19 +6,19 @@ import {
   categoryLabels,
   contactPreferenceLabel,
   desiredStartLabel,
-  propertyTypeLabel,
+  objectDescription,
 } from "@/lib/validation";
 import { StepNav, StepShell } from "@/components/project-assistant/field-controls";
 import type { WizardData } from "@/components/project-assistant/types";
 
 const STEP_FOR_FIELD = {
   categories: 1,
-  wishes: 2,
-  images: 3,
-  object: 4,
-  desiredStart: 5,
-  budgetRange: 6,
-  contact: 7,
+  images: 2,
+  object: 3,
+  desiredStart: 4,
+  budgetRange: 5,
+  contact: 6,
+  wishes: 7,
 } as const;
 
 export function StepSummary({
@@ -54,11 +54,10 @@ export function StepSummary({
 
   const rows: Array<{ label: string; value: string; field: keyof typeof STEP_FOR_FIELD }> = [
     { label: "Bereiche", value: categoryLabels(data.categories).join(", ") || "—", field: "categories" },
-    { label: "Ihre Wünsche", value: data.wishes || "—", field: "wishes" },
     { label: "Bilder", value: imageCount > 0 ? `${imageCount} ausgewählt` : "Keine", field: "images" },
     {
       label: "Objekt",
-      value: `${data.postalCode} ${data.city} · ${propertyTypeLabel(data.propertyType)}`,
+      value: `${data.postalCode} ${data.city} · ${objectDescription(data.objectType, data.houseSubtype)}`,
       field: "object",
     },
     { label: "Gewünschter Start", value: desiredStartLabel(data.desiredStart), field: "desiredStart" },
@@ -68,6 +67,7 @@ export function StepSummary({
       value: `${data.firstName} ${data.lastName} · ${data.email}${data.phone ? ` · ${data.phone}` : ""} · ${contactPreferenceLabel(data.preferredContact)}`,
       field: "contact",
     },
+    { label: "Ihre Wünsche", value: data.wishes || "—", field: "wishes" },
   ];
 
   return (
@@ -86,7 +86,7 @@ export function StepSummary({
             <button
               type="button"
               onClick={() => onGoToStep(STEP_FOR_FIELD[row.field])}
-              className="shrink-0 rounded-sm text-sm font-medium text-clay underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-clay"
+              className="shrink-0 rounded-sm text-sm font-medium text-clay underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-sage"
             >
               Bearbeiten
             </button>
@@ -125,13 +125,13 @@ function ConsentCheckbox({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line px-4 py-4 text-[15px] leading-relaxed text-ink outline-none focus-within:ring-2 focus-within:ring-clay">
+    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line px-4 py-4 text-[15px] leading-relaxed text-ink outline-none focus-within:ring-2 focus-within:ring-sage">
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
         required
-        className="mt-0.5 h-4 w-4 accent-clay"
+        className="mt-0.5 h-4 w-4 accent-sage"
       />
       <span>
         Ich habe die{" "}

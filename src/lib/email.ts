@@ -5,7 +5,7 @@ import {
   categoryLabels,
   contactPreferenceLabel,
   desiredStartLabel,
-  propertyTypeLabel,
+  objectDescription,
   type ProjectRequestInput,
 } from "@/lib/validation";
 
@@ -97,7 +97,7 @@ function buildNotificationEmail(input: ProjectRequestInput): string {
     ["Bevorzugter Kontaktweg", contactPreferenceLabel(input.preferredContact)],
     ["Bereiche", categoryLabels(input.categories).join(", ")],
     ["PLZ / Ort", `${input.postalCode} ${input.city}`],
-    ["Objektart", propertyTypeLabel(input.propertyType)],
+    ["Objektart", objectDescription(input.objectType, input.houseSubtype ?? "")],
     ["Ungefähre Fläche", input.areaSqm || "—"],
     ["Baujahr", input.constructionYear || "—"],
     ["Gewünschter Start", desiredStartLabel(input.desiredStart)],
@@ -111,14 +111,14 @@ function buildNotificationEmail(input: ProjectRequestInput): string {
   ];
 
   return `
-    <div style="font-family: sans-serif; color: #14110f; max-width: 560px;">
+    <div style="font-family: sans-serif; color: #252422; max-width: 560px;">
       <h2 style="font-size: 18px; margin-bottom: 16px;">Neue Projektanfrage über den Projekt-Assistenten</h2>
       <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
         ${rows
           .map(
             ([label, value]) => `
           <tr>
-            <td style="padding: 6px 0; color: #6f6a62; width: 160px; vertical-align: top;">${escapeHtml(label)}</td>
+            <td style="padding: 6px 0; color: #5a564f; width: 160px; vertical-align: top;">${escapeHtml(label)}</td>
             <td style="padding: 6px 0;">${escapeHtml(value)}</td>
           </tr>`
           )
@@ -126,7 +126,7 @@ function buildNotificationEmail(input: ProjectRequestInput): string {
       </table>
       ${
         input.wishes
-          ? `<p style="margin-top: 16px; font-size: 14px; color: #6f6a62;">Wünsche</p>
+          ? `<p style="margin-top: 16px; font-size: 14px; color: #5a564f;">Wünsche</p>
              <p style="font-size: 15px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(input.wishes)}</p>`
           : ""
       }
@@ -136,17 +136,17 @@ function buildNotificationEmail(input: ProjectRequestInput): string {
 
 function buildConfirmationEmail(input: ProjectRequestInput): string {
   return `
-    <div style="font-family: sans-serif; color: #14110f; max-width: 480px;">
-      <p style="font-size: 16px; letter-spacing: 0.05em; color: #a8703f; margin-bottom: 24px;">RENOMA</p>
+    <div style="font-family: sans-serif; color: #252422; max-width: 480px;">
+      <p style="font-size: 16px; letter-spacing: 0.05em; color: #9a6b3f; margin-bottom: 24px;">RENOMA</p>
       <h2 style="font-size: 22px; margin-bottom: 12px;">Willkommen bei RENOMA.</h2>
-      <p style="font-size: 15px; line-height: 1.6; color: #322c26;">
+      <p style="font-size: 15px; line-height: 1.6; color: #252422;">
         Vielen Dank für Ihr Vertrauen, ${escapeHtml(input.firstName)}.
       </p>
-      <p style="font-size: 15px; line-height: 1.6; color: #322c26; margin-top: 12px;">
+      <p style="font-size: 15px; line-height: 1.6; color: #252422; margin-top: 12px;">
         Ab jetzt stehen wir auf Ihrer Seite. Ihr persönlicher Ansprechpartner
         meldet sich schnellstmöglich bei Ihnen.
       </p>
-      <p style="font-size: 14px; color: #6f6a62; margin-top: 32px;">Das RENOMA Team</p>
+      <p style="font-size: 14px; color: #5a564f; margin-top: 32px;">Das RENOMA Team</p>
     </div>
   `;
 }
