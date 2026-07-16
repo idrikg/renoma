@@ -15,9 +15,9 @@ export const legalConfig = {
   postalCode: "71634",
   city: "Ludwigsburg",
   country: "Deutschland",
-  /** Public RENOMA contact; GOGO business phone from official Impressum. */
-  phone: "07141 918500",
-  phoneInternational: "+49 7141 918500",
+  /** Public RENOMA production contact number. */
+  phone: "0151 56901651",
+  phoneInternational: "+49 151 56901651",
   contactEmail: "kontakt@renoma-zuhause.de",
   /** Only set once officially confirmed. Must not be displayed otherwise. */
   vatId: undefined as string | undefined,
