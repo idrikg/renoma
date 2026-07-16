@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma.de";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma-zuhause.de";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = ["", "/projekt-starten", "/impressum", "/datenschutz"];

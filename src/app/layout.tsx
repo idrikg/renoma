@@ -17,7 +17,7 @@ const newsreader = Newsreader({
   style: ["normal", "italic"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma.de";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma-zuhause.de";
 const title = "RENOMA — Wir stehen auf Ihrer Seite.";
 const description =
   "RENOMA übernimmt die Koordination Ihrer Renovierung – von der ersten Idee bis zur Übergabe. Ein Ansprechpartner. Volle Verantwortung. Sie müssen sich um nichts mehr kümmern.";

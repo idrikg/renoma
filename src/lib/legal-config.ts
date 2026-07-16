@@ -18,7 +18,7 @@ export const legalConfig = {
   /** Public RENOMA contact; GOGO business phone from official Impressum. */
   phone: "07141 918500",
   phoneInternational: "+49 7141 918500",
-  contactEmail: "kontakt@renoma.de",
+  contactEmail: "kontakt@renoma-zuhause.de",
   /** Only set once officially confirmed. Must not be displayed otherwise. */
   vatId: undefined as string | undefined,
   supervisoryAuthority: {
@@ -31,8 +31,8 @@ export const legalConfig = {
     scope: "Deutschland, EU, weltweit",
   },
   /** Art. 13 DSGVO contact for privacy requests — same public RENOMA inbox. */
-  privacyContactEmail: "kontakt@renoma.de",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma.de",
+  privacyContactEmail: "kontakt@renoma-zuhause.de",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma-zuhause.de",
 } as const;
 
 export function getContactEmail(): string {
