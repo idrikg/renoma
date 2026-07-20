@@ -1,4 +1,5 @@
 import { Container } from "@/components/container";
+import { Reveal } from "@/components/motion/reveal";
 
 const firstRow = [
   {
@@ -49,25 +50,25 @@ export function ProcessSection() {
   return (
     <section id="ablauf" className="scroll-mt-24 py-20 sm:py-28 lg:py-32">
       <Container>
-        <div className="max-w-2xl">
+        <Reveal className="max-w-2xl">
           <h2 className="text-3xl font-medium tracking-tight text-ink sm:text-4xl">
             So begleiten wir Ihr Projekt.
           </h2>
-        </div>
+        </Reveal>
 
         <div className="mt-16 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-6">
-          {firstRow.map((step) => (
-            <div key={step.number} className="lg:col-span-2">
+          {firstRow.map((step, index) => (
+            <Reveal key={step.number} delayMs={index * 40} className="lg:col-span-2">
               <StepCard {...step} />
-            </div>
+            </Reveal>
           ))}
         </div>
 
         <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-6">
-          {secondRow.map((step) => (
-            <div key={step.number} className="lg:col-span-3">
+          {secondRow.map((step, index) => (
+            <Reveal key={step.number} delayMs={index * 40} className="lg:col-span-3">
               <StepCard {...step} />
-            </div>
+            </Reveal>
           ))}
         </div>
       </Container>

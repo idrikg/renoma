@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
+import { Reveal } from "@/components/motion/reveal";
 
 export function FinalCtaSection() {
   return (
     <section className="relative overflow-hidden py-28 sm:py-36">
       <div aria-hidden className="bg-hero-glow absolute inset-0 -z-10" />
       <Container>
-        <div className="mx-auto max-w-xl text-center">
+        <Reveal className="mx-auto max-w-xl text-center">
           <h2 className="text-display-2 text-balance text-ink">
             Sie freuen sich auf Ihr neues Zuhause.
           </h2>
@@ -22,7 +23,7 @@ export function FinalCtaSection() {
             </Link>
           </div>
           <p className="mt-5 text-sm text-muted">Persönlich. Klar. An Ihrer Seite.</p>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );
