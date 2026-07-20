@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/site-header";
 import { HeroSection } from "@/components/hero-section";
+import { StorySection } from "@/components/story-section";
 import { RealitySection } from "@/components/reality-section";
 import { PivotSection } from "@/components/pivot-section";
 import { PositioningStatement } from "@/components/positioning-statement";
@@ -13,15 +14,27 @@ import { ProjectAssistantTeaser } from "@/components/project-assistant-teaser";
 import { FinalCtaSection } from "@/components/final-cta-section";
 import { SiteFooter } from "@/components/site-footer";
 import { hasPublishedReferences } from "@/lib/references-data";
+import { mediaConfig } from "@/lib/media-config";
+import { publicAssetExists } from "@/lib/public-asset";
 
 export default function Home() {
   const showReferences = hasPublishedReferences();
+  const hero = mediaConfig.heroImage;
+  const storyVisualImage =
+    hero && publicAssetExists(hero.src)
+      ? {
+          src: hero.src,
+          alt: hero.alt,
+          objectPosition: hero.objectPosition,
+        }
+      : null;
 
   return (
     <>
       <SiteHeader />
       <main>
         <HeroSection />
+        <StorySection visualImage={storyVisualImage} />
         <RealitySection />
         <PivotSection />
         <PositioningStatement />

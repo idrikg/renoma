@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
+import { Reveal } from "@/components/motion/reveal";
 
 export function ProjectAssistantTeaser() {
   return (
-    <section className="border-t border-line bg-paper-dim py-14 sm:py-16">
+    <section className="section-handoff border-t border-line bg-paper-dim py-12 sm:py-16">
       <Container>
-        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+        <Reveal className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <div className="max-w-md">
             <h2 className="text-xl font-medium text-ink sm:text-2xl">
               Erzählen Sie uns von Ihrem Projekt.
@@ -21,7 +22,7 @@ export function ProjectAssistantTeaser() {
           >
             Projekt starten
           </Link>
-        </div>
+        </Reveal>
       </Container>
     </section>
   );

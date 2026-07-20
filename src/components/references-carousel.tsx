@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ProjectReference } from "@/lib/references-data";
+import { Reveal } from "@/components/motion/reveal";
 
 function formatSlideIndex(index: number, total: number): string {
   return `${String(index + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
@@ -55,7 +56,7 @@ export function ReferencesCarousel({
   return (
     <div
       ref={regionRef}
-      className="mt-16 outline-none focus-within:ring-2 focus-within:ring-sage focus-within:ring-offset-4 focus-within:ring-offset-paper-dim sm:mt-20"
+      className="mt-12 outline-none focus-within:ring-2 focus-within:ring-sage focus-within:ring-offset-4 focus-within:ring-offset-paper-dim sm:mt-16 lg:mt-20"
       tabIndex={0}
       onTouchStart={(event) => {
         touchStartX.current = event.changedTouches[0]?.clientX ?? null;
@@ -101,19 +102,19 @@ export function ReferencesCarousel({
 
       <div
         key={reference.slug}
-        className="motion-safe:animate-reference-slide mt-10"
+        className="motion-safe:animate-reference-slide mt-8 sm:mt-10"
         aria-roledescription="slide"
         aria-label={`${formatSlideIndex(activeIndex, total)}: ${reference.title}`}
       >
         <article>
           <div className="max-w-2xl">
-            <h3 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
-              {reference.title}
-            </h3>
-            <p className="mt-2 text-sm font-medium tracking-[0.08em] text-clay uppercase">
+            <p className="text-sm font-medium tracking-[0.08em] text-clay uppercase">
               {reference.category}
             </p>
-            <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
+            <h3 className="mt-3 text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
+              {reference.title}
+            </h3>
+            <p className="mt-4 text-pretty text-base leading-relaxed text-muted sm:mt-5 sm:text-lg">
               {reference.description}
             </p>
             {reference.customerStatement && (
@@ -123,7 +124,7 @@ export function ReferencesCarousel({
             )}
           </div>
 
-          <div className="mt-10 grid gap-5 sm:mt-12 lg:grid-cols-2 lg:gap-8">
+          <div className="mt-8 grid gap-4 sm:mt-10 sm:gap-5 lg:mt-12 lg:grid-cols-2 lg:gap-8">
             <ReferenceImage
               src={reference.beforeImage}
               alt={reference.beforeAlt}
@@ -135,6 +136,7 @@ export function ReferencesCarousel({
               alt={reference.afterAlt}
               label="Nachher"
               objectPosition={reference.afterObjectPosition}
+              emphasize
             />
           </div>
         </article>
@@ -148,25 +150,37 @@ function ReferenceImage({
   alt,
   label,
   objectPosition,
+  emphasize = false,
 }: {
   src: string;
   alt: string;
   label: string;
   objectPosition?: string;
+  emphasize?: boolean;
 }) {
   return (
-    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-greige sm:aspect-[3/4] lg:aspect-auto lg:h-[600px]">
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(min-width: 1024px) 42vw, 100vw"
-        className="object-cover"
-        style={objectPosition ? { objectPosition } : undefined}
-      />
-      <span className="absolute bottom-4 left-4 rounded-full bg-ink/70 px-3 py-1 text-xs font-medium tracking-[0.08em] text-paper uppercase backdrop-blur-sm">
-        {label}
-      </span>
-    </div>
+    <Reveal variant="media" className="h-full">
+      <div
+        className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-greige sm:aspect-[3/4] lg:aspect-auto lg:h-[600px] ${
+          emphasize ? "ring-1 ring-ink/5" : ""
+        }`}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          className="reference-image object-cover"
+          style={objectPosition ? { objectPosition } : undefined}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/20 via-transparent to-transparent opacity-80"
+        />
+        <span className="absolute bottom-4 left-4 rounded-full bg-ink/70 px-3 py-1 text-xs font-medium tracking-[0.08em] text-paper uppercase backdrop-blur-sm">
+          {label}
+        </span>
+      </div>
+    </Reveal>
   );
 }

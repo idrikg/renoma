@@ -7,7 +7,28 @@
  * budget, customer name/quote, or completion year. Leave those fields
  * unset until they are genuinely confirmed; the section only renders the
  * fields that are actually present.
+ *
+ * HOW TO ADD A PROJECT LATER
+ * --------------------------
+ * 1. Place images under `public/images/references/{slug}/`
+ *    - Required today: `before.jpg`, `after.jpg`
+ *    - Optional later: `cover.jpg`, `detail-01.jpg`, …
+ * 2. Append an object to `references` below (or keep drafts with
+ *    `isPublished: false` until ready).
+ * 3. Required fields: slug, title, category, description, beforeImage,
+ *    afterImage, beforeAlt, afterAlt, isPublished.
+ * 4. Optional fields: location, durationApprox, customerStatement,
+ *    object positions, coverImage, teaser, beforeImages[], afterImages[],
+ *    detailImages[], highlights[].
+ * 5. Empty optional galleries are never rendered — do not add placeholder
+ *    slides for missing assets.
  */
+
+export type ReferenceDetailImage = {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+};
 
 export type ProjectReference = {
   /** Stable project identifier, e.g. "bad-01". */
@@ -17,13 +38,36 @@ export type ProjectReference = {
   category: string;
   /** Restrained case-study body copy. No invented specifics. */
   description: string;
+  /**
+   * Optional shorter line for future cards/listings. Falls back to
+   * `description` when omitted — not shown separately today.
+   */
+  teaser?: string;
+  /** Primary before photograph (required for published projects today). */
   beforeImage: string;
+  /** Primary after photograph (required for published projects today). */
   afterImage: string;
   beforeAlt: string;
   afterAlt: string;
   /** Optional per-image crop tuning for object-fit: cover. */
   beforeObjectPosition?: string;
   afterObjectPosition?: string;
+  /**
+   * Optional cover / hero crop for future layouts. Defaults to `afterImage`
+   * when omitted — unused by the current carousel.
+   */
+  coverImage?: string;
+  coverAlt?: string;
+  coverObjectPosition?: string;
+  /**
+   * Future multi-image galleries. When present and non-empty they may be
+   * rendered later; empty arrays must not produce empty UI.
+   */
+  beforeImages?: ReferenceDetailImage[];
+  afterImages?: ReferenceDetailImage[];
+  detailImages?: ReferenceDetailImage[];
+  /** Short factual service tags — only when confirmed. */
+  highlights?: string[];
   /** Omit unless genuinely confirmed. Never invented. */
   location?: string;
   durationApprox?: string;

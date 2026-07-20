@@ -2,10 +2,17 @@
  * Central reference for authentic photography. Each entry that isn't
  * genuinely available yet stays `null` — never a stock placeholder.
  *
- * Hero image lives at `public/images/hero/renoma-hero.jpg`. Swapping in a
- * new photograph later only means changing `src`/`alt`/`objectPosition`
- * here; no component needs to change. HeroMediaFrame falls back to the
- * warm gradient if the file is ever removed.
+ * Hero image lives at `public/images/hero/renoma-hero.jpg`.
+ *
+ * TO SWAP THE HERO PHOTOGRAPH LATER
+ * ---------------------------------
+ * Edit only this file (`src/lib/media-config.ts`):
+ *   - `heroImage.src`  → path under `public/`
+ *   - `heroImage.alt`  → factual German description of visible motifs
+ *   - `heroImage.objectPosition` → crop anchor (e.g. "50% 42%")
+ * Replace the file at `public/images/hero/renoma-hero.jpg` (or point `src`
+ * at a new path). No homepage component needs to change. If the file is
+ * missing, HeroMediaFrame falls back to the warm gradient.
  */
 export const mediaConfig = {
   heroImage: {
