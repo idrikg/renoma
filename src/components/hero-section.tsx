@@ -12,36 +12,37 @@ const trustStatements = [
   "Erfahrenes Handwerkernetzwerk",
 ];
 
-/**
- * First viewport: brand, one headline, one supporting thought, CTA, trust.
- * Load-in motion is CSS-only (`animate-fade-up`). Media scroll response lives
- * inside HeroMediaFrame (desktop only).
- */
 export function HeroSection() {
   const showReferencesCta = hasPublishedReferences();
 
   return (
-    <section className="hero-section relative overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-36 lg:pb-28">
-      <div aria-hidden className="bg-hero-glow pointer-events-none absolute inset-0 -z-10 opacity-80" />
+    <section className="relative overflow-hidden pt-28 pb-20 sm:pt-32 sm:pb-24 lg:pt-36 lg:pb-28">
       <Container>
-        <div className="grid items-center gap-y-10 lg:grid-cols-[1.1fr_1fr] lg:gap-x-16 lg:gap-y-14">
-          {/* min-w-0: prevent long German compounds from blowing the grid track. */}
+        <div className="grid items-center gap-y-14 lg:grid-cols-[1.1fr_1fr] lg:gap-x-16">
+          {/* min-w-0 is required here: without it, a grid track will grow to
+              fit its longest unbreakable word (e.g. "Renovierungsprojekt"),
+              which can force this column wider than intended and overlap
+              the media column next to it. No max-width cap on this wrapper
+              itself — the heading should get the column's full share of
+              the grid (~52%), not a further-reduced width. */}
           <div className="min-w-0">
             <p className="animate-fade-up text-sm font-medium tracking-[0.18em] text-clay uppercase">
               RENOMA
             </p>
-            {/* Authored break keeps "Renovierungsprojekt." unbroken — see .hero-headline. */}
-            <h1 className="hero-headline animate-fade-up animate-delay-1 mt-4 text-ink sm:mt-5">
+            {/* The line break between "Ihr" and "Renovierungsprojekt." is
+                intentional and authored here, not left to the browser —
+                see .hero-headline in globals.css for why. */}
+            <h1 className="hero-headline animate-fade-up animate-delay-1 mt-5 text-ink">
               Ihr
               <br />
               Renovierungsprojekt.
             </h1>
-            <p className="animate-fade-up animate-delay-2 mt-5 max-w-sm text-base leading-relaxed text-muted sm:mt-6 sm:text-lg">
+            <p className="animate-fade-up animate-delay-2 mt-6 max-w-sm text-base leading-relaxed text-muted sm:text-lg">
               Sie freuen sich auf Ihr neues Zuhause.
               <br />
               Wir kümmern uns um den Weg dorthin.
             </p>
-            <div className="animate-fade-up animate-delay-3 mt-7 flex flex-col items-start gap-4 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-4">
+            <div className="animate-fade-up animate-delay-3 mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-4">
               <Link
                 href="/projekt-starten"
                 className="flex w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
@@ -57,7 +58,7 @@ export function HeroSection() {
                 </a>
               )}
             </div>
-            <ul className="animate-fade-up animate-delay-4 mt-7 flex flex-col gap-2.5 text-[14px] text-muted sm:mt-8 sm:text-[15px]">
+            <ul className="animate-fade-up animate-delay-3 mt-8 flex flex-col gap-2.5 text-[14px] text-muted sm:text-[15px]">
               {trustStatements.map((statement) => (
                 <li key={statement} className="flex items-center gap-2.5">
                   <Check
@@ -71,16 +72,9 @@ export function HeroSection() {
             </ul>
           </div>
 
-          <div className="animate-fade-up animate-delay-2">
-            <HeroMediaFrame image={resolveHeroImage()} />
-          </div>
+          <HeroMediaFrame image={resolveHeroImage()} />
         </div>
       </Container>
-      {/* Soft handoff into the next section — no decorative wave shapes. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-paper sm:h-24"
-      />
     </section>
   );
 }

@@ -1,5 +1,4 @@
 import { Container } from "@/components/container";
-import { Reveal } from "@/components/motion/reveal";
 import { ReferencesCarousel } from "@/components/references-carousel";
 import { getPublishedReferences } from "@/lib/references-data";
 
@@ -17,19 +16,16 @@ export function ReferencesSection() {
   const publishedReferences = getPublishedReferences();
 
   return (
-    <section
-      id="referenzen"
-      className="section-handoff scroll-mt-24 bg-paper-dim py-20 sm:py-28 lg:py-36"
-    >
+    <section id="referenzen" className="scroll-mt-24 bg-paper-dim py-24 sm:py-32 lg:py-40">
       <Container>
-        <Reveal className="max-w-xl">
+        <div className="max-w-xl">
           <p className="text-sm font-medium tracking-[0.14em] text-clay uppercase">
             Referenzen
           </p>
           <h2 className="mt-4 text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl">
             Aus Veränderung wird Zuhause.
           </h2>
-        </Reveal>
+        </div>
       </Container>
 
       <div className="mx-auto w-full max-w-[1280px] px-6 sm:px-8">
