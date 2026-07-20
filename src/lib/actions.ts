@@ -76,7 +76,19 @@ export async function submitProjectRequest(
   }
 
   try {
-    await sendProjectRequestEmails(parsed.data);
+    // `notified` reflects the internal lead notification only — the
+    // customer confirmation is best-effort and never allowed to affect
+    // the result (see sendProjectRequestEmails). A request must never
+    // report success to the visitor while the business was never
+    // actually notified of it.
+    const { notified } = await sendProjectRequestEmails(parsed.data);
+    if (!notified) {
+      return {
+        status: "error",
+        message:
+          "Ihre Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt eine E-Mail.",
+      };
+    }
   } catch (error) {
     logServerError("[actions] Failed to process project request:", error);
     return {
