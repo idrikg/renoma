@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   title: "Projekt starten",
   description:
     "Erzählen Sie uns von Ihrem Renovierungsprojekt. Wir kümmern uns um den Weg dorthin.",
+  alternates: {
+    canonical: "/projekt-starten",
+  },
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: {
+      index: false,
+      follow: true,
+    },
+  },
 };
 
 export default function ProjektStartenPage() {

@@ -4,6 +4,8 @@
  * for launch preparation). Do not invent fields marked TODO.
  */
 
+import { getSiteUrl } from "@/lib/site-url";
+
 export const legalConfig = {
   brandName: "RENOMA",
   brandNotice: "RENOMA ist eine Marke der GOGO Natursteine & Fliesen.",
@@ -32,8 +34,11 @@ export const legalConfig = {
   },
   /** Art. 13 DSGVO contact for privacy requests — same public RENOMA inbox. */
   privacyContactEmail: "kontakt@renoma-zuhause.de",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma-zuhause.de",
-} as const;
+  /** Canonical public site origin (Non-www HTTPS). */
+  get siteUrl() {
+    return getSiteUrl();
+  },
+};
 
 export function getContactEmail(): string {
   return process.env.CONTACT_EMAIL?.trim() || legalConfig.contactEmail;

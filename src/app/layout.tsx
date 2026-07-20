@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
+import { getSiteUrl, homeDescription, homeTitle } from "@/lib/site-url";
 
 // Manrope: functional UI, navigation, body copy, forms.
 const manrope = Manrope({
@@ -17,21 +18,18 @@ const newsreader = Newsreader({
   style: ["normal", "italic"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://renoma-zuhause.de";
-const title = "RENOMA — Wir stehen auf Ihrer Seite.";
-const description =
-  "RENOMA übernimmt die Koordination Ihrer Renovierung – von der ersten Idee bis zur Übergabe. Ein Ansprechpartner. Volle Verantwortung. Sie müssen sich um nichts mehr kümmern.";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: title,
+    default: homeTitle,
     template: "%s · RENOMA",
   },
-  description,
+  description: homeDescription,
   openGraph: {
-    title,
-    description,
+    title: homeTitle,
+    description: homeDescription,
     url: siteUrl,
     siteName: "RENOMA",
     locale: "de_DE",
@@ -39,8 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: homeTitle,
+    description: homeDescription,
   },
   robots: {
     index: true,

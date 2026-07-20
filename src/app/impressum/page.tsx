@@ -7,6 +7,13 @@ import { legalConfig, getContactEmail } from "@/lib/legal-config";
 export const metadata: Metadata = {
   title: "Impressum",
   description: "Impressum der Website RENOMA — betrieben von GOGO Natursteine & Fliesen.",
+  alternates: {
+    canonical: "/impressum",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function ImpressumPage() {

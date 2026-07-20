@@ -8,6 +8,13 @@ export const metadata: Metadata = {
   title: "Datenschutzerklärung",
   description:
     "Datenschutzerklärung der Website RENOMA — betrieben von GOGO Natursteine & Fliesen.",
+  alternates: {
+    canonical: "/datenschutz",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function DatenschutzPage() {

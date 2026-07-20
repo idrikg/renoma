@@ -5,10 +5,10 @@ export function ManifestoSection() {
     <section className="py-24 sm:py-32 lg:py-40">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-display-2 text-balance text-ink">
+          <h2 className="text-display-2 text-balance text-ink">
             Wir glauben, dass Renovieren{" "}
             <span className="text-sage-deep">Vorfreude auslösen darf.</span>
-          </p>
+          </h2>
           <p className="text-display-3 mt-8 text-balance text-ink">
             Wir glauben, dass aus vielen Entscheidungen ein klarer Weg
             werden kann.

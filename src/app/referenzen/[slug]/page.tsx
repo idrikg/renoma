@@ -26,20 +26,35 @@ export async function generateMetadata({
   const { slug } = await params;
   const reference = getPublishedReferenceBySlug(slug);
   if (!reference) {
-    return { title: "Projekt nicht gefunden" };
+    return { title: "Projekt nicht gefunden", robots: { index: false, follow: false } };
   }
 
   const teaser = getReferenceTeaser(reference);
   const cover = getReferenceCover(reference);
+  const canonicalPath = `/referenzen/${reference.slug}`;
 
   return {
     title: reference.title,
     description: teaser,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
     openGraph: {
       title: reference.title,
       description: teaser,
       type: "article",
+      url: canonicalPath,
       images: [{ url: cover.src, alt: cover.alt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: reference.title,
+      description: teaser,
+      images: [cover.src],
     },
   };
 }

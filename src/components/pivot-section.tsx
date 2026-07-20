@@ -6,7 +6,7 @@ export function PivotSection() {
     <section className="bg-ink py-28 sm:py-32">
       <Container>
         <Reveal className="mx-auto max-w-lg text-center">
-          <p className="text-display-1 text-balance text-paper">Wir kümmern uns.</p>
+          <h2 className="text-display-1 text-balance text-paper">Wir kümmern uns.</h2>
           <p className="mx-auto mt-7 max-w-sm text-base leading-relaxed text-paper/60 sm:text-lg">
             Um Ihr Projekt.
             <br />
