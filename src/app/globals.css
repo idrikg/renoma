@@ -53,6 +53,26 @@ html {
   scroll-behavior: smooth;
 }
 
+/*
+ * Baseline word-wrapping for headings, navigation, buttons and cards:
+ * normal breaks at spaces only, never a mid-word syllable split. Long
+ * technical strings (email addresses, URLs) are unaffected — they keep
+ * the browser's default wrapping wherever they're rendered, so they can
+ * still wrap safely instead of overflowing the viewport.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+nav a,
+button {
+  hyphens: none;
+  -webkit-hyphens: none;
+  word-break: normal;
+}
+
 body {
   background-color: var(--color-paper);
   color: var(--color-ink);
@@ -116,18 +136,21 @@ body {
  * sizes. Used selectively on emotional brand statements — see
  * docs/CREATIVE-REVISION.md for exactly which sections.
  *
- * German compound nouns (e.g. "Renovierungsprojekt") are long, single,
- * unbreakable words. Without hyphenation, a large display size can force
- * that single word wider than its column, overflowing into whatever sits
- * next to it. `hyphens: auto` (with `lang="de"` set on <html>) lets the
- * browser break the word gracefully; `overflow-wrap` is a hard fallback
- * for the rare browser that ignores hyphenation.
+ * Hyphenation is deliberately disabled: `hyphens: auto` was splitting
+ * words mid-syllable on real phones (e.g. "Reno-vieren", "Ent-
+ * scheidungen", "Sei-te"), which read as broken, not premium. Long
+ * unbreakable German compounds are instead protected by `overflow-wrap:
+ * break-word` — a silent, hyphen-free fallback that only kicks in if a
+ * single word truly cannot fit, which the fluid clamp() sizes below and
+ * each section's max-width are chosen to avoid in the first place.
  */
 .text-display-1,
 .text-display-2,
 .text-display-3 {
   font-family: var(--font-display);
-  hyphens: auto;
+  hyphens: none;
+  -webkit-hyphens: none;
+  word-break: normal;
   overflow-wrap: break-word;
 }
 
@@ -204,6 +227,33 @@ body {
 
 .animate-delay-3 {
   animation-delay: 0.24s;
+}
+
+/*
+ * Funnel step transitions. Small, calm movement — not the larger
+ * `fade-up` used for the homepage's first-paint reveal — so switching
+ * steps reads as a quiet continuation of the same screen, not a new
+ * page arriving. Neutralized by the global prefers-reduced-motion rule
+ * below like every other animation on the site.
+ */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    /* `none`, not `translateY(0)` — any non-"none" transform value,
+       including an identity one, establishes a new containing block for
+       `position: fixed` descendants. Step 2's sticky mobile action bar
+       lives inside this animated wrapper and must stay anchored to the
+       real viewport once the animation settles, not to this element. */
+    transform: none;
+  }
+}
+
+.animate-step-in {
+  animation: step-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes reference-slide {

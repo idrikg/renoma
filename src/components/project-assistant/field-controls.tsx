@@ -17,14 +17,14 @@ export function StepShell({
   return (
     <form onSubmit={onSubmit} className="space-y-7 sm:space-y-8" noValidate>
       <div>
-        <h1 className="text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+        <h1 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
           {title}
         </h1>
         {description && (
           <p
             className={
               descriptionClassName ??
-              "mt-2 text-[15px] leading-relaxed text-muted"
+              "mt-2 text-pretty text-[15px] leading-relaxed text-muted"
             }
           >
             {description}
@@ -289,89 +289,3 @@ export function CategoryCardGroup({
   );
 }
 
-type CategoryOption = { value: string; label: string };
-
-/**
- * Grouped category selection for Step 1 — calm section labels, subtle
- * dividers, two columns per group on desktop, one column on mobile.
- */
-export function GroupedCategoryCardGroup({
-  legend,
-  groups,
-  options,
-  values,
-  onToggle,
-  icons,
-}: {
-  legend: string;
-  groups: readonly { label: string; optionValues: readonly string[] }[];
-  options: readonly CategoryOption[];
-  values: string[];
-  onToggle: (value: string) => void;
-  icons: IconMap;
-}) {
-  const optionsByValue = new Map(options.map((option) => [option.value, option]));
-
-  return (
-    <fieldset>
-      <legend className="sr-only">{legend}</legend>
-      <div className="space-y-8">
-        {groups.map((group, groupIndex) => (
-          <div
-            key={group.label}
-            className={groupIndex > 0 ? "border-t border-line pt-8" : undefined}
-          >
-            <p className="text-xs font-medium tracking-[0.14em] text-clay uppercase">
-              {group.label}
-            </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {group.optionValues.map((value) => {
-                const option = optionsByValue.get(value);
-                if (!option) return null;
-
-                const checked = values.includes(option.value);
-                const Icon = icons[option.value];
-
-                return (
-                  <label
-                    key={option.value}
-                    className={`flex min-h-16 cursor-pointer items-center gap-4 rounded-xl border px-5 py-4 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
-                      checked
-                        ? "border-sage bg-soft-sage text-ink"
-                        : "border-line text-ink hover:border-clay-soft"
-                    }`}
-                  >
-                    {Icon && (
-                      <Icon
-                        aria-hidden="true"
-                        className={`h-5 w-5 shrink-0 ${checked ? "text-sage-deep" : "text-muted"}`}
-                        strokeWidth={1.5}
-                      />
-                    )}
-                    <span className="min-w-0 flex-1 font-medium">{option.label}</span>
-                    <span
-                      aria-hidden="true"
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                        checked ? "border-sage bg-sage" : "border-line"
-                      }`}
-                    >
-                      {checked && (
-                        <Check className="h-3.5 w-3.5 text-paper" strokeWidth={2.5} />
-                      )}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => onToggle(option.value)}
-                      className="sr-only"
-                    />
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </fieldset>
-  );
-}

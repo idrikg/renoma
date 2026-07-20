@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { submitProjectRequest } from "@/lib/actions";
 import { normalizeCategories } from "@/lib/validation";
 import { ProgressIndicator } from "@/components/project-assistant/progress-indicator";
 import { Confirmation } from "@/components/project-assistant/confirmation";
 import { StepSummary } from "@/components/project-assistant/step-summary";
 import {
+  CategoryStepActionBar,
   StepBudget,
   StepCategories,
   StepContact,
   StepImages,
+  StepMainArea,
   StepObject,
   StepTiming,
   StepWishes,
@@ -27,10 +29,11 @@ import {
   type WizardData,
 } from "@/components/project-assistant/types";
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 9;
 
 const STEP_TITLES = [
-  "Was möchten Sie verändern?",
+  "Bereich wählen",
+  "Leistungen auswählen",
   "Bilder",
   "Angaben zum Objekt",
   "Gewünschter Start",
@@ -107,6 +110,33 @@ export function ProjectAssistant() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [data, submitState.status]);
 
+  // After a step change (not the initial mount/hydration), bring the new
+  // step's heading into view and move focus to it. Skipped on the very
+  // first render so restoring a saved draft never causes an unsolicited
+  // jump on page load — only actual forward/back navigation does.
+  const stepContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstRenderRef = useRef(true);
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      return;
+    }
+    const container = stepContainerRef.current;
+    if (!container) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const rect = container.getBoundingClientRect();
+    // Only nudge the scroll position if the step's top isn't already
+    // comfortably visible — avoids an unconditional jump back to the very
+    // top of the page on every single step change.
+    if (rect.top < 0 || rect.top > 96) {
+      container.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    }
+    container.focus({ preventScroll: true });
+  }, [step]);
+
   function setStep(next: number | ((current: number) => number)) {
     setPersisted((current) => ({
       ...current,
@@ -172,43 +202,63 @@ export function ProjectAssistant() {
     <div>
       <ProgressIndicator step={step} total={TOTAL_STEPS} label={STEP_TITLES[step - 1]} />
 
-      {step === 1 && (
-        <StepCategories data={data} update={update} onNext={goNext} />
-      )}
+      <div
+        key={step}
+        ref={stepContainerRef}
+        tabIndex={-1}
+        className="animate-step-in outline-none"
+      >
+        {step === 1 && (
+          <StepMainArea data={data} update={update} onNext={goNext} />
+        )}
+        {step === 2 && <StepCategories data={data} update={update} />}
+        {step === 3 && (
+          <StepImages
+            onNext={goNext}
+            onBack={goBack}
+            images={images}
+            onAddImages={addImages}
+            onRemoveImage={removeImage}
+          />
+        )}
+        {step === 4 && (
+          <StepObject data={data} update={update} onNext={goNext} onBack={goBack} />
+        )}
+        {step === 5 && (
+          <StepTiming data={data} update={update} onNext={goNext} onBack={goBack} />
+        )}
+        {step === 6 && (
+          <StepBudget data={data} update={update} onNext={goNext} onBack={goBack} />
+        )}
+        {step === 7 && (
+          <StepContact data={data} update={update} onNext={goNext} onBack={goBack} />
+        )}
+        {step === 8 && (
+          <StepWishes data={data} update={update} onNext={goNext} onBack={goBack} />
+        )}
+        {step === 9 && (
+          <StepSummary
+            data={data}
+            imageCount={images.length}
+            onBack={goBack}
+            onGoToStep={setStep}
+            onConsentChange={(checked) => update({ consent: checked })}
+            onSubmit={handleFinalSubmit}
+            pending={isPending}
+            submitError={submitState.status === "error" ? submitState.message : undefined}
+          />
+        )}
+      </div>
+
+      {/* Deliberately a sibling of the animated step wrapper above, not
+          nested inside it — see the comment on `StepCategories` for why
+          a `position: fixed` bar cannot live inside a transformed
+          ancestor. */}
       {step === 2 && (
-        <StepImages
+        <CategoryStepActionBar
+          selectedCount={data.categories.length}
+          onBack={goBack}
           onNext={goNext}
-          onBack={goBack}
-          images={images}
-          onAddImages={addImages}
-          onRemoveImage={removeImage}
-        />
-      )}
-      {step === 3 && (
-        <StepObject data={data} update={update} onNext={goNext} onBack={goBack} />
-      )}
-      {step === 4 && (
-        <StepTiming data={data} update={update} onNext={goNext} onBack={goBack} />
-      )}
-      {step === 5 && (
-        <StepBudget data={data} update={update} onNext={goNext} onBack={goBack} />
-      )}
-      {step === 6 && (
-        <StepContact data={data} update={update} onNext={goNext} onBack={goBack} />
-      )}
-      {step === 7 && (
-        <StepWishes data={data} update={update} onNext={goNext} onBack={goBack} />
-      )}
-      {step === 8 && (
-        <StepSummary
-          data={data}
-          imageCount={images.length}
-          onBack={goBack}
-          onGoToStep={setStep}
-          onConsentChange={(checked) => update({ consent: checked })}
-          onSubmit={handleFinalSubmit}
-          pending={isPending}
-          submitError={submitState.status === "error" ? submitState.message : undefined}
         />
       )}
     </div>

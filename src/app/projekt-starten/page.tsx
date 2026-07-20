@@ -22,9 +22,11 @@ export default function ProjektStartenPage() {
           </Link>
           <Link
             href="/"
+            aria-label="Zurück zur Startseite"
             className="text-sm font-medium text-muted transition-colors hover:text-ink"
           >
-            Zurück zur Startseite
+            <span className="sm:hidden">Startseite</span>
+            <span className="hidden sm:inline">Zurück zur Startseite</span>
           </Link>
         </Container>
       </header>

@@ -13,12 +13,12 @@ export function FounderSection() {
             <h2 className="text-3xl font-medium tracking-tight text-ink sm:text-4xl">
               Persönlich begleitet.
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-muted">
+            <p className="mt-6 text-pretty text-base leading-relaxed text-muted sm:text-lg">
               RENOMA wurde aus einer einfachen Überzeugung gegründet: Eine
               Renovierung sollte nicht daran scheitern, dass niemand den
               Überblick behält.
             </p>
-            <p className="text-display-3 mt-8 border-l-2 border-clay pl-6 text-ink italic">
+            <p className="text-display-3 mt-8 text-balance border-l-2 border-clay pl-6 text-ink italic">
               Deshalb begleiten wir Projekte persönlich, hören zu und
               kümmern uns darum, dass aus vielen einzelnen Aufgaben ein
               gemeinsamer Weg entsteht.

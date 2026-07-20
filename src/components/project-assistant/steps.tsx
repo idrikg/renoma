@@ -1,21 +1,24 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { Check } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   budgetOptions,
+  categoriesForMainArea,
   contactPreferenceOptions,
   desiredStartOptions,
   houseSubtypes,
+  mainAreaOptions,
   objectTypes,
   renovationCategories,
-  renovationCategoryGroups,
 } from "@/lib/validation";
 import {
   categoryIcons,
+  mainAreaIcons,
   objectTypeIcons,
 } from "@/components/project-assistant/category-icons";
 import {
-  GroupedCategoryCardGroup,
+  CategoryCardGroup,
   OptionCardGroup,
   StepNav,
   StepShell,
@@ -32,10 +35,167 @@ type StepProps = {
   onBack?: () => void;
 };
 
-export function StepCategories({ data, update, onNext }: StepProps) {
-  const [showError, setShowError] = useState(false);
-  const selectedCount = data.categories.length;
-  const isValid = selectedCount > 0;
+/** True once, read synchronously — avoids a hydration mismatch since the
+ *  media query is only available client-side, while still being correct
+ *  before the first paint that actually needs it (both of this step's
+ *  effects run after mount, never during SSR). */
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+const AREA_STEP_COPY: Record<
+  string,
+  { title: string; description: string }
+> = {
+  innen: {
+    title: "Welche Leistungen im Innenbereich möchten Sie verändern?",
+    description:
+      "Wählen Sie alle Leistungen aus, die zu Ihrem Vorhaben gehören. Mehrfachauswahl möglich.",
+  },
+  aussen: {
+    title: "Welche Leistungen im Außenbereich möchten Sie verändern?",
+    description:
+      "Wählen Sie alle Leistungen aus, die zu Ihrem Vorhaben gehören. Mehrfachauswahl möglich.",
+  },
+  gesamt: {
+    title: "Welche Bereiche gehören zu Ihrem Gesamtprojekt?",
+    description:
+      "Wählen Sie alle Bereiche aus, die zu Ihrem Vorhaben gehören. Mehrfachauswahl möglich.",
+  },
+};
+
+const DEFAULT_AREA_COPY = {
+  title: "Welche Leistungen möchten Sie verändern?",
+  description:
+    "Wählen Sie alle Leistungen aus, die zu Ihrem Vorhaben gehören. Mehrfachauswahl möglich.",
+};
+
+/**
+ * Funnel Step 1 — exactly three high-level entry points. No "Weiter"
+ * button here: choosing a card immediately shows the selected state,
+ * then auto-advances after a short, deliberate delay (see
+ * `prefersReducedMotion`). Switching the main area prunes any
+ * previously chosen Step 2 leistungen that no longer belong to it, so a
+ * changed mind never carries stale, incompatible selections forward.
+ */
+export function StepMainArea({
+  data,
+  update,
+  onNext,
+}: {
+  data: WizardData;
+  update: (patch: Partial<WizardData>) => void;
+  onNext: () => void;
+}) {
+  const [selected, setSelected] = useState(data.mainArea);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  function handleSelect(value: string) {
+    setSelected(value);
+    const allowed = categoriesForMainArea(value);
+    update({
+      mainArea: value,
+      categories: data.categories.filter((category) => allowed.includes(category)),
+    });
+    if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(
+      () => onNext(),
+      prefersReducedMotion() ? 120 : 260
+    );
+  }
+
+  return (
+    <div className="space-y-7 sm:space-y-8">
+      <div>
+        <h1 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
+          Welchen Bereich möchten Sie verändern?
+        </h1>
+        <p className="mt-2 text-pretty text-[15px] leading-relaxed text-muted">
+          Wählen Sie den Bereich, der am besten zu Ihrem Vorhaben passt.
+        </p>
+      </div>
+
+      <div className="grid gap-3">
+        {mainAreaOptions.map((option) => {
+          const Icon = mainAreaIcons[option.value];
+          const checked = selected === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={checked}
+              onClick={() => handleSelect(option.value)}
+              className={`flex min-h-[72px] w-full items-center gap-4 rounded-xl border px-5 py-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sage ${
+                checked
+                  ? "border-sage bg-soft-sage"
+                  : "border-line hover:border-clay-soft"
+              }`}
+            >
+              {Icon && (
+                <Icon
+                  aria-hidden="true"
+                  className={`h-6 w-6 shrink-0 ${checked ? "text-sage-deep" : "text-muted"}`}
+                  strokeWidth={1.5}
+                />
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="block font-medium text-ink">{option.label}</span>
+                <span className="mt-0.5 block text-[13px] leading-snug text-muted sm:text-sm">
+                  {option.description}
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                  checked ? "border-sage bg-sage" : "border-line"
+                }`}
+              >
+                {checked && <Check className="h-3.5 w-3.5 text-paper" strokeWidth={2.5} />}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Funnel Step 2 — only the leistungen relevant to the Step 1 choice
+ * (see `categoriesForMainArea`). Multiple selections are allowed, so
+ * this step does not auto-advance; instead it exposes an always-
+ * reachable action bar that becomes a safe-area-aware sticky bar on
+ * mobile so "Weiter" never requires scrolling to the end of the list.
+ */
+/**
+ * Renders only the heading, the leistungen cards and the honeypot — no
+ * "Zurück"/"Weiter" navigation. Deliberately: this step's action bar
+ * (see `CategoryStepActionBar`) becomes `position: fixed` on mobile, and
+ * a CSS transform animation on an ancestor — such as this step's own
+ * fade/slide-in transition — establishes a new containing block for any
+ * `fixed` descendant, anchoring it to that ancestor instead of the
+ * viewport. Keeping the action bar as a sibling of the animated wrapper
+ * (wired up in `ProjectAssistant`) avoids that trap entirely.
+ */
+export function StepCategories({
+  data,
+  update,
+}: {
+  data: WizardData;
+  update: (patch: Partial<WizardData>) => void;
+}) {
+  const allowedValues = categoriesForMainArea(data.mainArea);
+  const options = renovationCategories.filter((category) =>
+    allowedValues.includes(category.value)
+  );
+  const copy = AREA_STEP_COPY[data.mainArea] ?? DEFAULT_AREA_COPY;
 
   function toggle(value: string) {
     const next = data.categories.includes(value)
@@ -44,42 +204,29 @@ export function StepCategories({ data, update, onNext }: StepProps) {
     update({ categories: next });
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!isValid) {
-      setShowError(true);
-      return;
-    }
-    onNext();
-  }
-
-  const statusLabel =
-    selectedCount === 1
-      ? "1 Bereich ausgewählt"
-      : selectedCount > 1
-        ? `${selectedCount} Bereiche ausgewählt`
-        : undefined;
-
   return (
-    <StepShell
-      title="Was möchten Sie verändern?"
-      description="Wählen Sie alle Bereiche aus, die zu Ihrem Vorhaben gehören. Mehrfachauswahl möglich."
-      descriptionClassName="mt-4 max-w-md text-base leading-relaxed text-muted sm:text-[17px]"
-      onSubmit={handleSubmit}
-    >
-      <GroupedCategoryCardGroup
-        legend="Bereiche auswählen"
-        groups={renovationCategoryGroups}
-        options={renovationCategories}
-        values={data.categories}
-        onToggle={toggle}
-        icons={categoryIcons}
-      />
-      {showError && !isValid && (
-        <p role="alert" className="text-sm text-clay">
-          Bitte wählen Sie mindestens einen Bereich aus.
+    <div className="space-y-7 sm:space-y-8">
+      <div>
+        <h1 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
+          {copy.title}
+        </h1>
+        <p className="mt-2 text-pretty text-[15px] leading-relaxed text-muted">
+          {copy.description}
         </p>
-      )}
+      </div>
+
+      {/* Reserves space for the fixed mobile action bar so the last card
+          is never hidden underneath it. No-op on desktop, where the bar
+          sits in the normal document flow. */}
+      <div className="pb-28 sm:pb-0">
+        <CategoryCardGroup
+          legend="Leistungen auswählen"
+          options={options}
+          values={data.categories}
+          onToggle={toggle}
+          icons={categoryIcons}
+        />
+      </div>
 
       {/* Honeypot — hidden from real visitors, a naive bot may fill it. */}
       <div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
@@ -93,9 +240,56 @@ export function StepCategories({ data, update, onNext }: StepProps) {
           onChange={(event) => update({ company: event.target.value })}
         />
       </div>
+    </div>
+  );
+}
 
-      <StepNav nextDisabled={!isValid} statusLabel={statusLabel} />
-    </StepShell>
+/**
+ * Step 2's always-reachable "Zurück"/"Weiter" bar — rendered by
+ * `ProjectAssistant` as a sibling of the animated step wrapper (see the
+ * note on `StepCategories` above for why). Sticky/fixed on mobile with
+ * safe-area padding; a normal static, non-fixed bar on desktop.
+ */
+export function CategoryStepActionBar({
+  selectedCount,
+  onBack,
+  onNext,
+}: {
+  selectedCount: number;
+  onBack: () => void;
+  onNext: () => void;
+}) {
+  const isValid = selectedCount > 0;
+  const statusLabel =
+    selectedCount === 1
+      ? "1 Leistung ausgewählt"
+      : selectedCount > 1
+        ? `${selectedCount} Leistungen ausgewählt`
+        : "Noch keine Auswahl";
+
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 px-6 pt-3 backdrop-blur-sm [padding-bottom:calc(0.75rem+env(safe-area-inset-bottom))] sm:static sm:z-auto sm:border-0 sm:bg-transparent sm:px-0 sm:pt-2 sm:[padding-bottom:0]">
+      <p className="mb-3 text-center text-[13px] text-muted sm:hidden">{statusLabel}</p>
+      <div className="flex items-center justify-between gap-4">
+        <button
+          type="button"
+          onClick={onBack}
+          className="-my-3 rounded-sm px-1 py-3 text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
+        >
+          Zurück
+        </button>
+        <p className="hidden text-[15px] text-muted sm:block">{statusLabel}</p>
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={!isValid}
+          aria-disabled={!isValid}
+          className="rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
+        >
+          Weiter
+        </button>
+      </div>
+    </div>
   );
 }
 

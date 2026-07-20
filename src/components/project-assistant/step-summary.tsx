@@ -12,13 +12,13 @@ import { StepNav, StepShell } from "@/components/project-assistant/field-control
 import type { WizardData } from "@/components/project-assistant/types";
 
 const STEP_FOR_FIELD = {
-  categories: 1,
-  images: 2,
-  object: 3,
-  desiredStart: 4,
-  budgetRange: 5,
-  contact: 6,
-  wishes: 7,
+  categories: 2,
+  images: 3,
+  object: 4,
+  desiredStart: 5,
+  budgetRange: 6,
+  contact: 7,
+  wishes: 8,
 } as const;
 
 export function StepSummary({

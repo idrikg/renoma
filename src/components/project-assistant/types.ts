@@ -1,4 +1,7 @@
 export type WizardData = {
+  /** Step 1 choice ("innen" | "aussen" | "gesamt") — a client-only funnel
+   *  concept used to filter Step 2's options. Never sent to the server. */
+  mainArea: string;
   categories: string[];
   wishes: string;
   postalCode: string;
@@ -21,6 +24,7 @@ export type WizardData = {
 };
 
 export const defaultWizardData: WizardData = {
+  mainArea: "",
   categories: [],
   wishes: "",
   postalCode: "",

@@ -1,6 +1,13 @@
 import { defaultWizardData, type WizardData } from "@/components/project-assistant/types";
 
-const STORAGE_KEY = "renoma-projekt-starten-v1";
+// v2: the funnel gained a new Step 1 ("Hauptbereich") ahead of the former
+// first step, shifting every step index by one and adding `mainArea` to
+// `WizardData`. Bumping the key rather than migrating in place means any
+// draft saved under the old step numbering is simply left untouched and
+// ignored — sessionStorage is already documented as session-scoped, not a
+// durable format, so this is a safe, low-risk way to avoid a stale draft
+// resuming at the wrong step under the new layout.
+const STORAGE_KEY = "renoma-projekt-starten-v2";
 
 /**
  * Session-storage persistence so an accidental refresh or back/forward

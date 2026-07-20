@@ -15,36 +15,78 @@ export const renovationCategories = [
   { value: "pool", label: "Pool" },
   { value: "anbau-erweiterung", label: "Anbau & Erweiterung" },
   { value: "komplettsanierung", label: "Komplettsanierung" },
+  // Only offered under the "Gesamtprojekt" main area (see
+  // `categoriesByMainArea`) — combined, higher-level scopes that don't
+  // fit a single Innenbereich/Außenbereich leaf category.
+  { value: "innen-aussenbereich", label: "Innen- und Außenbereich" },
+  { value: "energie-gebaeude", label: "Energie & Gebäude" },
   { value: "sonstiges", label: "Sonstiges" },
 ] as const;
 
-/** Visual grouping for Step 1 — labels are display-only, not submitted. */
-export const renovationCategoryGroups = [
+/**
+ * The three high-level entry points shown in funnel Step 1. Step 2 then
+ * only shows the subset of `renovationCategories` relevant to whichever
+ * one was chosen — see `categoriesByMainArea`. Purely a client-side
+ * funnel-flow concept: never sent to the server or included in emails,
+ * only the resulting `categories` selection is.
+ */
+export const mainAreaOptions = [
   {
-    label: "Innenräume",
-    optionValues: [
-      "bad-sanitaer",
-      "kueche",
-      "boden",
-      "waende-decken",
-      "fenster-tueren",
-      "elektrik",
-      "smart_home",
-    ],
+    value: "innen",
+    label: "Innenbereich",
+    description: "Räume, Ausstattung und Haustechnik",
   },
   {
-    label: "Energie & Gebäude",
-    optionValues: ["heizung-waermepumpe", "photovoltaik", "dach-fassade"],
-  },
-  {
+    value: "aussen",
     label: "Außenbereich",
-    optionValues: ["garten-aussenbereich", "pool"],
+    description: "Fassade, Garten und Außenanlagen",
   },
   {
+    value: "gesamt",
     label: "Gesamtprojekt",
-    optionValues: ["anbau-erweiterung", "komplettsanierung", "sonstiges"],
+    description: "Komplettsanierung, Anbau oder mehrere Bereiche",
   },
 ] as const;
+
+export type MainAreaValue = (typeof mainAreaOptions)[number]["value"];
+
+/** Which `renovationCategories` values Step 2 offers for each main area. */
+export const categoriesByMainArea: Record<string, readonly string[]> = {
+  innen: [
+    "bad-sanitaer",
+    "kueche",
+    "boden",
+    "waende-decken",
+    "fenster-tueren",
+    "elektrik",
+    "smart_home",
+    "heizung-waermepumpe",
+    "sonstiges",
+  ],
+  aussen: [
+    "dach-fassade",
+    "garten-aussenbereich",
+    "pool",
+    "photovoltaik",
+    "fenster-tueren",
+    "sonstiges",
+  ],
+  gesamt: [
+    "komplettsanierung",
+    "anbau-erweiterung",
+    "innen-aussenbereich",
+    "energie-gebaeude",
+    "sonstiges",
+  ],
+};
+
+/** Categories offered when no (or an unrecognized) main area is set — a
+ *  defensive fallback so Step 2 never renders an empty list. */
+const ALL_CATEGORY_VALUES = renovationCategories.map((category) => category.value);
+
+export function categoriesForMainArea(mainArea: string): readonly string[] {
+  return categoriesByMainArea[mainArea] ?? ALL_CATEGORY_VALUES;
+}
 
 /** Maps pre-revision stored values to their current equivalents. */
 const LEGACY_CATEGORY_VALUES: Record<string, string> = {

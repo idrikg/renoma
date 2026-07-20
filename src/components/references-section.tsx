@@ -22,7 +22,7 @@ export function ReferencesSection() {
           <p className="text-sm font-medium tracking-[0.14em] text-clay uppercase">
             Referenzen
           </p>
-          <h2 className="mt-4 text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl">
             Aus Veränderung wird Zuhause.
           </h2>
         </div>

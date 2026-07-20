@@ -36,8 +36,8 @@ export function Confirmation() {
         <Check className="h-6 w-6 text-sage-deep" strokeWidth={2.5} />
       </div>
 
-      <h1 className="text-display-2 mt-6 text-ink">Vielen Dank für Ihr Vertrauen.</h1>
-      <p className="mt-4 text-lg leading-relaxed text-ink">
+      <h1 className="text-display-2 text-balance mt-6 text-ink">Vielen Dank für Ihr Vertrauen.</h1>
+      <p className="mt-4 text-pretty text-base leading-relaxed text-ink sm:text-lg">
         Ihre Projektanfrage ist erfolgreich bei RENOMA eingegangen.
       </p>
       <p className="mt-2 text-[15px] leading-relaxed text-muted">

@@ -7,10 +7,10 @@ export function FinalCtaSection() {
       <div aria-hidden className="bg-hero-glow absolute inset-0 -z-10" />
       <Container>
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="text-display-2 text-ink">
+          <h2 className="text-display-2 text-balance text-ink">
             Sie freuen sich auf Ihr neues Zuhause.
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted">
+          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Wir kümmern uns um den Weg dorthin.
           </p>
           <div className="mt-10 flex justify-center">

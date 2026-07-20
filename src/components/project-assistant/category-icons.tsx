@@ -3,9 +3,11 @@ import {
   Briefcase,
   Building,
   Building2,
+  Combine,
   DoorOpen,
   Ellipsis,
   Flame,
+  Gauge,
   Hammer,
   Home,
   HousePlus,
@@ -40,6 +42,8 @@ export const categoryIcons: Record<string, LucideIcon> = {
   smart_home: Wifi,
   "anbau-erweiterung": HousePlus,
   komplettsanierung: Hammer,
+  "innen-aussenbereich": Combine,
+  "energie-gebaeude": Gauge,
   sonstiges: Ellipsis,
 };
 
@@ -47,4 +51,11 @@ export const objectTypeIcons: Record<string, LucideIcon> = {
   haus: Home,
   wohnung: Building,
   gewerbe: Briefcase,
+};
+
+/** Restrained icons for the three Step 1 main-area cards. */
+export const mainAreaIcons: Record<string, LucideIcon> = {
+  innen: Home,
+  aussen: Trees,
+  gesamt: Layers,
 };

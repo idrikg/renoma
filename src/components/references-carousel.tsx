@@ -107,17 +107,17 @@ export function ReferencesCarousel({
       >
         <article>
           <div className="max-w-2xl">
-            <h3 className="text-2xl font-medium tracking-tight text-ink sm:text-3xl">
+            <h3 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
               {reference.title}
             </h3>
             <p className="mt-2 text-sm font-medium tracking-[0.08em] text-clay uppercase">
               {reference.category}
             </p>
-            <p className="mt-5 text-lg leading-relaxed text-muted">
+            <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
               {reference.description}
             </p>
             {reference.customerStatement && (
-              <p className="mt-5 text-lg italic leading-relaxed text-ink">
+              <p className="mt-5 text-pretty text-base italic leading-relaxed text-ink sm:text-lg">
                 „{reference.customerStatement}“
               </p>
             )}
