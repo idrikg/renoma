@@ -20,11 +20,17 @@ import {
 import {
   CategoryCardGroup,
   OptionCardGroup,
-  StepNav,
   StepShell,
   TextField,
 } from "@/components/project-assistant/field-controls";
+import { scrollFunnelTargetIntoView } from "@/components/project-assistant/scroll-helpers";
 import type { LocalImage, WizardData } from "@/components/project-assistant/types";
+import {
+  isCompleteGermanPostalCode,
+  lookupCityForPostalCode,
+  prefetchPostalCityMap,
+  sanitizeGermanPostalCode,
+} from "@/lib/postal-cities";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -112,17 +118,17 @@ export function StepMainArea({
   }
 
   return (
-    <div className="space-y-7 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <div>
-        <h1 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
+        <h1 className="text-[1.375rem] font-medium tracking-tight text-balance text-ink sm:text-3xl">
           Welchen Bereich möchten Sie verändern?
         </h1>
-        <p className="mt-2 text-pretty text-[15px] leading-relaxed text-muted">
+        <p className="mt-1.5 text-pretty text-[15px] leading-relaxed text-muted sm:mt-2">
           Wählen Sie den Bereich, der am besten zu Ihrem Vorhaben passt.
         </p>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-2.5 sm:gap-3">
         {mainAreaOptions.map((option) => {
           const Icon = mainAreaIcons[option.value];
           const checked = selected === option.value;
@@ -132,7 +138,7 @@ export function StepMainArea({
               type="button"
               aria-pressed={checked}
               onClick={() => handleSelect(option.value)}
-              className={`flex min-h-[72px] w-full items-center gap-4 rounded-xl border px-5 py-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sage ${
+              className={`flex min-h-[64px] w-full items-center gap-3 rounded-xl border px-4 py-3.5 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sage sm:min-h-[72px] sm:gap-4 sm:px-5 sm:py-4 ${
                 checked
                   ? "border-sage bg-soft-sage"
                   : "border-line hover:border-clay-soft"
@@ -170,32 +176,25 @@ export function StepMainArea({
 /**
  * Funnel Step 2 — only the leistungen relevant to the Step 1 choice
  * (see `categoriesForMainArea`). Multiple selections are allowed, so
- * this step does not auto-advance; instead it exposes an always-
- * reachable action bar that becomes a safe-area-aware sticky bar on
- * mobile so "Weiter" never requires scrolling to the end of the list.
- */
-/**
- * Renders only the heading, the leistungen cards and the honeypot — no
- * "Zurück"/"Weiter" navigation. Deliberately: this step's action bar
- * (see `CategoryStepActionBar`) becomes `position: fixed` on mobile, and
- * a CSS transform animation on an ancestor — such as this step's own
- * fade/slide-in transition — establishes a new containing block for any
- * `fixed` descendant, anchoring it to that ancestor instead of the
- * viewport. Keeping the action bar as a sibling of the animated wrapper
- * (wired up in `ProjectAssistant`) avoids that trap entirely.
+ * this step does not auto-advance. Navigation lives in `FunnelActionBar`
+ * (sibling of the animated wrapper) so fixed positioning stays correct.
  */
 export function StepCategories({
   data,
   update,
+  onNext,
 }: {
   data: WizardData;
   update: (patch: Partial<WizardData>) => void;
+  onNext: () => void;
 }) {
+  const [showError, setShowError] = useState(false);
   const allowedValues = categoriesForMainArea(data.mainArea);
   const options = renovationCategories.filter((category) =>
     allowedValues.includes(category.value)
   );
   const copy = AREA_STEP_COPY[data.mainArea] ?? DEFAULT_AREA_COPY;
+  const isValid = data.categories.length > 0;
 
   function toggle(value: string) {
     const next = data.categories.includes(value)
@@ -204,29 +203,33 @@ export function StepCategories({
     update({ categories: next });
   }
 
-  return (
-    <div className="space-y-7 sm:space-y-8">
-      <div>
-        <h1 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
-          {copy.title}
-        </h1>
-        <p className="mt-2 text-pretty text-[15px] leading-relaxed text-muted">
-          {copy.description}
-        </p>
-      </div>
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!isValid) {
+      setShowError(true);
+      return;
+    }
+    onNext();
+  }
 
-      {/* Reserves space for the fixed mobile action bar so the last card
-          is never hidden underneath it. No-op on desktop, where the bar
-          sits in the normal document flow. */}
-      <div className="pb-28 sm:pb-0">
-        <CategoryCardGroup
-          legend="Leistungen auswählen"
-          options={options}
-          values={data.categories}
-          onToggle={toggle}
-          icons={categoryIcons}
-        />
-      </div>
+  return (
+    <StepShell
+      title={copy.title}
+      description={copy.description}
+      onSubmit={handleSubmit}
+    >
+      <CategoryCardGroup
+        legend="Leistungen auswählen"
+        options={options}
+        values={data.categories}
+        onToggle={toggle}
+        icons={categoryIcons}
+      />
+      {showError && !isValid && (
+        <p role="alert" className="text-sm text-clay">
+          Bitte wählen Sie mindestens eine Leistung aus.
+        </p>
+      )}
 
       {/* Honeypot — hidden from real visitors, a naive bot may fill it. */}
       <div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
@@ -240,68 +243,17 @@ export function StepCategories({
           onChange={(event) => update({ company: event.target.value })}
         />
       </div>
-    </div>
-  );
-}
-
-/**
- * Step 2's always-reachable "Zurück"/"Weiter" bar — rendered by
- * `ProjectAssistant` as a sibling of the animated step wrapper (see the
- * note on `StepCategories` above for why). Sticky/fixed on mobile with
- * safe-area padding; a normal static, non-fixed bar on desktop.
- */
-export function CategoryStepActionBar({
-  selectedCount,
-  onBack,
-  onNext,
-}: {
-  selectedCount: number;
-  onBack: () => void;
-  onNext: () => void;
-}) {
-  const isValid = selectedCount > 0;
-  const statusLabel =
-    selectedCount === 1
-      ? "1 Leistung ausgewählt"
-      : selectedCount > 1
-        ? `${selectedCount} Leistungen ausgewählt`
-        : "Noch keine Auswahl";
-
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 px-6 pt-3 backdrop-blur-sm [padding-bottom:calc(0.75rem+env(safe-area-inset-bottom))] sm:static sm:z-auto sm:border-0 sm:bg-transparent sm:px-0 sm:pt-2 sm:[padding-bottom:0]">
-      <p className="mb-3 text-center text-[13px] text-muted sm:hidden">{statusLabel}</p>
-      <div className="flex items-center justify-between gap-4">
-        <button
-          type="button"
-          onClick={onBack}
-          className="-my-3 rounded-sm px-1 py-3 text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
-        >
-          Zurück
-        </button>
-        <p className="hidden text-[15px] text-muted sm:block">{statusLabel}</p>
-        <button
-          type="button"
-          onClick={onNext}
-          disabled={!isValid}
-          aria-disabled={!isValid}
-          className="rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
-        >
-          Weiter
-        </button>
-      </div>
-    </div>
+    </StepShell>
   );
 }
 
 export function StepImages({
   onNext,
-  onBack,
   images,
   onAddImages,
   onRemoveImage,
 }: {
   onNext: () => void;
-  onBack?: () => void;
   images: LocalImage[];
   onAddImages: (files: FileList) => void;
   onRemoveImage: (id: string) => void;
@@ -322,7 +274,7 @@ export function StepImages({
       <div>
         <label
           htmlFor={inputId}
-          className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-10 text-center text-[15px] text-muted outline-none transition-colors hover:border-clay focus-within:ring-2 focus-within:ring-sage"
+          className="flex min-h-11 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-8 text-center text-[15px] text-muted outline-none transition-colors hover:border-clay focus-within:ring-2 focus-within:ring-sage sm:py-10"
         >
           Bilder auswählen
           <span className="mt-1 text-sm text-muted">JPG, PNG — mehrere Dateien möglich</span>
@@ -376,25 +328,113 @@ export function StepImages({
             : "[Entwicklungsansicht] Der permanente Bild-Upload ist technisch noch nicht angebunden. Ihre Bilder werden aktuell nur lokal in Ihrem Browser angezeigt und nicht dauerhaft gespeichert."}
         </p>
       </div>
-      <StepNav onBack={onBack} />
     </StepShell>
   );
 }
 
-export function StepObject({ data, update, onNext, onBack }: StepProps) {
+export function StepObject({ data, update, onNext }: StepProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const postalCodeRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
-  const isValid =
-    data.postalCode.trim().length >= 4 &&
-    data.city.trim().length >= 2 &&
-    Boolean(data.objectType) &&
-    (data.objectType !== "haus" || Boolean(data.houseSubtype));
+  const addressSectionRef = useRef<HTMLDivElement>(null);
+  const houseSectionRef = useRef<HTMLDivElement>(null);
+  /** When true, PLZ autofill must not overwrite a user-edited city. */
+  const cityManuallyEditedRef = useRef(false);
+  const lastAutofilledCityRef = useRef<string>("");
+  const scrollCleanupRef = useRef<(() => void) | null>(null);
+  const lookupGenerationRef = useRef(0);
+
+  useEffect(() => {
+    prefetchPostalCityMap();
+    return () => {
+      scrollCleanupRef.current?.();
+    };
+  }, []);
+
+  function scrollToAddressAndFocusPlz(delayMs: number) {
+    scrollCleanupRef.current?.();
+    const section = addressSectionRef.current;
+    if (!section) return;
+    scrollCleanupRef.current = scrollFunnelTargetIntoView(section, {
+      focus: postalCodeRef.current,
+      delayMs,
+    });
+  }
+
+  function scrollToHouseSection() {
+    scrollCleanupRef.current?.();
+    const section = houseSectionRef.current;
+    if (!section) return;
+    scrollCleanupRef.current = scrollFunnelTargetIntoView(section, {
+      delayMs: prefersReducedMotion() ? 80 : 180,
+    });
+  }
+
+  async function applyCityFromPostalCode(postalCode: string) {
+    if (!isCompleteGermanPostalCode(postalCode)) return;
+    if (cityManuallyEditedRef.current) return;
+
+    const generation = ++lookupGenerationRef.current;
+    const city = await lookupCityForPostalCode(postalCode);
+    if (generation !== lookupGenerationRef.current) return;
+    if (!city) return;
+
+    lastAutofilledCityRef.current = city;
+    update({ city });
+  }
+
+  function handleObjectTypeChange(value: string) {
+    update({
+      objectType: value,
+      houseSubtype: value === "haus" ? data.houseSubtype : "",
+    });
+
+    if (value === "haus") {
+      // Wait for the house-subtype cards to render, then scroll there.
+      window.setTimeout(() => scrollToHouseSection(), 40);
+      return;
+    }
+
+    scrollToAddressAndFocusPlz(prefersReducedMotion() ? 100 : 200);
+  }
+
+  function handleHouseSubtypeChange(value: string) {
+    update({ houseSubtype: value });
+    scrollToAddressAndFocusPlz(prefersReducedMotion() ? 100 : 200);
+  }
+
+  function handlePostalCodeChange(raw: string) {
+    const next = sanitizeGermanPostalCode(raw);
+
+    if (next.length < 5) {
+      // Incomplete — never clear a manually entered city; only clear an
+      // autofilled city so a mistyped digit can be corrected cleanly.
+      if (
+        !cityManuallyEditedRef.current &&
+        data.city === lastAutofilledCityRef.current &&
+        lastAutofilledCityRef.current
+      ) {
+        lastAutofilledCityRef.current = "";
+        update({ postalCode: next, city: "" });
+        return;
+      }
+      update({ postalCode: next });
+      return;
+    }
+
+    update({ postalCode: next });
+    void applyCityFromPostalCode(next);
+  }
+
+  function handleCityChange(value: string) {
+    cityManuallyEditedRef.current = true;
+    update({ city: value });
+  }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors: Record<string, string> = {};
-    if (data.postalCode.trim().length < 4) {
+    if (!isCompleteGermanPostalCode(data.postalCode)) {
       nextErrors.postalCode = "Bitte geben Sie eine gültige Postleitzahl an.";
     }
     if (data.city.trim().length < 2) {
@@ -406,9 +446,35 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
       nextErrors.houseSubtype = "Bitte wählen Sie eine Hausart aus.";
     }
     setErrors(nextErrors);
-    if (nextErrors.postalCode) postalCodeRef.current?.focus();
-    else if (nextErrors.city) cityRef.current?.focus();
-    else if (Object.keys(nextErrors).length === 0) onNext();
+
+    if (nextErrors.objectType) {
+      // Stay at top — object type is first.
+      return;
+    }
+    if (nextErrors.houseSubtype) {
+      houseSectionRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+        block: "start",
+      });
+      return;
+    }
+    if (nextErrors.postalCode) {
+      addressSectionRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+        block: "start",
+      });
+      postalCodeRef.current?.focus({ preventScroll: true });
+      return;
+    }
+    if (nextErrors.city) {
+      addressSectionRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+        block: "start",
+      });
+      cityRef.current?.focus({ preventScroll: true });
+      return;
+    }
+    if (Object.keys(nextErrors).length === 0) onNext();
   }
 
   return (
@@ -417,64 +483,78 @@ export function StepObject({ data, update, onNext, onBack }: StepProps) {
         legend="Objektart"
         options={objectTypes}
         value={data.objectType}
-        onChange={(value) =>
-          update({ objectType: value, houseSubtype: value === "haus" ? data.houseSubtype : "" })
-        }
+        onChange={handleObjectTypeChange}
         error={errors.objectType}
         icons={objectTypeIcons}
         large
       />
 
       {data.objectType === "haus" && (
-        <OptionCardGroup
-          legend="Hausart"
-          options={houseSubtypes}
-          value={data.houseSubtype}
-          onChange={(value) => update({ houseSubtype: value })}
-          error={errors.houseSubtype}
-        />
+        <div ref={houseSectionRef} className="scroll-mt-28 sm:scroll-mt-8">
+          <OptionCardGroup
+            legend="Hausart"
+            options={houseSubtypes}
+            value={data.houseSubtype}
+            onChange={handleHouseSubtypeChange}
+            error={errors.houseSubtype}
+          />
+        </div>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <TextField
-          ref={postalCodeRef}
-          label="PLZ"
-          value={data.postalCode}
-          onChange={(value) => update({ postalCode: value })}
-          autoComplete="postal-code"
-          required
-          error={errors.postalCode}
-        />
-        <TextField
-          ref={cityRef}
-          label="Ort"
-          value={data.city}
-          onChange={(value) => update({ city: value })}
-          autoComplete="address-level2"
-          required
-          error={errors.city}
-        />
+      <div
+        ref={addressSectionRef}
+        className="scroll-mt-28 space-y-5 sm:scroll-mt-8 sm:space-y-6"
+      >
+        <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
+          <TextField
+            ref={postalCodeRef}
+            id="field-plz"
+            label="PLZ"
+            value={data.postalCode}
+            onChange={handlePostalCodeChange}
+            inputMode="numeric"
+            autoComplete="postal-code"
+            maxLength={5}
+            pattern="[0-9]{5}"
+            enterKeyHint="next"
+            required
+            error={errors.postalCode}
+          />
+          <TextField
+            ref={cityRef}
+            id="field-ort"
+            label="Ort"
+            value={data.city}
+            onChange={handleCityChange}
+            autoComplete="address-level2"
+            enterKeyHint="next"
+            required
+            error={errors.city}
+          />
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
+          <TextField
+            label="Ungefähre Fläche (optional)"
+            value={data.areaSqm}
+            onChange={(value) => update({ areaSqm: value })}
+            type="text"
+            inputMode="decimal"
+          />
+          <TextField
+            label="Baujahr (optional)"
+            value={data.constructionYear}
+            onChange={(value) => update({ constructionYear: value })}
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
+          />
+        </div>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2">
-        <TextField
-          label="Ungefähre Fläche (optional)"
-          value={data.areaSqm}
-          onChange={(value) => update({ areaSqm: value })}
-          type="text"
-        />
-        <TextField
-          label="Baujahr (optional)"
-          value={data.constructionYear}
-          onChange={(value) => update({ constructionYear: value })}
-          type="text"
-        />
-      </div>
-      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
-export function StepTiming({ data, update, onNext, onBack }: StepProps) {
+export function StepTiming({ data, update, onNext }: StepProps) {
   const [showError, setShowError] = useState(false);
   const isValid = Boolean(data.desiredStart);
 
@@ -496,12 +576,11 @@ export function StepTiming({ data, update, onNext, onBack }: StepProps) {
         onChange={(value) => update({ desiredStart: value })}
         error={showError && !isValid ? "Bitte wählen Sie den gewünschten Start aus." : undefined}
       />
-      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
-export function StepBudget({ data, update, onNext, onBack }: StepProps) {
+export function StepBudget({ data, update, onNext }: StepProps) {
   const [showError, setShowError] = useState(false);
   const isValid = Boolean(data.budgetRange);
 
@@ -523,25 +602,18 @@ export function StepBudget({ data, update, onNext, onBack }: StepProps) {
         onChange={(value) => update({ budgetRange: value })}
         error={showError && !isValid ? "Bitte wählen Sie einen Investitionsrahmen aus." : undefined}
       />
-      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function StepContact({ data, update, onNext, onBack }: StepProps) {
+export function StepContact({ data, update, onNext }: StepProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
-  const isValid =
-    data.firstName.trim().length >= 2 &&
-    data.lastName.trim().length >= 2 &&
-    EMAIL_PATTERN.test(data.email.trim()) &&
-    Boolean(data.preferredContact) &&
-    (data.preferredContact !== "phone" || data.phone.trim().length >= 4);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -570,7 +642,7 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
 
   return (
     <StepShell title="Persönliche Angaben" onSubmit={handleSubmit}>
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
         <TextField
           ref={firstNameRef}
           label="Vorname"
@@ -595,6 +667,7 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
           value={data.email}
           onChange={(value) => update({ email: value })}
           type="email"
+          inputMode="email"
           autoComplete="email"
           required
           error={errors.email}
@@ -605,6 +678,7 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
           value={data.phone}
           onChange={(value) => update({ phone: value })}
           type="tel"
+          inputMode="tel"
           autoComplete="tel"
           required={data.preferredContact === "phone"}
           error={errors.phone}
@@ -617,12 +691,11 @@ export function StepContact({ data, update, onNext, onBack }: StepProps) {
         onChange={(value) => update({ preferredContact: value })}
         error={errors.preferredContact}
       />
-      <StepNav onBack={onBack} nextDisabled={!isValid} />
     </StepShell>
   );
 }
 
-export function StepWishes({ data, update, onNext, onBack }: StepProps) {
+export function StepWishes({ data, update, onNext }: StepProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onNext();
@@ -637,14 +710,13 @@ export function StepWishes({ data, update, onNext, onBack }: StepProps) {
       <div>
         <textarea
           id="wishes"
-          rows={5}
+          rows={4}
           value={data.wishes}
           onChange={(event) => update({ wishes: event.target.value })}
-          className="w-full resize-none rounded-xl border border-line bg-transparent p-4 text-base leading-relaxed text-ink outline-none transition-colors focus:border-clay sm:text-[15px]"
+          className="w-full scroll-mt-28 resize-none rounded-xl border border-line bg-transparent p-4 text-base leading-relaxed text-ink outline-none transition-colors focus:border-clay sm:scroll-mt-8 sm:text-[15px]"
         />
         <p className="mt-2 text-sm text-muted">Dieser Schritt ist optional.</p>
       </div>
-      <StepNav onBack={onBack} />
     </StepShell>
   );
 }

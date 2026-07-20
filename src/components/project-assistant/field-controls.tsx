@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { forwardRef, type ReactNode } from "react";
+import { FUNNEL_STEP_FORM_ID } from "@/components/project-assistant/funnel-action-bar";
 
 export function StepShell({
   title,
@@ -7,24 +8,34 @@ export function StepShell({
   descriptionClassName,
   children,
   onSubmit,
+  formId = FUNNEL_STEP_FORM_ID,
+  /** Reserve space for the mobile sticky action bar. */
+  withStickyFooter = true,
 }: {
   title: string;
   description?: string;
   descriptionClassName?: string;
   children: ReactNode;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  formId?: string;
+  withStickyFooter?: boolean;
 }) {
   return (
-    <form onSubmit={onSubmit} className="space-y-7 sm:space-y-8" noValidate>
+    <form
+      id={formId}
+      onSubmit={onSubmit}
+      className={`space-y-5 sm:space-y-8 ${withStickyFooter ? "pb-28 sm:pb-0" : ""}`}
+      noValidate
+    >
       <div>
-        <h1 className="text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
+        <h1 className="text-[1.375rem] font-medium tracking-tight text-balance text-ink sm:text-3xl">
           {title}
         </h1>
         {description && (
           <p
             className={
               descriptionClassName ??
-              "mt-2 text-pretty text-[15px] leading-relaxed text-muted"
+              "mt-1.5 text-pretty text-[15px] leading-relaxed text-muted sm:mt-2"
             }
           >
             {description}
@@ -36,56 +47,6 @@ export function StepShell({
   );
 }
 
-export function StepNav({
-  onBack,
-  backLabel = "Zurück",
-  nextLabel = "Weiter",
-  nextDisabled,
-  pending,
-  statusLabel,
-}: {
-  onBack?: () => void;
-  backLabel?: string;
-  nextLabel?: string;
-  nextDisabled?: boolean;
-  pending?: boolean;
-  statusLabel?: string;
-}) {
-  return (
-    <div
-      className={`flex pt-2 ${
-        statusLabel
-          ? "flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-          : "items-center justify-between"
-      }`}
-    >
-      {onBack ? (
-        <button
-          type="button"
-          onClick={onBack}
-          className="-my-3 rounded-sm px-1 py-3 text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
-        >
-          {backLabel}
-        </button>
-      ) : statusLabel ? (
-        <p className="text-[15px] text-muted">{statusLabel}</p>
-      ) : (
-        <span />
-      )}
-      <button
-        type="submit"
-        disabled={nextDisabled || pending}
-        aria-disabled={nextDisabled || pending}
-        className={`rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-muted ${
-          statusLabel ? "w-full sm:w-auto" : ""
-        }`}
-      >
-        {pending ? "Wird gesendet…" : nextLabel}
-      </button>
-    </div>
-  );
-}
-
 export const TextField = forwardRef<
   HTMLInputElement,
   {
@@ -93,14 +54,32 @@ export const TextField = forwardRef<
     value: string;
     onChange: (value: string) => void;
     type?: string;
+    inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
     autoComplete?: string;
     required?: boolean;
     error?: string;
     placeholder?: string;
     id?: string;
+    maxLength?: number;
+    pattern?: string;
+    enterKeyHint?: React.HTMLAttributes<HTMLInputElement>["enterKeyHint"];
   }
 >(function TextField(
-  { label, value, onChange, type = "text", autoComplete, required, error, placeholder, id },
+  {
+    label,
+    value,
+    onChange,
+    type = "text",
+    inputMode,
+    autoComplete,
+    required,
+    error,
+    placeholder,
+    id,
+    maxLength,
+    pattern,
+    enterKeyHint,
+  },
   ref
 ) {
   const inputId = id ?? `field-${label.replace(/\s+/g, "-").toLowerCase()}`;
@@ -114,19 +93,24 @@ export const TextField = forwardRef<
       {/* text-base (16px) below `sm` — iOS Safari auto-zooms the viewport
           on focus for any text input under 16px, which felt jarring on
           this multi-step form. Reverts to the slightly tighter 15px once
-          the desktop layout no longer needs the larger tap target. */}
+          the desktop layout no longer needs the larger tap target.
+          scroll-margin keeps focused fields clear of the sticky action bar. */}
       <input
         ref={ref}
         id={inputId}
         type={type}
+        inputMode={inputMode}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         autoComplete={autoComplete}
         required={required}
         placeholder={placeholder}
+        maxLength={maxLength}
+        pattern={pattern}
+        enterKeyHint={enterKeyHint}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className={`mt-2 w-full border-b bg-transparent py-2.5 text-base text-ink outline-none transition-colors focus:border-clay sm:text-[15px] ${
+        className={`mt-2 w-full scroll-mt-28 border-b bg-transparent py-2.5 text-base text-ink outline-none transition-colors focus:border-clay sm:scroll-mt-8 sm:text-[15px] ${
           error ? "border-clay" : "border-line"
         }`}
       />
@@ -163,16 +147,16 @@ export function OptionCardGroup<T extends string>({
       <legend className="text-sm font-medium tracking-[0.04em] text-muted">
         {legend}
       </legend>
-      <div className={`mt-3 grid gap-3 ${large ? "sm:grid-cols-3" : "gap-2 sm:grid-cols-2"}`}>
+      <div className={`mt-2.5 grid gap-2.5 sm:mt-3 sm:gap-3 ${large ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
         {options.map((option) => {
           const checked = value === option.value;
           const Icon = icons?.[option.value];
           return (
             <label
               key={option.value}
-              className={`flex cursor-pointer items-center gap-3 rounded-xl border outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
+              className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
                 large
-                  ? "flex-col justify-center gap-2 px-5 py-6 text-center text-[15px]"
+                  ? "flex-col justify-center gap-2 px-4 py-4 text-center text-[15px] sm:px-5 sm:py-6"
                   : "px-4 py-3 text-[15px]"
               } ${
                 checked
@@ -246,14 +230,14 @@ export function CategoryCardGroup({
   return (
     <fieldset>
       <legend className="sr-only">{legend}</legend>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="mt-2.5 grid gap-2.5 sm:mt-3 sm:grid-cols-2 sm:gap-3">
         {options.map((option) => {
           const checked = values.includes(option.value);
           const Icon = icons[option.value];
           return (
             <label
               key={option.value}
-              className={`flex min-h-16 cursor-pointer items-center gap-4 rounded-xl border px-5 py-4 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-sage ${
+              className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 text-[15px] outline-none transition-colors focus-within:ring-2 focus-within:ring-sage sm:min-h-16 sm:gap-4 sm:px-5 sm:py-4 ${
                 checked
                   ? "border-sage bg-soft-sage text-ink"
                   : "border-line text-ink hover:border-clay-soft"

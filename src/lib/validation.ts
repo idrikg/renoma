@@ -172,8 +172,7 @@ const baseProjectRequestSchema = z.object({
   postalCode: z
     .string()
     .trim()
-    .min(4, "Bitte geben Sie eine gültige Postleitzahl an.")
-    .max(10, "Bitte geben Sie eine gültige Postleitzahl an."),
+    .regex(/^\d{5}$/, "Bitte geben Sie eine gültige Postleitzahl an."),
   city: z.string().trim().min(2, "Bitte geben Sie Ihren Ort an.").max(100),
   objectType: z.enum(values(objectTypes), {
     message: "Bitte wählen Sie eine Objektart aus.",

@@ -31,7 +31,7 @@ export default function ProjektStartenPage() {
         </Container>
       </header>
 
-      <main className="flex-1 py-16 sm:py-24">
+      <main className="flex-1 py-10 sm:py-24">
         <Container className="max-w-2xl">
           <ProjectAssistant />
         </Container>

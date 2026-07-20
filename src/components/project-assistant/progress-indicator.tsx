@@ -10,12 +10,12 @@ export function ProgressIndicator({
   const percent = Math.round((step / total) * 100);
 
   return (
-    <div className="mb-10">
+    <div className="mb-6 sm:mb-10">
       <p className="text-sm font-medium text-muted">
         Schritt {step} von {total} · {label}
       </p>
       <div
-        className="mt-3 h-1 w-full overflow-hidden rounded-full bg-line"
+        className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-line sm:mt-3"
         role="progressbar"
         aria-valuemin={1}
         aria-valuemax={total}

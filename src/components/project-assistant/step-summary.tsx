@@ -8,7 +8,7 @@ import {
   desiredStartLabel,
   objectDescription,
 } from "@/lib/validation";
-import { StepNav, StepShell } from "@/components/project-assistant/field-controls";
+import { StepShell } from "@/components/project-assistant/field-controls";
 import type { WizardData } from "@/components/project-assistant/types";
 
 const STEP_FOR_FIELD = {
@@ -24,20 +24,16 @@ const STEP_FOR_FIELD = {
 export function StepSummary({
   data,
   imageCount,
-  onBack,
   onGoToStep,
   onConsentChange,
   onSubmit,
-  pending,
   submitError,
 }: {
   data: WizardData;
   imageCount: number;
-  onBack: () => void;
   onGoToStep: (step: number) => void;
   onConsentChange: (checked: boolean) => void;
   onSubmit: () => void;
-  pending: boolean;
   submitError?: string;
 }) {
   const [consentError, setConsentError] = useState<string | null>(null);
@@ -78,10 +74,10 @@ export function StepSummary({
     >
       <dl className="divide-y divide-line rounded-2xl border border-line">
         {rows.map((row) => (
-          <div key={row.field} className="flex items-start justify-between gap-4 px-5 py-4">
-            <div>
+          <div key={row.field} className="flex items-start justify-between gap-4 px-4 py-3.5 sm:px-5 sm:py-4">
+            <div className="min-w-0">
               <dt className="text-sm font-medium text-muted">{row.label}</dt>
-              <dd className="mt-1 text-[15px] text-ink">{row.value}</dd>
+              <dd className="mt-1 text-[15px] text-ink break-words">{row.value}</dd>
             </div>
             <button
               type="button"
@@ -106,13 +102,6 @@ export function StepSummary({
           {submitError}
         </p>
       )}
-
-      <StepNav
-        onBack={onBack}
-        nextLabel="Projekt starten"
-        nextDisabled={!data.consent}
-        pending={pending}
-      />
     </StepShell>
   );
 }
@@ -125,7 +114,7 @@ function ConsentCheckbox({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line px-4 py-4 text-[15px] leading-relaxed text-ink outline-none focus-within:ring-2 focus-within:ring-sage">
+    <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border border-line px-4 py-3.5 text-[15px] leading-relaxed text-ink outline-none focus-within:ring-2 focus-within:ring-sage sm:py-4">
       <input
         type="checkbox"
         checked={checked}

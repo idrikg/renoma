@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitProjectRequest } from "@/lib/actions";
+import { isCompleteGermanPostalCode } from "@/lib/postal-cities";
 import { normalizeCategories } from "@/lib/validation";
 import { ProgressIndicator } from "@/components/project-assistant/progress-indicator";
 import { Confirmation } from "@/components/project-assistant/confirmation";
+import { FunnelActionBar } from "@/components/project-assistant/funnel-action-bar";
 import { StepSummary } from "@/components/project-assistant/step-summary";
 import {
-  CategoryStepActionBar,
   StepBudget,
   StepCategories,
   StepContact,
@@ -43,6 +44,8 @@ const STEP_TITLES = [
   "Zusammenfassung",
 ];
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function hasMeaningfulData(data: WizardData): boolean {
   return (
     data.categories.length > 0 ||
@@ -52,6 +55,45 @@ function hasMeaningfulData(data: WizardData): boolean {
     data.firstName.trim().length > 0 ||
     data.email.trim().length > 0
   );
+}
+
+function canProceed(step: number, data: WizardData): boolean {
+  switch (step) {
+    case 2:
+      return data.categories.length > 0;
+    case 3:
+    case 8:
+      return true;
+    case 4:
+      return (
+        isCompleteGermanPostalCode(data.postalCode) &&
+        data.city.trim().length >= 2 &&
+        Boolean(data.objectType) &&
+        (data.objectType !== "haus" || Boolean(data.houseSubtype))
+      );
+    case 5:
+      return Boolean(data.desiredStart);
+    case 6:
+      return Boolean(data.budgetRange);
+    case 7:
+      return (
+        data.firstName.trim().length >= 2 &&
+        data.lastName.trim().length >= 2 &&
+        EMAIL_PATTERN.test(data.email.trim()) &&
+        Boolean(data.preferredContact) &&
+        (data.preferredContact !== "phone" || data.phone.trim().length >= 4)
+      );
+    case 9:
+      return data.consent;
+    default:
+      return true;
+  }
+}
+
+function categoryStatusLabel(count: number): string {
+  if (count === 1) return "1 Leistung ausgewählt";
+  if (count > 1) return `${count} Leistungen ausgewählt`;
+  return "Noch keine Auswahl";
 }
 
 type PersistedState = {
@@ -198,6 +240,9 @@ export function ProjectAssistant() {
     return <Confirmation />;
   }
 
+  const showActionBar = step >= 2;
+  const nextDisabled = !canProceed(step, data);
+
   return (
     <div>
       <ProgressIndicator step={step} total={TOTAL_STEPS} label={STEP_TITLES[step - 1]} />
@@ -211,54 +256,52 @@ export function ProjectAssistant() {
         {step === 1 && (
           <StepMainArea data={data} update={update} onNext={goNext} />
         )}
-        {step === 2 && <StepCategories data={data} update={update} />}
+        {step === 2 && (
+          <StepCategories data={data} update={update} onNext={goNext} />
+        )}
         {step === 3 && (
           <StepImages
             onNext={goNext}
-            onBack={goBack}
             images={images}
             onAddImages={addImages}
             onRemoveImage={removeImage}
           />
         )}
         {step === 4 && (
-          <StepObject data={data} update={update} onNext={goNext} onBack={goBack} />
+          <StepObject data={data} update={update} onNext={goNext} />
         )}
         {step === 5 && (
-          <StepTiming data={data} update={update} onNext={goNext} onBack={goBack} />
+          <StepTiming data={data} update={update} onNext={goNext} />
         )}
         {step === 6 && (
-          <StepBudget data={data} update={update} onNext={goNext} onBack={goBack} />
+          <StepBudget data={data} update={update} onNext={goNext} />
         )}
         {step === 7 && (
-          <StepContact data={data} update={update} onNext={goNext} onBack={goBack} />
+          <StepContact data={data} update={update} onNext={goNext} />
         )}
         {step === 8 && (
-          <StepWishes data={data} update={update} onNext={goNext} onBack={goBack} />
+          <StepWishes data={data} update={update} onNext={goNext} />
         )}
         {step === 9 && (
           <StepSummary
             data={data}
             imageCount={images.length}
-            onBack={goBack}
             onGoToStep={setStep}
             onConsentChange={(checked) => update({ consent: checked })}
             onSubmit={handleFinalSubmit}
-            pending={isPending}
             submitError={submitState.status === "error" ? submitState.message : undefined}
           />
         )}
       </div>
 
-      {/* Deliberately a sibling of the animated step wrapper above, not
-          nested inside it — see the comment on `StepCategories` for why
-          a `position: fixed` bar cannot live inside a transformed
-          ancestor. */}
-      {step === 2 && (
-        <CategoryStepActionBar
-          selectedCount={data.categories.length}
+      {/* Sibling of the animated wrapper — see FunnelActionBar docs. */}
+      {showActionBar && (
+        <FunnelActionBar
           onBack={goBack}
-          onNext={goNext}
+          nextDisabled={nextDisabled}
+          pending={step === 9 ? isPending : false}
+          nextLabel={step === 9 ? "Projekt starten" : "Weiter"}
+          statusLabel={step === 2 ? categoryStatusLabel(data.categories.length) : undefined}
         />
       )}
     </div>
