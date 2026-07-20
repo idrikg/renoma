@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ProjectReference } from "@/lib/references-data";
@@ -213,6 +214,17 @@ export function ReferencesCarousel({
                     „{reference.customerStatement}“
                   </p>
                 )}
+                <div className="mt-6">
+                  <Link
+                    href={`/referenzen/${reference.slug}`}
+                    tabIndex={isActive ? 0 : -1}
+                    aria-label={`Projekt ansehen: ${reference.title}`}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-ink bg-transparent px-6 py-2.5 text-[15px] font-medium text-ink outline-none transition-colors hover:bg-ink hover:text-paper focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper-dim"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    Projekt ansehen
+                  </Link>
+                </div>
               </div>
 
               <div className="mt-8 grid gap-4 sm:mt-10 sm:gap-5 lg:grid-cols-2 lg:gap-6">

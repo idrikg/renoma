@@ -3,34 +3,39 @@
  *
  * TRUTHFULNESS RULE: only entries with `isPublished: true` — backed by
  * real photographs and confirmed project details — may ever reach the
- * visitor-facing References section. Never invent a location, duration,
- * budget, customer name/quote, or completion year. Leave those fields
- * unset until they are genuinely confirmed; the section only renders the
- * fields that are actually present.
+ * visitor-facing References section or project detail pages. Never invent
+ * a location, duration, budget, customer name/quote, or completion year.
+ * Leave those fields unset until they are genuinely confirmed; UI only
+ * renders fields that are actually present.
  *
  * HOW TO ADD A PROJECT
  * --------------------
  * 1. Place images under `public/images/references/{slug}/`
  *    - Required today: `before.jpg`, `after.jpg`
- *    - Optional later: `cover.jpg`, `detail-01.jpg`, …
+ *    - Optional: `cover.jpg`, `before-02.jpg`, `after-02.jpg`,
+ *      `detail-01.jpg`, …
  * 2. Append an object to `references` below (or keep drafts with
  *    `isPublished: false` until ready).
  * 3. Required: slug, title, category, description, beforeImage,
  *    afterImage, beforeAlt, afterAlt, isPublished.
- * 4. Optional: teaser, location, durationApprox, customerStatement,
- *    object positions, coverImage, beforeImages[], afterImages[],
- *    detailImages[], highlights[].
- * 5. Empty optional galleries are never rendered — no placeholders.
+ * 4. Optional: teaser, location, projectType, completionPeriod, scope,
+ *    longDescription, quote, services, resultText, highlights,
+ *    coverImage, beforeImages[], afterImages[], detailImages[].
+ * 5. Empty optional galleries / fields are never rendered.
  *
- * Detail images: store them now if available; a dedicated project detail
- * view is recommended later rather than crowding the homepage carousel.
+ * Detail pages live at `/referenzen/[slug]`. Prefer a dedicated detail
+ * view for multi-image galleries rather than crowding the homepage carousel.
  */
 
-export type ReferenceDetailImage = {
+export type ReferenceImage = {
   src: string;
   alt: string;
+  caption?: string;
   objectPosition?: string;
 };
+
+/** @deprecated Prefer ReferenceImage — kept as an alias for existing imports. */
+export type ReferenceDetailImage = ReferenceImage;
 
 export type ProjectReference = {
   /** Stable project identifier, e.g. "bad-01". */
@@ -41,8 +46,8 @@ export type ProjectReference = {
   /** Restrained case-study body copy. No invented specifics. */
   description: string;
   /**
-   * Optional shorter line for future cards/listings. Falls back to
-   * `description` when omitted — not shown separately in the carousel today.
+   * Optional shorter line for cards/listings. Falls back to `description`
+   * when omitted (see `getReferenceTeaser`).
    */
   teaser?: string;
   /** Primary before photograph (required for published projects today). */
@@ -55,25 +60,40 @@ export type ProjectReference = {
   beforeObjectPosition?: string;
   afterObjectPosition?: string;
   /**
-   * Optional cover / hero crop for future layouts. Defaults to `afterImage`
-   * when omitted — unused by the current carousel.
+   * Optional cover / hero crop for detail pages. Defaults to `afterImage`
+   * when omitted (see `getReferenceCover`).
    */
   coverImage?: string;
   coverAlt?: string;
   coverObjectPosition?: string;
   /**
-   * Future multi-image galleries. When present and non-empty they may be
-   * rendered later; empty arrays must not produce empty UI.
+   * Multi-image galleries. When present and non-empty they are preferred
+   * over the primary before/after fields; empty arrays must not produce UI.
    */
-  beforeImages?: ReferenceDetailImage[];
-  afterImages?: ReferenceDetailImage[];
-  detailImages?: ReferenceDetailImage[];
+  beforeImages?: ReferenceImage[];
+  afterImages?: ReferenceImage[];
+  detailImages?: ReferenceImage[];
   /** Short factual service tags — only when confirmed. */
   highlights?: string[];
+  /** Optional service list for detail pages — only when confirmed. */
+  services?: string[];
   /** Omit unless genuinely confirmed. Never invented. */
   location?: string;
+  /** Optional finer project type label; falls back to category in overview. */
+  projectType?: string;
+  /** Optional completion window, e.g. "Frühjahr 2025". Never invented. */
+  completionPeriod?: string;
+  /** @deprecated Prefer completionPeriod. Still read by helpers. */
   durationApprox?: string;
-  /** Only include if genuinely provided by the customer. Never invented. */
+  /** Optional scope summary — only when confirmed. */
+  scope?: string;
+  /** Longer narrative for detail pages. Falls back to description. */
+  longDescription?: string;
+  /** Optional result summary for the closing block. */
+  resultText?: string;
+  /** Customer quote — only if genuinely provided. */
+  quote?: string;
+  /** @deprecated Prefer quote. Still read by helpers. */
   customerStatement?: string;
   isPublished: boolean;
 };
@@ -153,6 +173,12 @@ export function getPublishedReferences(): ProjectReference[] {
   return references.filter((reference) => reference.isPublished);
 }
 
+export function getPublishedReferenceBySlug(
+  slug: string
+): ProjectReference | undefined {
+  return getPublishedReferences().find((reference) => reference.slug === slug);
+}
+
 /**
  * Single source of truth for whether the References section (and its
  * navigation entry / Hero secondary CTA) should appear at all. Everything
@@ -161,4 +187,102 @@ export function getPublishedReferences(): ProjectReference[] {
  */
 export function hasPublishedReferences(): boolean {
   return getPublishedReferences().length > 0;
+}
+
+export function getReferenceTeaser(reference: ProjectReference): string {
+  return reference.teaser?.trim() || reference.description;
+}
+
+export function getReferenceBody(reference: ProjectReference): string {
+  return reference.longDescription?.trim() || reference.description;
+}
+
+export function getReferenceQuote(
+  reference: ProjectReference
+): string | undefined {
+  const value = reference.quote?.trim() || reference.customerStatement?.trim();
+  return value || undefined;
+}
+
+export function getReferenceCompletion(
+  reference: ProjectReference
+): string | undefined {
+  const value =
+    reference.completionPeriod?.trim() || reference.durationApprox?.trim();
+  return value || undefined;
+}
+
+export function getReferenceCover(reference: ProjectReference): ReferenceImage {
+  if (reference.coverImage) {
+    return {
+      src: reference.coverImage,
+      alt: reference.coverAlt?.trim() || reference.title,
+      objectPosition: reference.coverObjectPosition,
+    };
+  }
+  return {
+    src: reference.afterImage,
+    alt: reference.afterAlt,
+    objectPosition: reference.afterObjectPosition,
+  };
+}
+
+export function getBeforeImages(reference: ProjectReference): ReferenceImage[] {
+  if (reference.beforeImages && reference.beforeImages.length > 0) {
+    return reference.beforeImages;
+  }
+  return [
+    {
+      src: reference.beforeImage,
+      alt: reference.beforeAlt,
+      objectPosition: reference.beforeObjectPosition,
+    },
+  ];
+}
+
+export function getAfterImages(reference: ProjectReference): ReferenceImage[] {
+  if (reference.afterImages && reference.afterImages.length > 0) {
+    return reference.afterImages;
+  }
+  return [
+    {
+      src: reference.afterImage,
+      alt: reference.afterAlt,
+      objectPosition: reference.afterObjectPosition,
+    },
+  ];
+}
+
+export function getDetailImages(reference: ProjectReference): ReferenceImage[] {
+  return reference.detailImages?.filter((image) => image.src) ?? [];
+}
+
+export function getReferenceHighlights(
+  reference: ProjectReference
+): string[] {
+  return reference.highlights?.filter((item) => item.trim()) ?? [];
+}
+
+export function getReferenceServices(reference: ProjectReference): string[] {
+  return reference.services?.filter((item) => item.trim()) ?? [];
+}
+
+/** Overview rows for the detail page — only entries with real values. */
+export function getReferenceOverviewItems(
+  reference: ProjectReference
+): { label: string; value: string }[] {
+  const items: { label: string; value: string }[] = [];
+  const projectType = reference.projectType?.trim() || reference.category;
+  if (projectType) items.push({ label: "Projektart", value: projectType });
+  if (reference.location?.trim()) {
+    items.push({ label: "Ort", value: reference.location.trim() });
+  }
+  if (reference.scope?.trim()) {
+    items.push({ label: "Leistungsumfang", value: reference.scope.trim() });
+  }
+  const completion = getReferenceCompletion(reference);
+  if (completion) {
+    items.push({ label: "Fertigstellung", value: completion });
+  }
+  return items;
 }
