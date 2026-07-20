@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 
 type HeroImageConfig = {
   src: string;
   alt: string;
   objectPosition?: string;
+  objectPositionMobile?: string;
 };
 
 function HeroMediaGradient() {
@@ -18,12 +19,22 @@ function HeroMediaGradient() {
   );
 }
 
-function HeroMediaImage({ src, alt, objectPosition }: HeroImageConfig) {
+function HeroMediaImage({
+  src,
+  alt,
+  objectPosition,
+  objectPositionMobile,
+}: HeroImageConfig) {
   const [loadFailed, setLoadFailed] = useState(false);
 
   if (loadFailed) {
     return <HeroMediaGradient />;
   }
+
+  const style = {
+    "--hero-object-position-mobile": objectPositionMobile ?? objectPosition ?? "50% 50%",
+    "--hero-object-position-desktop": objectPosition ?? "50% 42%",
+  } as CSSProperties;
 
   return (
     <Image
@@ -32,8 +43,8 @@ function HeroMediaImage({ src, alt, objectPosition }: HeroImageConfig) {
       fill
       priority
       sizes="(min-width: 1024px) 42vw, 100vw"
-      className="object-cover"
-      style={objectPosition ? { objectPosition } : undefined}
+      className="hero-media-image object-cover"
+      style={style}
       onError={() => setLoadFailed(true)}
     />
   );

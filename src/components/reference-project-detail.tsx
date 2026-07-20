@@ -37,7 +37,7 @@ export function ReferenceProjectDetail({
   const services = getReferenceServices(reference);
   const quote = getReferenceQuote(reference);
   const resultText = reference.resultText?.trim();
-  const featureItems = [...highlights, ...services];
+  const hasFeatureSection = services.length > 0 || highlights.length > 0;
 
   return (
     <article>
@@ -239,7 +239,7 @@ export function ReferenceProjectDetail({
         </section>
       )}
 
-      {featureItems.length > 0 && (
+      {hasFeatureSection && (
         <section
           aria-labelledby="leistungen-heading"
           className="border-y border-line bg-paper-dim py-16 sm:py-20"
@@ -250,18 +250,50 @@ export function ReferenceProjectDetail({
                 id="leistungen-heading"
                 className="text-2xl font-medium tracking-tight text-ink sm:text-3xl"
               >
-                Besondere Leistungen
+                {services.length > 0 && highlights.length > 0
+                  ? "Leistungen und Details"
+                  : services.length > 0
+                    ? "Ausgeführte Leistungen"
+                    : "Besondere Details"}
               </h2>
-              <ul className="mt-8 space-y-3">
-                {featureItems.map((item) => (
-                  <li
-                    key={item}
-                    className="border-t border-line pt-3 text-[15px] leading-relaxed text-ink"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              {services.length > 0 && (
+                <div className="mt-8">
+                  {highlights.length > 0 && (
+                    <h3 className="text-sm font-medium tracking-[0.1em] text-clay uppercase">
+                      Ausgeführte Leistungen
+                    </h3>
+                  )}
+                  <ul className={highlights.length > 0 ? "mt-4 space-y-3" : "space-y-3"}>
+                    {services.map((item) => (
+                      <li
+                        key={item}
+                        className="border-t border-line pt-3 text-[15px] leading-relaxed text-ink"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {highlights.length > 0 && (
+                <div className={services.length > 0 ? "mt-10" : "mt-8"}>
+                  {services.length > 0 && (
+                    <h3 className="text-sm font-medium tracking-[0.1em] text-clay uppercase">
+                      Besondere Details
+                    </h3>
+                  )}
+                  <ul className={services.length > 0 ? "mt-4 space-y-3" : "space-y-3"}>
+                    {highlights.map((item) => (
+                      <li
+                        key={item}
+                        className="border-t border-line pt-3 text-[15px] leading-relaxed text-ink"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </Reveal>
           </Container>
         </section>

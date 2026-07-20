@@ -202,6 +202,17 @@ body {
   white-space: normal;
 }
 
+/* Responsive crop for the hero photograph — no parallax or scroll scaling. */
+.hero-media-image {
+  object-position: var(--hero-object-position-mobile, 50% 50%);
+}
+
+@media (min-width: 1024px) {
+  .hero-media-image {
+    object-position: var(--hero-object-position-desktop, 50% 42%);
+  }
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;

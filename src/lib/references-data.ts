@@ -167,6 +167,79 @@ export const references: ProjectReference[] = [
     afterObjectPosition: "50% 50%",
     isPublished: true,
   },
+  {
+    slug: "badezimmer-detailmodernisierung",
+    title: "Ein Badezimmer, bei dem jedes Detail stimmt.",
+    category: "Badmodernisierung",
+    teaser:
+      "Ein vollständig erneuertes Badezimmer mit ruhiger Gestaltung, klaren Linien und besonders sorgfältig ausgeführten Details.",
+    description:
+      "Das bestehende Badezimmer wurde vollständig modernisiert und gestalterisch neu aufgebaut. Ziel war ein zeitgemäßer, hochwertiger Raum, der funktionale Lösungen mit einer ruhigen und klaren Optik verbindet. Materialien, Flächen und Einbauten wurden aufeinander abgestimmt und bis ins Detail sauber ausgeführt.",
+    beforeImage:
+      "/images/references/badezimmer-detailmodernisierung/before-01.jpg",
+    afterImage:
+      "/images/references/badezimmer-detailmodernisierung/after-01.jpg",
+    beforeAlt:
+      "Bestehendes Badezimmer mit Waschtisch, Duschkabine und Badewanne vor der Modernisierung",
+    afterAlt:
+      "Modernisiertes Badezimmer mit Walk-in-Dusche, integriertem Waschtisch und hinterleuchtetem Spiegel",
+    coverImage:
+      "/images/references/badezimmer-detailmodernisierung/after-01.jpg",
+    coverAlt:
+      "Modernisiertes Badezimmer mit Walk-in-Dusche, integriertem Waschtisch und hinterleuchtetem Spiegel",
+    beforeImages: [
+      {
+        src: "/images/references/badezimmer-detailmodernisierung/before-01.jpg",
+        alt: "Bestehendes Badezimmer mit Waschtisch, Duschkabine und Badewanne vor der Modernisierung",
+      },
+      {
+        src: "/images/references/badezimmer-detailmodernisierung/before-02.jpg",
+        alt: "Bestehendes Badezimmer mit Wand-WC, Heizkörper und Badewanne vor der Modernisierung",
+      },
+    ],
+    afterImages: [
+      {
+        src: "/images/references/badezimmer-detailmodernisierung/after-01.jpg",
+        alt: "Modernisiertes Badezimmer mit Walk-in-Dusche, integriertem Waschtisch und hinterleuchtetem Spiegel",
+      },
+      {
+        src: "/images/references/badezimmer-detailmodernisierung/after-02.jpg",
+        alt: "Modernisiertes Badezimmer mit wandhängendem WC und Walk-in-Dusche hinter getönter Glaswand",
+      },
+    ],
+    detailImages: [
+      {
+        src: "/images/references/badezimmer-detailmodernisierung/detail-drueckerplatte.jpg",
+        alt: "In die Wandfliesen integrierte Dual-Flush-Drückerplatte",
+        caption: "Verflieste Drückerplatte",
+      },
+      {
+        src: "/images/references/badezimmer-detailmodernisierung/detail-waschbecken.jpg",
+        alt: "Integrierter Waschtisch mit wandmontierter Armatur und Linearablauf",
+        caption: "Integrierter Waschplatz",
+      },
+    ],
+    services: [
+      "vollständige Modernisierung des Badezimmers",
+      "Erneuerung der Wand- und Bodenflächen",
+      "Neugestaltung des Waschplatzes",
+      "Integration der Sanitärbereiche",
+      "Fliesenarbeiten",
+      "sorgfältige Ausführung von Übergängen und Anschlüssen",
+      "gestalterische Abstimmung der einzelnen Elemente",
+    ],
+    highlights: [
+      "verflieste Drückerplatte",
+      "hochwertig integrierter Waschplatz",
+      "einheitliches und ruhiges Fliesenbild",
+      "sauber ausgeführte Kanten und Übergänge",
+      "harmonisch aufeinander abgestimmte Oberflächen",
+      "funktionale Lösungen, die sich dezent in die Raumgestaltung einfügen",
+    ],
+    resultText:
+      "Entstanden ist ein modernes Badezimmer, das Ruhe, Funktionalität und handwerkliche Präzision miteinander verbindet. Besonders die zurückhaltend integrierten Details geben dem Raum seinen hochwertigen und individuellen Charakter.",
+    isPublished: true,
+  },
 ];
 
 export function getPublishedReferences(): ProjectReference[] {

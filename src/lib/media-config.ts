@@ -10,10 +10,17 @@
 export const mediaConfig = {
   heroImage: {
     src: "/images/hero/renoma-hero.jpg",
-    alt: "Lichtdurchfluteter Wohn- und Essbereich mit hellem Fischgrätparkett, Esstisch, geschwungener Sofalandschaft und Olivenbaum im Vordergrund",
-    // Portrait source (760×1024): center-weighted crop keeps windows, dining
-    // area and olive tree visible across desktop (4/5) and mobile (16/11).
-    objectPosition: "50% 42%",
-  } as { src: string; alt: string; objectPosition?: string } | null,
+    alt: "Heller, modern gestalteter Wohnraum mit maßgefertigtem Einbauregal und natürlichen Akzenten",
+    // Portrait source (768×1024). Desktop 4/5 frame: slight bias keeps
+    // shelving and plant corner visible. Mobile 16/11 frame crops more
+    // vertically — lower bias avoids empty ceiling and keeps the room.
+    objectPosition: "48% 42%",
+    objectPositionMobile: "46% 55%",
+  } as {
+    src: string;
+    alt: string;
+    objectPosition?: string;
+    objectPositionMobile?: string;
+  } | null,
   founderImage: null as { src: string; alt: string } | null,
 };
