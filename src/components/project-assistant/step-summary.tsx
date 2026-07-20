@@ -86,7 +86,7 @@ export function StepSummary({
             <button
               type="button"
               onClick={() => onGoToStep(STEP_FOR_FIELD[row.field])}
-              className="shrink-0 rounded-sm text-sm font-medium text-clay underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-sage"
+              className="flex shrink-0 items-center self-stretch rounded-sm px-1 text-sm font-medium text-clay underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-sage"
             >
               Bearbeiten
             </button>

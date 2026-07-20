@@ -63,7 +63,7 @@ export function StepNav({
         <button
           type="button"
           onClick={onBack}
-          className="rounded-sm text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
+          className="-my-3 rounded-sm px-1 py-3 text-[15px] font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
         >
           {backLabel}
         </button>
@@ -111,6 +111,10 @@ export const TextField = forwardRef<
       <label htmlFor={inputId} className="text-sm font-medium tracking-[0.04em] text-muted">
         {label}
       </label>
+      {/* text-base (16px) below `sm` — iOS Safari auto-zooms the viewport
+          on focus for any text input under 16px, which felt jarring on
+          this multi-step form. Reverts to the slightly tighter 15px once
+          the desktop layout no longer needs the larger tap target. */}
       <input
         ref={ref}
         id={inputId}
@@ -122,7 +126,7 @@ export const TextField = forwardRef<
         placeholder={placeholder}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className={`mt-2 w-full border-b bg-transparent py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-clay ${
+        className={`mt-2 w-full border-b bg-transparent py-2.5 text-base text-ink outline-none transition-colors focus:border-clay sm:text-[15px] ${
           error ? "border-clay" : "border-line"
         }`}
       />

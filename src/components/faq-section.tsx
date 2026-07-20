@@ -42,8 +42,11 @@ export function FaqSection() {
           </h2>
           <div className="divide-y divide-line">
             {faqs.map((faq) => (
-              <details key={faq.question} className="group py-5 first:pt-0">
-                <summary className="flex cursor-pointer items-center justify-between gap-4 text-lg font-medium text-ink outline-none focus-visible:ring-2 focus-visible:ring-sage">
+              <details key={faq.question} className="group py-3 first:pt-0">
+                {/* py-2 keeps the tappable row itself at a comfortable ~44px
+                    minimum — the visible spacing between questions still
+                    comes from the surrounding <details> padding above. */}
+                <summary className="flex cursor-pointer items-center justify-between gap-4 py-2 text-lg font-medium text-ink outline-none focus-visible:ring-2 focus-visible:ring-sage">
                   {faq.question}
                   <span
                     aria-hidden="true"

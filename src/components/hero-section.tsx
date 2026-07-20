@@ -42,10 +42,10 @@ export function HeroSection() {
               <br />
               Wir kümmern uns um den Weg dorthin.
             </p>
-            <div className="animate-fade-up animate-delay-3 mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
+            <div className="animate-fade-up animate-delay-3 mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-4">
               <Link
                 href="/projekt-starten"
-                className="rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                className="flex w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
               >
                 Projekt starten
               </Link>

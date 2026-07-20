@@ -446,7 +446,7 @@ export function StepWishes({ data, update, onNext, onBack }: StepProps) {
           rows={5}
           value={data.wishes}
           onChange={(event) => update({ wishes: event.target.value })}
-          className="w-full resize-none rounded-xl border border-line bg-transparent p-4 text-[15px] leading-relaxed text-ink outline-none transition-colors focus:border-clay"
+          className="w-full resize-none rounded-xl border border-line bg-transparent p-4 text-base leading-relaxed text-ink outline-none transition-colors focus:border-clay sm:text-[15px]"
         />
         <p className="mt-2 text-sm text-muted">Dieser Schritt ist optional.</p>
       </div>

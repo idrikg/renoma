@@ -60,7 +60,7 @@ export function Confirmation() {
               key={label}
               className="flex items-center gap-3 sm:flex-1 sm:flex-col sm:items-center sm:gap-3"
             >
-              <div className="flex w-full items-center">
+              <div className="flex items-center sm:w-full">
                 <span
                   aria-hidden="true"
                   className={`hidden h-px flex-1 sm:block ${isFirst ? "bg-transparent" : "bg-line"}`}
@@ -84,7 +84,7 @@ export function Confirmation() {
                 />
               </div>
               <span
-                className={`text-[13px] font-medium sm:text-center sm:text-sm ${isDone ? "text-ink" : "text-muted"}`}
+                className={`text-sm font-medium sm:text-center ${isDone ? "text-ink" : "text-muted"}`}
               >
                 {label}
                 {isDone && <span className="sr-only"> — abgeschlossen</span>}

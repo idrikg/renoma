@@ -13,10 +13,10 @@ export function FinalCtaSection() {
           <p className="mt-5 text-lg leading-relaxed text-muted">
             Wir kümmern uns um den Weg dorthin.
           </p>
-          <div className="mt-10">
+          <div className="mt-10 flex justify-center">
             <Link
               href="/projekt-starten"
-              className="inline-flex rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="flex w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
             >
               Projekt starten
             </Link>
