@@ -11,8 +11,8 @@ import { getPublishedReferences } from "@/lib/references-data";
  * source of truth, so there is never an empty section, a stray gap, or a
  * dead link.
  *
- * Editorial project carousel: one reference at a time with a controlled
- * next-card peek — not a marketplace gallery grid.
+ * Editorial project stage: exactly one reference visible at rest — not a
+ * marketplace gallery and not a next-card peek carousel.
  */
 export function ReferencesSection() {
   const publishedReferences = getPublishedReferences();
