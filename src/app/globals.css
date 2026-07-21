@@ -354,12 +354,49 @@ body {
   animation: references-discovery-fill 5.5s linear forwards;
 }
 
+/* Project lightbox (yet-another-react-lightbox) — RENOMA-quiet chrome */
+.project-lightbox .yarl__button {
+  filter: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.project-lightbox .yarl__toolbar {
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+.project-lightbox .yarl__navigation_prev,
+.project-lightbox .yarl__navigation_next {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.project-lightbox .yarl__counter {
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: rgba(245, 241, 235, 0.78);
+}
+
+.project-lightbox .yarl__slide_image {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .references-project-enter-next,
   .references-project-enter-prev,
   .references-project-copy-enter,
   .references-discovery-fill {
     animation: none !important;
+  }
+
+  .references-stage-image img,
+  .group:hover img {
+    transform: none !important;
   }
 }
 

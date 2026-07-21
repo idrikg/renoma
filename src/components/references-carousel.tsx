@@ -8,6 +8,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
@@ -18,6 +19,8 @@ import {
 const DISCOVERY_DELAY_MS = 5500;
 const TRANSITION_MS = 460;
 const SWIPE_THRESHOLD_PX = 56;
+/** Ignore accidental navigation after a drag/swipe on stage images. */
+const CLICK_MOVE_THRESHOLD_PX = 12;
 
 function formatSlideIndex(index: number, total: number): string {
   return `${String(index + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
@@ -30,6 +33,8 @@ function prefersReducedMotion(): boolean {
 
 function isInteractiveTarget(target: EventTarget | null): boolean {
   if (!(target instanceof Element)) return false;
+  // Project stage image links participate in swipe; other controls do not.
+  if (target.closest("[data-project-stage-link]")) return false;
   return Boolean(
     target.closest("a, button, input, textarea, select, label, [role='tab']"),
   );
@@ -61,6 +66,8 @@ export function ReferencesCarousel({
   const pointerStartRef = useRef<{ x: number; y: number; id: number } | null>(
     null,
   );
+  /** When true, the next click on a stage project link is suppressed (after swipe/drag). */
+  const suppressProjectLinkClickRef = useRef(false);
   const userInteractedRef = useRef(false);
   const activeIndexRef = useRef(0);
   const goNextRef = useRef<(fromUser?: boolean) => void>(() => {});
@@ -219,8 +226,16 @@ export function ReferencesCarousel({
 
     const dx = event.clientX - start.x;
     const dy = event.clientY - start.y;
-    if (Math.abs(dx) < SWIPE_THRESHOLD_PX) return;
-    if (Math.abs(dx) < Math.abs(dy) * 1.15) return;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+
+    // Any meaningful drag starting on a stage image must not open the project.
+    if (absDx >= CLICK_MOVE_THRESHOLD_PX || absDy >= CLICK_MOVE_THRESHOLD_PX) {
+      suppressProjectLinkClickRef.current = true;
+    }
+
+    if (absDx < SWIPE_THRESHOLD_PX) return;
+    if (absDx < absDy * 1.15) return;
 
     if (dx < 0) goNext(true);
     else goPrev();
@@ -228,6 +243,17 @@ export function ReferencesCarousel({
 
   function handlePointerCancel() {
     pointerStartRef.current = null;
+  }
+
+  function handleProjectLinkClick(
+    event: ReactMouseEvent<HTMLAnchorElement>,
+  ) {
+    if (suppressProjectLinkClickRef.current) {
+      event.preventDefault();
+      suppressProjectLinkClickRef.current = false;
+      return;
+    }
+    markInteracted();
   }
 
   if (total === 0) return null;
@@ -275,17 +301,21 @@ export function ReferencesCarousel({
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
             <ReferenceImage
               src={active.beforeImage}
-              alt={active.beforeAlt}
               label="Vorher"
               objectPosition={active.beforeObjectPosition}
               priority={activeIndex === 0}
+              href={`/referenzen/${active.slug}`}
+              ariaLabel={`Projekt ${active.category} ansehen`}
+              onNavigateClick={handleProjectLinkClick}
             />
             <ReferenceImage
               src={active.afterImage}
-              alt={active.afterAlt}
               label="Nachher"
               objectPosition={active.afterObjectPosition}
               priority={activeIndex === 0}
+              href={`/referenzen/${active.slug}`}
+              ariaLabel={`Projekt ${active.category} ansehen`}
+              onNavigateClick={handleProjectLinkClick}
             />
           </div>
 
@@ -418,31 +448,45 @@ export function ReferencesCarousel({
 
 function ReferenceImage({
   src,
-  alt,
   label,
   objectPosition,
   priority = false,
+  href,
+  ariaLabel,
+  onNavigateClick,
 }: {
   src: string;
-  alt: string;
   label: string;
   objectPosition?: string;
   priority?: boolean;
+  href: string;
+  ariaLabel: string;
+  onNavigateClick: (event: ReactMouseEvent<HTMLAnchorElement>) => void;
 }) {
   return (
-    <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-greige sm:aspect-[3/4] lg:aspect-[4/5]">
+    <Link
+      href={href}
+      data-project-stage-link=""
+      aria-label={ariaLabel}
+      onClick={onNavigateClick}
+      className="references-stage-image group relative block aspect-[4/5] cursor-pointer overflow-hidden rounded-2xl bg-greige outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper-dim sm:aspect-[3/4] lg:aspect-[4/5]"
+    >
       <Image
         src={src}
-        alt={alt}
+        alt=""
         fill
         priority={priority}
         sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 32vw, (min-width: 640px) 45vw, 92vw"
-        className="object-cover"
+        className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.01]"
         style={objectPosition ? { objectPosition } : undefined}
+        draggable={false}
       />
       <span className="absolute bottom-4 left-4 rounded-full bg-ink/75 px-3 py-1 text-xs font-medium tracking-[0.08em] text-paper uppercase">
         {label}
       </span>
-    </div>
+      <span className="pointer-events-none absolute right-3 bottom-3 rounded-full bg-ink/65 px-3 py-1.5 text-[11px] font-medium tracking-[0.06em] text-paper uppercase opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 max-sm:opacity-90">
+        Projekt öffnen
+      </span>
+    </Link>
   );
 }
