@@ -183,11 +183,8 @@ export function buildEinsatzgebietStructuredData(input: {
   });
 }
 
-/** Confirmed service-area cities for the Ludwigsburg regional pages. */
-export const LUDWIGSBURG_AREA_SERVED = [
-  { name: "Ludwigsburg" },
-  { name: "Remseck am Neckar" },
-] as const;
+/** Service markup for Ludwigsburg Ortsseiten — single city only. */
+export const LUDWIGSBURG_AREA_SERVED = [{ name: "Ludwigsburg" }] as const;
 
 export const STUTTGART_AREA_SERVED = [{ name: "Stuttgart" }] as const;
 export const HEILBRONN_AREA_SERVED = [{ name: "Heilbronn" }] as const;

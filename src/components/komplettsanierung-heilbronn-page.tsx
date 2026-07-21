@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
+import { RegionalCitiesNav } from "@/components/regional-cities-nav";
 import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
 import { KOMPLETTSANIERUNG_FUNNEL_HREF } from "@/components/project-assistant/funnel-preset";
 import {
@@ -203,19 +204,28 @@ export function KomplettsanierungHeilbronnPage() {
             Projekt in Heilbronn sinnvoll zu strukturieren und die nächsten
             Schritte miteinander abzustimmen.
           </p>
-          <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
-            <Link
-              href={KOMPLETTSANIERUNG_FUNNEL_HREF}
-              className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
-            >
-              Sanierungsprojekt in Heilbronn starten
-            </Link>
-            <Link
-              href="/leistungen/komplettsanierung"
-              className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-            >
-              Mehr über Komplettsanierungen
-            </Link>
+          <p className="mt-5 text-sm font-medium tracking-[0.06em] text-muted">
+            Persönlich begleitet · klar abgestimmt · feste Ansprechperson
+          </p>
+          <div className="mt-9 flex flex-col items-start gap-4">
+            <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
+              <Link
+                href={KOMPLETTSANIERUNG_FUNNEL_HREF}
+                className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
+              >
+                Sanierungsprojekt starten
+              </Link>
+              <Link
+                href="/leistungen/komplettsanierung"
+                className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Mehr über Komplettsanierungen
+              </Link>
+            </div>
+            <p className="max-w-md text-pretty text-[15px] leading-relaxed text-muted">
+              Sie schildern zunächst nur Ihr Vorhaben. Die nächsten Schritte
+              besprechen wir persönlich.
+            </p>
           </div>
         </Container>
       </header>
@@ -511,6 +521,11 @@ export function KomplettsanierungHeilbronnPage() {
         </Container>
       </section>
 
+      <RegionalCitiesNav
+        context="komplett"
+        currentPath="/leistungen/komplettsanierung/heilbronn"
+      />
+
       <section className="relative overflow-hidden py-24 sm:py-32">
         <div aria-hidden className="bg-hero-glow absolute inset-0 -z-10" />
         <Container>
@@ -522,13 +537,20 @@ export function KomplettsanierungHeilbronnPage() {
               Schildern Sie uns Ihre Ausgangssituation – RENOMA bespricht mit
               Ihnen die nächsten Schritte persönlich.
             </p>
-            <div className="mt-10">
+            <p className="mt-5 text-sm font-medium tracking-[0.06em] text-muted">
+              Persönlich begleitet · klar abgestimmt · feste Ansprechperson
+            </p>
+            <div className="mt-10 flex flex-col items-center gap-4">
               <Link
                 href={KOMPLETTSANIERUNG_FUNNEL_HREF}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               >
-                Sanierungsprojekt in Heilbronn starten
+                Sanierungsprojekt starten
               </Link>
+              <p className="max-w-md text-pretty text-[15px] leading-relaxed text-muted">
+                Sie schildern zunächst nur Ihr Vorhaben. Die nächsten Schritte
+                besprechen wir persönlich.
+              </p>
             </div>
           </Reveal>
         </Container>

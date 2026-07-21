@@ -4,6 +4,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
 import { KOMPLETTSANIERUNG_FUNNEL_HREF } from "@/components/project-assistant/funnel-preset";
 import { sharedProcessSteps } from "@/lib/service-pages";
+import { KOMPLETT_REGION_LINKS } from "@/lib/service-regions";
 
 const whenMakesSense = [
   {
@@ -316,42 +317,20 @@ export function KomplettsanierungPage() {
             </Reveal>
             <Reveal delayMs={50} className="max-w-xl lg:pt-3">
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                Für ausgewählte Städte finden Sie Hinweise zum Einsatzgebiet und
-                zur persönlichen Begleitung auf den regionalen Seiten.
+                Für ausgewählte Orte finden Sie ergänzende Seiten mit Ablauf und
+                persönlicher Begleitung.
               </p>
               <ul className="mt-8 flex flex-col gap-3">
-                <li>
-                  <Link
-                    href="/leistungen/komplettsanierung/ludwigsburg"
-                    className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                  >
-                    Ludwigsburg &amp; Remseck
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/leistungen/komplettsanierung/stuttgart"
-                    className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                  >
-                    Stuttgart
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/leistungen/komplettsanierung/heilbronn"
-                    className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                  >
-                    Heilbronn
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/einsatzgebiet"
-                    className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                  >
-                    Einsatzgebiet ansehen
-                  </Link>
-                </li>
+                {KOMPLETT_REGION_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </Reveal>
           </div>

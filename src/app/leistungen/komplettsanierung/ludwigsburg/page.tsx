@@ -13,9 +13,9 @@ import {
   buildServiceStructuredData,
 } from "@/lib/structured-data";
 
-const pageTitle = "Komplettsanierung in Ludwigsburg & Remseck | RENOMA";
+const pageTitle = "Komplettsanierung in Ludwigsburg | RENOMA";
 const pageDescription =
-  "RENOMA begleitet Ihre Komplettsanierung in Ludwigsburg, Remseck und Umgebung – klar koordiniert und mit einem festen Ansprechpartner.";
+  "RENOMA begleitet Ihre Komplettsanierung in Ludwigsburg – klar koordiniert und mit einem festen Ansprechpartner.";
 const canonicalPath = KOMPLETT_LUDWIGSBURG_PATH;
 
 const ogReference = getPublishedReferenceBySlug("kueche-01");
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 
 const serviceLd = buildServiceStructuredData({
   path: KOMPLETT_LUDWIGSBURG_PATH,
-  name: "Komplettsanierung in Ludwigsburg und Remseck",
+  name: "Komplettsanierung in Ludwigsburg",
   serviceType: "Komplettsanierung",
   description: pageDescription,
   areaServed: LUDWIGSBURG_AREA_SERVED,

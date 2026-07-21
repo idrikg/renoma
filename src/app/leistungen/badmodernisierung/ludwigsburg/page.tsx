@@ -13,9 +13,9 @@ import {
   buildServiceStructuredData,
 } from "@/lib/structured-data";
 
-const pageTitle = "Badmodernisierung in Ludwigsburg & Remseck | RENOMA";
+const pageTitle = "Badmodernisierung in Ludwigsburg | RENOMA";
 const pageDescription =
-  "RENOMA begleitet Ihre Badmodernisierung in Ludwigsburg, Remseck und Umgebung persönlich – von den ersten Vorstellungen bis zur abgestimmten Umsetzung.";
+  "RENOMA begleitet Ihre Badmodernisierung in Ludwigsburg persönlich – von den ersten Vorstellungen bis zur abgestimmten Umsetzung.";
 const canonicalPath = BAD_LUDWIGSBURG_PATH;
 
 const bathroomReference = getPublishedReferenceBySlug(
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 
 const serviceLd = buildServiceStructuredData({
   path: BAD_LUDWIGSBURG_PATH,
-  name: "Badmodernisierung in Ludwigsburg und Remseck",
+  name: "Badmodernisierung in Ludwigsburg",
   serviceType: "Badmodernisierung",
   description: pageDescription,
   areaServed: LUDWIGSBURG_AREA_SERVED,

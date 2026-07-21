@@ -2,10 +2,25 @@ import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
 import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
+import {
+  BAD_MODERNIZATION_FUNNEL_HREF,
+  KOMPLETTSANIERUNG_FUNNEL_HREF,
+} from "@/components/project-assistant/funnel-preset";
 import { REGIONAL_PATHS } from "@/lib/service-regions";
 import { serviceCards } from "@/lib/service-pages";
 
-const regionBlocks = [
+type RegionLink = {
+  href: string;
+  label: string;
+  variant?: "primary" | "secondary";
+};
+
+const regionBlocks: {
+  id: string;
+  title: string;
+  description: string;
+  links: RegionLink[];
+}[] = [
   {
     id: "ludwigsburg",
     title: "Ludwigsburg",
@@ -23,18 +38,30 @@ const regionBlocks = [
     ],
   },
   {
-    id: "remseck",
+    id: "remseck-am-neckar",
     title: "Remseck am Neckar",
     description:
-      "Auch Projekte in Remseck am Neckar gehören zum regionalen Einsatzgebiet von RENOMA. Umfang, Lage und die nächsten Schritte klären wir persönlich im ersten Austausch.",
+      "Auch Projekte in Remseck am Neckar gehören zum regionalen Einsatzgebiet von RENOMA. Umfang, Lage und die nächsten sinnvollen Schritte klären wir persönlich im ersten Austausch.",
     links: [
       {
-        href: REGIONAL_PATHS.bad.ludwigsburg,
-        label: "Badmodernisierung für Remseck am Neckar",
+        href: BAD_MODERNIZATION_FUNNEL_HREF,
+        label: "Badprojekt in Remseck starten",
+        variant: "primary",
       },
       {
-        href: REGIONAL_PATHS.komplett.ludwigsburg,
-        label: "Komplettsanierung für Remseck am Neckar",
+        href: "/leistungen/badmodernisierung",
+        label: "Mehr über Badmodernisierung",
+        variant: "secondary",
+      },
+      {
+        href: KOMPLETTSANIERUNG_FUNNEL_HREF,
+        label: "Sanierungsprojekt in Remseck starten",
+        variant: "primary",
+      },
+      {
+        href: "/leistungen/komplettsanierung",
+        label: "Mehr über Komplettsanierung",
+        variant: "secondary",
       },
     ],
   },
@@ -197,10 +224,10 @@ export function EinsatzgebietPage() {
           </Reveal>
           <ul className="mt-14 grid list-none gap-12 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-16">
             {regionBlocks.map((region, index) => (
-              <li key={region.id}>
+              <li key={region.id} id={region.id}>
                 <Reveal delayMs={index * 30}>
                   <div className="border-t border-line pt-7">
-                    <h3 className="text-2xl font-medium text-ink">
+                    <h3 className="text-2xl font-medium text-balance text-ink">
                       {region.title}
                     </h3>
                     <p className="mt-4 text-pretty text-[15px] leading-relaxed text-muted sm:text-base">
@@ -209,12 +236,21 @@ export function EinsatzgebietPage() {
                     <ul className="mt-6 flex flex-col gap-3">
                       {region.links.map((link) => (
                         <li key={link.href + link.label}>
-                          <Link
-                            href={link.href}
-                            className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                          >
-                            {link.label}
-                          </Link>
+                          {link.variant === "primary" ? (
+                            <Link
+                              href={link.href}
+                              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-6 py-3 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
+                            >
+                              {link.label}
+                            </Link>
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                            >
+                              {link.label}
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>
@@ -239,8 +275,8 @@ export function EinsatzgebietPage() {
               Welche Projekte begleitet werden
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Die regionalen Seiten ergänzen die bestehenden Hauptleistungen –
-              sie ersetzen sie nicht.
+              Die regionalen Schwerpunkte ergänzen die bestehenden Leistungen –
+              damit Sie schneller den passenden Einstieg finden.
             </p>
           </Reveal>
           <ul className="mt-12 grid list-none gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -3,6 +3,7 @@ import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
 import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
 import { serviceCards, sharedProcessSteps } from "@/lib/service-pages";
+import { FOOTER_REGION_LINKS } from "@/lib/service-regions";
 
 const projectScopes = [
   {
@@ -161,50 +162,20 @@ export function LeistungenOverviewPage() {
               Regionale Schwerpunkte
             </h2>
             <p className="mt-4 text-pretty text-[15px] leading-relaxed text-muted sm:text-base">
-              Übersicht zum Einsatzgebiet und ausgewählte regionale
-              Leistungsseiten – ohne Filialen vor Ort.
+              Übersicht zum Einsatzgebiet und zu den Orten, in denen RENOMA
+              Projekte begleitet.
             </p>
             <ul className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10">
-              <li>
-                <Link
-                  href="/einsatzgebiet"
-                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                >
-                  Einsatzgebiet ansehen
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/leistungen/badmodernisierung/ludwigsburg"
-                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                >
-                  Ludwigsburg &amp; Remseck
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/leistungen/badmodernisierung/stuttgart"
-                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                >
-                  Stuttgart
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/leistungen/badmodernisierung/heilbronn"
-                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                >
-                  Heilbronn
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/leistungen/badmodernisierung/waiblingen"
-                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                >
-                  Waiblingen
-                </Link>
-              </li>
+              {FOOTER_REGION_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </Reveal>
         </Container>

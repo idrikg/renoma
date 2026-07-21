@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
+import { RegionalCitiesNav } from "@/components/regional-cities-nav";
 import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
 import { KOMPLETTSANIERUNG_FUNNEL_HREF } from "@/components/project-assistant/funnel-preset";
 import {
@@ -9,6 +10,7 @@ import {
   getReferenceCover,
   getReferenceTeaser,
 } from "@/lib/references-data";
+import { REGIONAL_PATHS } from "@/lib/service-regions";
 
 const whenMakesSense = [
   {
@@ -107,7 +109,7 @@ const processSteps = [
     number: "04",
     title: "Umsetzung koordinieren und begleiten",
     description:
-      "RENOMA hält den Überblick und bleibt Ihr fester Ansprechpartner.",
+      "RENOMA hält den Überblick und bleibt Ihr fester Ansprechpartner in Ludwigsburg.",
   },
 ];
 
@@ -118,14 +120,14 @@ const relatedServices = [
     description: "Zur allgemeinen Leistungsseite.",
   },
   {
+    href: REGIONAL_PATHS.bad.ludwigsburg,
+    title: "Badmodernisierung in Ludwigsburg",
+    description: "Badprojekte im gleichen Einsatzgebiet.",
+  },
+  {
     href: "/leistungen/innenrenovierung",
     title: "Innenrenovierung",
     description: "Innenräume im Gesamtvorhaben.",
-  },
-  {
-    href: "/leistungen/badmodernisierung/ludwigsburg",
-    title: "Badmodernisierung in der Region",
-    description: "Badprojekte im gleichen Einsatzgebiet.",
   },
   {
     href: "/leistungen/elektroarbeiten",
@@ -143,14 +145,9 @@ const relatedServices = [
     description: "Flächen im Sanierungsablauf.",
   },
   {
-    href: "/leistungen/fassade-aussenbereich",
-    title: "Fassade & Außenbereich",
-    description: "Außenmaßnahmen bei Bedarf.",
-  },
-  {
-    href: "/einsatzgebiet",
+    href: REGIONAL_PATHS.einsatzgebiet,
     title: "Einsatzgebiet",
-    description: "Bestätigte Orte und Prüfung der Lage.",
+    description: "Wo RENOMA Projekte begleitet.",
   },
 ];
 
@@ -158,12 +155,7 @@ const faqs = [
   {
     question: "Begleitet RENOMA Komplettsanierungen in Ludwigsburg?",
     answer:
-      "Ja. RENOMA begleitet Gesamtvorhaben in diesem Einsatzgebiet – mit klarer Koordination und einem festen Ansprechpartner.",
-  },
-  {
-    question: "Ist eine Projektbegleitung auch in Remseck möglich?",
-    answer:
-      "Ja. Remseck am Neckar gehört zum genannten Einsatzgebiet. Die konkrete Annahme prüfen wir im ersten Gespräch.",
+      "Ja. RENOMA begleitet Gesamtvorhaben in Ludwigsburg – mit klarer Koordination und einem festen Ansprechpartner.",
   },
   {
     question: "Was kann zu einer Komplettsanierung gehören?",
@@ -189,6 +181,11 @@ const faqs = [
     question: "Wie wird das Einsatzgebiet geprüft?",
     answer:
       "Ob Ihr Projekt innerhalb unseres Einsatzgebiets liegt, klären wir direkt im ersten Austausch.",
+  },
+  {
+    question: "Gibt es eine Niederlassung in Ludwigsburg?",
+    answer:
+      "Nein. RENOMA begleitet Projekte beim Kunden vor Ort – ohne lokales Büro oder Niederlassung zu behaupten.",
   },
 ];
 
@@ -216,35 +213,43 @@ export function KomplettsanierungLudwigsburgPage() {
                 label: "Komplettsanierung",
                 href: "/leistungen/komplettsanierung",
               },
-              { label: "Ludwigsburg & Remseck" },
+              { label: "Ludwigsburg" },
             ]}
           />
           <p className="mt-8 text-sm font-medium tracking-[0.18em] text-clay uppercase">
-            Komplettsanierung in Ihrer Region
+            Komplettsanierung in Ludwigsburg
           </p>
           <h1 className="mt-5 max-w-3xl text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12]">
-            Komplettsanierung in Ludwigsburg, Remseck und Umgebung.
+            Komplettsanierung in Ludwigsburg – strukturiert begleitet.
           </h1>
           <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
             Wenn mehrere Bereiche einer Immobilie modernisiert werden sollen,
             müssen Entscheidungen, Reihenfolge und beteiligte Arbeiten sinnvoll
-            zusammenpassen. RENOMA begleitet Komplettsanierungen in Ludwigsburg,
-            Remseck am Neckar und der angrenzenden Umgebung mit einer festen
-            Ansprechperson.
+            zusammenpassen. RENOMA begleitet Komplettsanierungen in Ludwigsburg
+            mit klarer Struktur und einer festen Ansprechperson.
           </p>
-          <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
-            <Link
-              href={KOMPLETTSANIERUNG_FUNNEL_HREF}
-              className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
-            >
-              Sanierungsprojekt starten
-            </Link>
-            <Link
-              href="/leistungen/komplettsanierung"
-              className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-            >
-              Mehr über Komplettsanierungen
-            </Link>
+          <p className="mt-5 text-sm font-medium tracking-[0.06em] text-muted">
+            Persönlich begleitet · klar abgestimmt · feste Ansprechperson
+          </p>
+          <div className="mt-9 flex flex-col items-start gap-4">
+            <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
+              <Link
+                href={KOMPLETTSANIERUNG_FUNNEL_HREF}
+                className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
+              >
+                Sanierungsprojekt starten
+              </Link>
+              <Link
+                href="/leistungen/komplettsanierung"
+                className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Mehr über Komplettsanierungen
+              </Link>
+            </div>
+            <p className="max-w-md text-pretty text-[15px] leading-relaxed text-muted">
+              Sie schildern zunächst nur Ihr Vorhaben. Die nächsten Schritte
+              besprechen wir persönlich.
+            </p>
           </div>
         </Container>
       </header>
@@ -364,18 +369,20 @@ export function KomplettsanierungLudwigsburgPage() {
                 id="begleitung-heading"
                 className="text-display-2 text-balance text-ink"
               >
-                Persönliche Begleitung vor Ort
+                Strukturiert begleitet in Ludwigsburg
               </h2>
             </Reveal>
             <Reveal delayMs={50} className="max-w-xl space-y-5 lg:pt-3">
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                Ludwigsburg und Remseck am Neckar sind Teil unseres
-                Einsatzgebiets – keine erfundene Niederlassung. Ob wir Ihr
-                Vorhaben annehmen, prüfen wir individuell.
+                RENOMA begleitet Komplettsanierungen in Ludwigsburg persönlich –
+                vom ersten Austausch bis zur koordinierten Umsetzung. Maßnahmen,
+                Reihenfolge und beteiligte Arbeiten werden gemeinsam
+                strukturiert.
               </p>
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                Der Erstkontakt erfolgt über den Projektassistenten. Ort und
-                PLZ geben Sie dort wie gewohnt an.
+                Ob Ihr konkretes Vorhaben angenommen wird, prüfen wir
+                individuell im ersten Gespräch. Der Erstkontakt erfolgt über den
+                Projektassistenten.
               </p>
             </Reveal>
           </div>
@@ -395,9 +402,16 @@ export function KomplettsanierungLudwigsburgPage() {
               Einsatzgebiet
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Ludwigsburg, Remseck am Neckar und angrenzende Umgebung nach
-              projektbezogener Prüfung. Ob Ihr Projekt innerhalb unseres
-              Einsatzgebiets liegt, klären wir direkt im ersten Austausch.
+              Ob Ihr Projekt in Ludwigsburg liegt, klären wir im ersten
+              Austausch.
+            </p>
+            <p className="mt-4">
+              <Link
+                href={REGIONAL_PATHS.einsatzgebiet}
+                className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Einsatzgebiet ansehen
+              </Link>
             </p>
           </Reveal>
         </Container>
@@ -577,6 +591,11 @@ export function KomplettsanierungLudwigsburgPage() {
         </Container>
       </section>
 
+      <RegionalCitiesNav
+        context="komplett"
+        currentPath="/leistungen/komplettsanierung/ludwigsburg"
+      />
+
       <section className="relative overflow-hidden py-24 sm:py-32">
         <div aria-hidden className="bg-hero-glow absolute inset-0 -z-10" />
         <Container>
@@ -588,13 +607,20 @@ export function KomplettsanierungLudwigsburgPage() {
               Schildern Sie uns Ihre Ausgangssituation. RENOMA bespricht mit
               Ihnen die nächsten sinnvollen Schritte.
             </p>
-            <div className="mt-10">
+            <p className="mt-5 text-sm font-medium tracking-[0.06em] text-muted">
+              Persönlich begleitet · klar abgestimmt · feste Ansprechperson
+            </p>
+            <div className="mt-10 flex flex-col items-center gap-4">
               <Link
                 href={KOMPLETTSANIERUNG_FUNNEL_HREF}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               >
                 Sanierungsprojekt starten
               </Link>
+              <p className="max-w-md text-pretty text-[15px] leading-relaxed text-muted">
+                Sie schildern zunächst nur Ihr Vorhaben. Die nächsten Schritte
+                besprechen wir persönlich.
+              </p>
             </div>
           </Reveal>
         </Container>

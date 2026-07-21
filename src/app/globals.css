@@ -67,10 +67,27 @@ h4,
 h5,
 h6,
 nav a,
-button {
+button,
+p,
+li,
+summary,
+a,
+span {
   hyphens: none;
   -webkit-hyphens: none;
   word-break: normal;
+  overflow-wrap: normal;
+}
+
+/* Long technical strings only — never use on marketing copy. */
+.break-technical {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Offset sticky/fixed header when jumping to in-page anchors. */
+#remseck-am-neckar {
+  scroll-margin-top: 6.5rem;
 }
 
 body {
@@ -139,10 +156,9 @@ body {
  * Hyphenation is deliberately disabled: `hyphens: auto` was splitting
  * words mid-syllable on real phones (e.g. "Reno-vieren", "Ent-
  * scheidungen", "Sei-te"), which read as broken, not premium. Long
- * unbreakable German compounds are instead protected by `overflow-wrap:
- * break-word` — a silent, hyphen-free fallback that only kicks in if a
- * single word truly cannot fit, which the fluid clamp() sizes below and
- * each section's max-width are chosen to avoid in the first place.
+ * unbreakable German compounds should wrap only at spaces. Prefer slightly
+ * smaller fluid sizes over mid-word breaks. Do not use overflow-wrap:
+ * break-word on display headlines — it produced single-letter line wraps.
  */
 .text-display-1,
 .text-display-2,
@@ -151,7 +167,7 @@ body {
   hyphens: none;
   -webkit-hyphens: none;
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
 }
 
 .text-display-1 {
@@ -161,7 +177,7 @@ body {
 }
 
 .text-display-2 {
-  font-size: clamp(2rem, 1.7rem + 1.5vw, 3rem);
+  font-size: clamp(1.75rem, 1.45rem + 1.5vw, 3rem);
   line-height: 1.15;
   letter-spacing: -0.01em;
 }

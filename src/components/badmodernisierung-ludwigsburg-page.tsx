@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
+import { RegionalCitiesNav } from "@/components/regional-cities-nav";
 import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
 import { BAD_MODERNIZATION_FUNNEL_HREF } from "@/components/project-assistant/funnel-preset";
 import {
@@ -9,6 +10,7 @@ import {
   getReferenceCover,
   getReferenceTeaser,
 } from "@/lib/references-data";
+import { REGIONAL_PATHS } from "@/lib/service-regions";
 
 const situations = [
   {
@@ -88,14 +90,14 @@ const relatedServices = [
     description: "Licht und Anschlüsse in den Ablauf einbinden.",
   },
   {
-    href: "/leistungen/komplettsanierung/ludwigsburg",
-    title: "Komplettsanierung in der Region",
+    href: REGIONAL_PATHS.komplett.ludwigsburg,
+    title: "Komplettsanierung in Ludwigsburg",
     description: "Wenn das Bad Teil eines größeren Vorhabens ist.",
   },
   {
-    href: "/einsatzgebiet",
+    href: REGIONAL_PATHS.einsatzgebiet,
     title: "Einsatzgebiet",
-    description: "Ludwigsburg, Remseck und weitere bestätigte Orte.",
+    description: "Überblick über die Regionen, in denen RENOMA Projekte begleitet.",
   },
 ];
 
@@ -103,12 +105,7 @@ const faqs = [
   {
     question: "Begleitet RENOMA Badmodernisierungen in Ludwigsburg?",
     answer:
-      "Ja. RENOMA begleitet Badprojekte in diesem Einsatzgebiet persönlich – von der ersten Einordnung bis zur koordinierten Umsetzung.",
-  },
-  {
-    question: "Ist RENOMA auch in Remseck am Neckar tätig?",
-    answer:
-      "Ja. Remseck am Neckar gehört zum genannten Einsatzgebiet. Ob Ihr konkretes Vorhaben passt, klären wir im ersten Austausch.",
+      "Ja. RENOMA begleitet Badprojekte in Ludwigsburg persönlich – von der ersten Einordnung bis zur koordinierten Umsetzung.",
   },
   {
     question:
@@ -117,14 +114,14 @@ const faqs = [
       "Ja. Gerade Sanitär, Oberflächen und Elektrik sollten gemeinsam betrachtet werden, damit Reihenfolge und Details zusammenpassen.",
   },
   {
-    question: "Kann ich Bilder meines aktuellen Badezimmers hochladen?",
-    answer:
-      "Ja. Über den Projektassistenten können Sie Bilder und vorhandene Unterlagen mitschicken.",
-  },
-  {
     question: "Ist auch eine teilweise Modernisierung möglich?",
     answer:
       "Ja. Nicht jedes Bad muss vollständig erneuert werden. Der Umfang ergibt sich aus Zustand, Wunsch und sinnvoller Abstimmung.",
+  },
+  {
+    question: "Kann ich Bilder meines aktuellen Badezimmers hochladen?",
+    answer:
+      "Ja. Über den Projektassistenten können Sie Bilder und vorhandene Unterlagen mitschicken.",
   },
   {
     question: "Wie beginnt die Planung?",
@@ -135,6 +132,11 @@ const faqs = [
     question: "Wie wird geprüft, ob mein Wohnort zum Einsatzgebiet gehört?",
     answer:
       "Ob Ihr Projekt innerhalb unseres Einsatzgebiets liegt, klären wir direkt im ersten Austausch – ohne automatische Zusagen aus der Ferne.",
+  },
+  {
+    question: "Gibt es eine Niederlassung in Ludwigsburg?",
+    answer:
+      "Nein. RENOMA begleitet Projekte beim Kunden vor Ort – ohne lokales Büro oder Niederlassung zu behaupten.",
   },
 ];
 
@@ -157,37 +159,45 @@ export function BadmodernisierungLudwigsburgPage() {
                 label: "Badmodernisierung",
                 href: "/leistungen/badmodernisierung",
               },
-              { label: "Ludwigsburg & Remseck" },
+              { label: "Ludwigsburg" },
             ]}
           />
           <div className="mt-8 grid items-center gap-y-12 lg:grid-cols-[1.05fr_1fr] lg:gap-x-14">
             <div className="min-w-0">
               <p className="text-sm font-medium tracking-[0.18em] text-clay uppercase">
-                Badmodernisierung in Ihrer Region
+                Badmodernisierung in Ludwigsburg
               </p>
               <h1 className="mt-5 text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12]">
-                Badmodernisierung in Ludwigsburg, Remseck und Umgebung.
+                Badmodernisierung in Ludwigsburg – persönlich begleitet.
               </h1>
               <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
                 Sie möchten Ihr Badezimmer modernisieren und wünschen sich einen
                 klaren Ablauf mit einer festen Ansprechperson? RENOMA begleitet
-                Badprojekte in Ludwigsburg, Remseck am Neckar und der
-                angrenzenden Umgebung persönlich – von den ersten Vorstellungen
-                bis zur abgestimmten Umsetzung.
+                Badprojekte in Ludwigsburg persönlich – von den ersten
+                Vorstellungen bis zur abgestimmten Umsetzung.
               </p>
-              <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
-                <Link
-                  href={BAD_MODERNIZATION_FUNNEL_HREF}
-                  className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
-                >
-                  Badprojekt starten
-                </Link>
-                <Link
-                  href="/leistungen/badmodernisierung"
-                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-                >
-                  Mehr über Badmodernisierung
-                </Link>
+              <p className="mt-5 text-sm font-medium tracking-[0.06em] text-muted">
+                Persönlich begleitet · klar abgestimmt · feste Ansprechperson
+              </p>
+              <div className="mt-9 flex flex-col items-start gap-4">
+                <div className="flex w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
+                  <Link
+                    href={BAD_MODERNIZATION_FUNNEL_HREF}
+                    className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
+                  >
+                    Badprojekt starten
+                  </Link>
+                  <Link
+                    href="/leistungen/badmodernisierung"
+                    className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                  >
+                    Mehr über Badmodernisierung
+                  </Link>
+                </div>
+                <p className="max-w-md text-pretty text-[15px] leading-relaxed text-muted">
+                  Sie schildern zunächst nur Ihr Vorhaben. Die nächsten Schritte
+                  besprechen wir persönlich.
+                </p>
               </div>
             </div>
 
@@ -282,18 +292,20 @@ export function BadmodernisierungLudwigsburgPage() {
                 id="begleitung-heading"
                 className="text-display-2 text-balance text-ink"
               >
-                Persönlich begleitet in Ludwigsburg und Remseck.
+                Persönlich begleitet in Ludwigsburg
               </h2>
             </Reveal>
             <Reveal delayMs={50} className="max-w-xl space-y-5 lg:pt-3">
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                RENOMA begleitet Projekte beim Kunden vor Ort. Zuerst nehmen wir
-                Ihre Wünsche und die vorhandene Situation auf, stimmen die
-                nächsten Schritte ab und koordinieren die beteiligten Arbeiten.
+                RENOMA begleitet Badprojekte in Ludwigsburg persönlich – vom
+                ersten Austausch bis zur koordinierten Umsetzung. Zuerst nehmen
+                wir Ihre Wünsche und die vorhandene Situation auf und stimmen
+                die nächsten Schritte mit Ihnen ab.
               </p>
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                Während des Projekts bleibt eine feste Ansprechperson – ohne
-                dass wir eine Niederlassung oder ein Büro vor Ort behaupten.
+                Während des Projekts bleibt eine feste Ansprechperson. Ob Ihr
+                konkretes Vorhaben angenommen wird, prüfen wir individuell im
+                ersten Gespräch.
               </p>
             </Reveal>
           </div>
@@ -310,29 +322,21 @@ export function BadmodernisierungLudwigsburgPage() {
               id="einsatzgebiet-heading"
               className="text-3xl font-medium tracking-tight text-ink sm:text-4xl"
             >
-              Unser Einsatzgebiet rund um Ludwigsburg.
+              Einsatzgebiet
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Sichtbarer Schwerpunkt sind Ludwigsburg und Remseck am Neckar.
-              Angrenzende Orte prüfen wir projektbezogen.
+              Ob Ihr Projekt in Ludwigsburg liegt, klären wir im ersten
+              Austausch.
             </p>
-            <p className="mt-4 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Ob Ihr Projekt innerhalb unseres Einsatzgebiets liegt, klären wir
-              direkt im ersten Austausch.
+            <p className="mt-4">
+              <Link
+                href={REGIONAL_PATHS.einsatzgebiet}
+                className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Einsatzgebiet ansehen
+              </Link>
             </p>
           </Reveal>
-          <ul className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-10 sm:gap-y-3">
-            {["Ludwigsburg", "Remseck am Neckar", "angrenzende Umgebung"].map(
-              (place) => (
-                <li
-                  key={place}
-                  className="border-t border-line pt-4 text-[15px] font-medium text-ink sm:border-t-0 sm:pt-0"
-                >
-                  {place}
-                </li>
-              ),
-            )}
-          </ul>
         </Container>
       </section>
 
@@ -406,9 +410,8 @@ export function BadmodernisierungLudwigsburgPage() {
                   </p>
                 )}
                 <p className="mt-4 max-w-lg text-pretty text-[15px] leading-relaxed text-muted">
-                  Der Ort dieses Projekts ist hier nicht als Ludwigsburg oder
-                  Remseck ausgewiesen – der Einblick zeigt die Qualität der
-                  Umsetzung.
+                  Der Ort dieses Projekts ist hier nicht als Ludwigsburg
+                  ausgewiesen – der Einblick zeigt die Qualität der Umsetzung.
                 </p>
                 <div className="mt-9">
                   <Link
@@ -437,7 +440,7 @@ export function BadmodernisierungLudwigsburgPage() {
               Verknüpfte Leistungen
             </h2>
           </Reveal>
-          <ul className="mt-12 grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-12 grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {relatedServices.map((service, index) => (
               <li key={service.href}>
                 <Reveal delayMs={index * 35}>
@@ -503,6 +506,11 @@ export function BadmodernisierungLudwigsburgPage() {
         </Container>
       </section>
 
+      <RegionalCitiesNav
+        context="bad"
+        currentPath="/leistungen/badmodernisierung/ludwigsburg"
+      />
+
       <section className="relative overflow-hidden py-24 sm:py-32">
         <div aria-hidden className="bg-hero-glow absolute inset-0 -z-10" />
         <Container>
@@ -514,13 +522,20 @@ export function BadmodernisierungLudwigsburgPage() {
               Zeigen Sie uns, was Sie verändern möchten. Wir melden uns
               persönlich und besprechen die nächsten Schritte.
             </p>
-            <div className="mt-10">
+            <p className="mt-5 text-sm font-medium tracking-[0.06em] text-muted">
+              Persönlich begleitet · klar abgestimmt · feste Ansprechperson
+            </p>
+            <div className="mt-10 flex flex-col items-center gap-4">
               <Link
                 href={BAD_MODERNIZATION_FUNNEL_HREF}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               >
                 Badprojekt starten
               </Link>
+              <p className="max-w-md text-pretty text-[15px] leading-relaxed text-muted">
+                Sie schildern zunächst nur Ihr Vorhaben. Die nächsten Schritte
+                besprechen wir persönlich.
+              </p>
             </div>
           </Reveal>
         </Container>
