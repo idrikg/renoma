@@ -31,6 +31,7 @@ import {
   prefetchPostalCityMap,
   sanitizeGermanPostalCode,
 } from "@/lib/postal-cities";
+import { getContactEmail } from "@/lib/legal-config";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -252,49 +253,146 @@ export function StepImages({
   images,
   onAddImages,
   onRemoveImage,
+  onBusyChange,
 }: {
   onNext: () => void;
   images: LocalImage[];
-  onAddImages: (files: FileList) => void;
+  onAddImages: (files: File[]) => void;
   onRemoveImage: (id: string) => void;
+  onBusyChange?: (busy: boolean) => void;
 }) {
   const inputId = useId();
+  const errorId = useId();
+  const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const contactEmail = getContactEmail();
+
+  useEffect(() => {
+    return () => {
+      onBusyChange?.(false);
+    };
+  }, [onBusyChange]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isProcessing) return;
     onNext();
+  }
+
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const list = event.target.files;
+    event.target.value = "";
+    if (!list || list.length === 0) return;
+
+    setIsProcessing(true);
+    onBusyChange?.(true);
+    setError(null);
+
+    try {
+      // Yield once so the sticky bar can show the processing label before
+      // synchronous object-URL work runs on larger selections.
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 0);
+      });
+
+      const remainingSlots = Math.max(0, MAX_FUNNEL_IMAGES - images.length);
+      if (remainingSlots === 0) {
+        setError(`Sie können höchstens ${MAX_FUNNEL_IMAGES} Bilder auswählen.`);
+        return;
+      }
+
+      const accepted: File[] = [];
+      let hadInvalidType = false;
+      let hadTooLarge = false;
+      let hadTooMany = false;
+
+      for (const file of Array.from(list)) {
+        if (accepted.length >= remainingSlots) {
+          hadTooMany = true;
+          break;
+        }
+        if (!isAcceptedImageFile(file)) {
+          hadInvalidType = true;
+          continue;
+        }
+        if (file.size > MAX_IMAGE_BYTES) {
+          hadTooLarge = true;
+          continue;
+        }
+        accepted.push(file);
+      }
+
+      if (accepted.length > 0) {
+        onAddImages(accepted);
+      }
+
+      if (hadInvalidType) {
+        setError("Bitte wählen Sie JPG- oder PNG-Dateien aus.");
+      } else if (hadTooLarge) {
+        setError("Einzelne Dateien dürfen höchstens 10 MB groß sein.");
+      } else if (hadTooMany) {
+        setError(`Sie können höchstens ${MAX_FUNNEL_IMAGES} Bilder auswählen.`);
+      } else if (accepted.length === 0) {
+        setError("Bitte wählen Sie JPG- oder PNG-Dateien aus.");
+      }
+    } finally {
+      setIsProcessing(false);
+      onBusyChange?.(false);
+    }
   }
 
   return (
     <StepShell
-      title="Bilder"
-      description="Fotos helfen uns, Ihr Projekt besser zu verstehen. Dieser Schritt ist optional."
+      title="Bilder hinzufügen"
+      titleBadge="Optional"
+      description="Bilder helfen uns dabei, Ihr Vorhaben besser einzuschätzen. Sie können diesen Schritt aber auch überspringen und Bilder später nachreichen."
       onSubmit={handleSubmit}
     >
       <div>
+        <p className="mb-4 text-[15px] leading-relaxed text-muted">
+          Auch ohne Bilder können Sie Ihre Anfrage vollständig absenden.
+        </p>
+
         <label
           htmlFor={inputId}
-          className="flex min-h-11 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-line px-6 py-8 text-center text-[15px] text-muted outline-none transition-colors hover:border-clay focus-within:ring-2 focus-within:ring-sage sm:py-10"
+          className={`flex min-h-11 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-6 py-7 text-center text-[15px] outline-none transition-colors sm:py-9 ${
+            error
+              ? "border-clay text-muted"
+              : "border-line text-muted hover:border-clay-soft"
+          } focus-within:ring-2 focus-within:ring-sage ${
+            isProcessing ? "pointer-events-none opacity-70" : ""
+          }`}
         >
-          Bilder auswählen
-          <span className="mt-1 text-sm text-muted">JPG, PNG — mehrere Dateien möglich</span>
+          {isProcessing ? "Bild wird verarbeitet …" : "Bilder auswählen"}
+          <span className="mt-1 text-sm text-muted">
+            JPG, PNG — mehrere Dateien möglich
+          </span>
         </label>
         <input
           id={inputId}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
           multiple
+          disabled={isProcessing}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           className="sr-only"
-          onChange={(event) => {
-            if (event.target.files) onAddImages(event.target.files);
-            event.target.value = "";
-          }}
+          onChange={handleFileChange}
         />
+
+        {error && (
+          <p id={errorId} role="alert" className="mt-3 text-sm text-clay">
+            {error}
+          </p>
+        )}
 
         {images.length > 0 && (
           <ul className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
             {images.map((image) => (
-              <li key={image.id} className="group relative aspect-square overflow-hidden rounded-lg border border-line">
+              <li
+                key={image.id}
+                className="group relative aspect-square overflow-hidden rounded-lg border border-line"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview, next/image cannot optimize object URLs */}
                 <img
                   src={image.previewUrl}
@@ -305,7 +403,7 @@ export function StepImages({
                   type="button"
                   onClick={() => onRemoveImage(image.id)}
                   aria-label={`${image.name} entfernen`}
-                  className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-ink/80 text-paper outline-none focus-visible:ring-2 focus-visible:ring-sage"
+                  className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-ink/80 text-paper outline-none focus-visible:ring-2 focus-visible:ring-sage"
                 >
                   ×
                 </button>
@@ -314,21 +412,53 @@ export function StepImages({
           </ul>
         )}
 
-        {/*
-         * No persistent file storage is configured yet. The selection/
-         * preview/removal experience itself stays available in every
-         * environment — only the explanatory copy changes: production
-         * visitors get an honest, customer-friendly note; development
-         * gets the technical detail. Never implies files were uploaded
-         * permanently.
-         */}
-        <p className="mt-4 text-sm text-muted">
-          {isProduction
-            ? "Bilder können Sie optional auswählen. Falls die Übertragung noch nicht möglich ist, können Sie uns die Bilder nach dem persönlichen Erstkontakt senden."
-            : "[Entwicklungsansicht] Der permanente Bild-Upload ist technisch noch nicht angebunden. Ihre Bilder werden aktuell nur lokal in Ihrem Browser angezeigt und nicht dauerhaft gespeichert."}
+        <p className="mt-4 text-sm leading-relaxed text-muted">
+          Sie können Bilder später auch per E-Mail nachreichen
+          {contactEmail ? (
+            <>
+              {" "}
+              (
+              <a
+                href={`mailto:${contactEmail}`}
+                className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                {contactEmail}
+              </a>
+              )
+            </>
+          ) : null}
+          .
         </p>
+
+        {!isProduction && (
+          <p className="mt-2 text-sm text-muted">
+            [Entwicklungsansicht] Der permanente Bild-Upload ist technisch noch
+            nicht angebunden. Ausgewählte Bilder bleiben nur lokal in Ihrem
+            Browser.
+          </p>
+        )}
       </div>
     </StepShell>
+  );
+}
+
+const MAX_FUNNEL_IMAGES = 30;
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const ACCEPTED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
+
+function isAcceptedImageFile(file: File): boolean {
+  if (ACCEPTED_IMAGE_TYPES.has(file.type)) return true;
+  // Some browsers leave type empty — fall back to extension.
+  const name = file.name.toLowerCase();
+  return (
+    name.endsWith(".jpg") ||
+    name.endsWith(".jpeg") ||
+    name.endsWith(".png") ||
+    name.endsWith(".webp")
   );
 }
 

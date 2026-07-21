@@ -131,6 +131,7 @@ export function ProjectAssistant({
     };
   });
   const [images, setImages] = useState<LocalImage[]>([]);
+  const [imagesBusy, setImagesBusy] = useState(false);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const [isPending, startTransition] = useTransition();
   /** True when this session opened with a valid URL preset (controls the banner). */
@@ -266,8 +267,9 @@ export function ProjectAssistant({
     setStep(1);
   }
 
-  function addImages(files: FileList) {
-    const next: LocalImage[] = Array.from(files).map((file) => ({
+  function addImages(files: File[]) {
+    if (files.length === 0) return;
+    const next: LocalImage[] = files.map((file) => ({
       id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
       previewUrl: URL.createObjectURL(file),
       name: file.name,
@@ -306,7 +308,16 @@ export function ProjectAssistant({
   }
 
   const showActionBar = step >= 2;
-  const nextDisabled = !canProceed(step, data);
+  const nextDisabled =
+    step === 3 ? imagesBusy : !canProceed(step, data);
+  const nextLabel =
+    step === 9
+      ? "Projekt starten"
+      : step === 3 && imagesBusy
+        ? "Bild wird verarbeitet …"
+        : step === 3 && images.length === 0
+          ? "Überspringen"
+          : "Weiter";
   const showPresetBanner =
     enteredViaPreset &&
     Boolean(initialPreset) &&
@@ -355,6 +366,7 @@ export function ProjectAssistant({
             images={images}
             onAddImages={addImages}
             onRemoveImage={removeImage}
+            onBusyChange={setImagesBusy}
           />
         )}
         {step === 4 && (
@@ -390,7 +402,7 @@ export function ProjectAssistant({
           onBack={goBack}
           nextDisabled={nextDisabled}
           pending={step === 9 ? isPending : false}
-          nextLabel={step === 9 ? "Projekt starten" : "Weiter"}
+          nextLabel={nextLabel}
           statusLabel={step === 2 ? categoryStatusLabel(data.categories.length) : undefined}
         />
       )}

@@ -4,6 +4,7 @@ import { FUNNEL_STEP_FORM_ID } from "@/components/project-assistant/funnel-actio
 
 export function StepShell({
   title,
+  titleBadge,
   description,
   descriptionClassName,
   children,
@@ -13,6 +14,8 @@ export function StepShell({
   withStickyFooter = true,
 }: {
   title: string;
+  /** Optional quiet badge shown beside the title, e.g. "Optional". */
+  titleBadge?: string;
   description?: string;
   descriptionClassName?: string;
   children: ReactNode;
@@ -28,9 +31,22 @@ export function StepShell({
       noValidate
     >
       <div>
-        <h1 className="text-[1.375rem] font-medium tracking-tight text-balance text-ink sm:text-3xl">
-          {title}
-        </h1>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+          <h1 className="text-[1.375rem] font-medium tracking-tight text-balance text-ink sm:text-3xl">
+            {title}
+            {titleBadge ? (
+              <span className="sr-only">{` (${titleBadge})`}</span>
+            ) : null}
+          </h1>
+          {titleBadge ? (
+            <span
+              aria-hidden="true"
+              className="rounded-full border border-line bg-paper-dim px-2.5 py-0.5 text-[11px] font-medium tracking-[0.08em] text-muted uppercase"
+            >
+              {titleBadge}
+            </span>
+          ) : null}
+        </div>
         {description && (
           <p
             className={
