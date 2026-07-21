@@ -5,6 +5,7 @@ import { RealitySection } from "@/components/reality-section";
 import { PivotSection } from "@/components/pivot-section";
 import { PositioningStatement } from "@/components/positioning-statement";
 import { BenefitsSection } from "@/components/benefits-section";
+import { ServicesTeaserSection } from "@/components/services-teaser-section";
 import { ReferencesSection } from "@/components/references-section";
 import { ProcessSection } from "@/components/process-section";
 import { FounderSection } from "@/components/founder-section";
@@ -56,6 +57,7 @@ export default function Home() {
         <PivotSection />
         <PositioningStatement />
         <BenefitsSection />
+        <ServicesTeaserSection />
         {showReferences && <ReferencesSection />}
         <ProcessSection />
         <FounderSection />

@@ -7,14 +7,24 @@ import {
 import type { WizardData } from "@/components/project-assistant/types";
 
 /**
- * Confirmed bathroom-modernization entry preset only.
- * Query: /projekt-starten?bereich=innen&leistung=bad-sanitaer
+ * Marketing entry presets for /projekt-starten.
+ * Query: ?bereich=<mainAreaOptions.value>&leistung=<renovationCategories.value>
  *
- * Values must match `mainAreaOptions` / `renovationCategories` exactly —
+ * Only allowlisted combinations that exist in validation.ts are supported —
  * never invent parallel IDs for marketing URLs.
  */
+
 export const BAD_MODERNIZATION_FUNNEL_HREF =
   "/projekt-starten?bereich=innen&leistung=bad-sanitaer";
+
+export const KOMPLETTSANIERUNG_FUNNEL_HREF =
+  "/projekt-starten?bereich=gesamt&leistung=komplettsanierung";
+
+export const ELEKTRIK_FUNNEL_HREF =
+  "/projekt-starten?bereich=innen&leistung=elektrik";
+
+export const FENSTER_TUEREN_FUNNEL_HREF =
+  "/projekt-starten?bereich=innen&leistung=fenster-tueren";
 
 const ALLOWED_BEREICH: ReadonlySet<string> = new Set(
   mainAreaOptions.map((option) => option.value),
@@ -24,16 +34,33 @@ const ALLOWED_LEISTUNG: ReadonlySet<string> = new Set(
 );
 
 export type FunnelPreset = {
-  mainArea: "innen";
-  categories: readonly ["bad-sanitaer"];
+  mainArea: string;
+  categories: readonly string[];
   summaryLabel: string;
 };
 
-const BATHROOM_PRESET: FunnelPreset = {
-  mainArea: "innen",
-  categories: ["bad-sanitaer"],
-  summaryLabel: "Innenbereich · Bad & Sanitär",
-};
+const PRESETS: readonly FunnelPreset[] = [
+  {
+    mainArea: "innen",
+    categories: ["bad-sanitaer"],
+    summaryLabel: "Innenbereich · Bad & Sanitär",
+  },
+  {
+    mainArea: "gesamt",
+    categories: ["komplettsanierung"],
+    summaryLabel: "Gesamtprojekt · Komplettsanierung",
+  },
+  {
+    mainArea: "innen",
+    categories: ["elektrik"],
+    summaryLabel: "Innenbereich · Elektrik",
+  },
+  {
+    mainArea: "innen",
+    categories: ["fenster-tueren"],
+    summaryLabel: "Innenbereich · Fenster & Türen",
+  },
+];
 
 function readParam(
   params: URLSearchParams | Record<string, string | string[] | undefined>,
@@ -51,10 +78,19 @@ function readParam(
   return null;
 }
 
+function findPreset(bereich: string, leistung: string): FunnelPreset | null {
+  return (
+    PRESETS.find(
+      (preset) =>
+        preset.mainArea === bereich && preset.categories[0] === leistung,
+    ) ?? null
+  );
+}
+
 /**
  * Returns a preset only when both query values are present, allowlisted,
- * and match the single supported bathroom entry. Unknown or partial
- * params yield null — the funnel starts normally.
+ * belong together in categoriesByMainArea, and match a supported marketing
+ * entry. Unknown or partial params yield null — the funnel starts normally.
  */
 export function parseFunnelPreset(
   params: URLSearchParams | Record<string, string | string[] | undefined>,
@@ -66,14 +102,11 @@ export function parseFunnelPreset(
   if (!ALLOWED_BEREICH.has(bereich) || !ALLOWED_LEISTUNG.has(leistung)) {
     return null;
   }
-  if (bereich !== BATHROOM_PRESET.mainArea) return null;
-  if (leistung !== BATHROOM_PRESET.categories[0]) return null;
 
-  // Structural check: leistung must belong to the chosen main area.
   const allowedForArea = categoriesByMainArea[bereich] ?? [];
   if (!allowedForArea.includes(leistung)) return null;
 
-  return BATHROOM_PRESET;
+  return findPreset(bereich, leistung);
 }
 
 /** First step that still needs attention after applying known answers. */

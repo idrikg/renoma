@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
+import { ServiceBreadcrumbs } from "@/components/service-breadcrumbs";
 import { BAD_MODERNIZATION_FUNNEL_HREF } from "@/components/project-assistant/funnel-preset";
 import {
   getDetailImages,
@@ -99,7 +100,14 @@ export function BadmodernisierungPage() {
       {/* A. Hero — no Reveal on first viewport */}
       <header className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24">
         <Container>
-          <div className="grid items-center gap-y-12 lg:grid-cols-[1.05fr_1fr] lg:gap-x-14">
+          <ServiceBreadcrumbs
+            items={[
+              { label: "Startseite", href: "/" },
+              { label: "Leistungen", href: "/leistungen" },
+              { label: "Badmodernisierung" },
+            ]}
+          />
+          <div className="mt-8 grid items-center gap-y-12 lg:grid-cols-[1.05fr_1fr] lg:gap-x-14">
             <div className="min-w-0">
               <p className="text-sm font-medium tracking-[0.18em] text-clay uppercase">
                 Badmodernisierung
@@ -127,6 +135,12 @@ export function BadmodernisierungPage() {
                     Referenz ansehen
                   </Link>
                 )}
+                <Link
+                  href="/leistungen"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Alle Leistungen
+                </Link>
               </div>
             </div>
 
@@ -169,7 +183,15 @@ export function BadmodernisierungPage() {
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
                 RENOMA hilft dabei, die einzelnen Entscheidungen zu strukturieren
                 und das Vorhaben verständlich aufzubauen – damit aus vielen
-                Einzelheiten ein klarer nächster Schritt wird.
+                Einzelheiten ein klarer nächster Schritt wird. Gehört das Bad zu
+                einem größeren Vorhaben, kann auch eine{" "}
+                <Link
+                  href="/leistungen/komplettsanierung"
+                  className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Komplettsanierung
+                </Link>{" "}
+                der passende Rahmen sein.
               </p>
             </Reveal>
           </div>

@@ -9,6 +9,7 @@ export type NavLink = { href: string; label: string };
  */
 const allNavLinks: NavLink[] = [
   { href: "/#warum-renoma", label: "Warum RENOMA" },
+  { href: "/leistungen", label: "Leistungen" },
   { href: "/#referenzen", label: "Referenzen" },
   { href: "/#ablauf", label: "So begleiten wir Sie" },
   { href: "/#ueber-renoma", label: "Über RENOMA" },

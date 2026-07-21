@@ -38,6 +38,25 @@ export function ReferencesSection() {
               >
                 Badmodernisierung ansehen
               </Link>
+              <span aria-hidden="true" className="mx-2 text-line">
+                ·
+              </span>
+              <Link
+                href="/leistungen"
+                className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Alle Leistungen
+              </Link>
+            </p>
+          )}
+          {!hasBathroomModernization && (
+            <p className="mt-4 text-[15px] leading-relaxed text-muted">
+              <Link
+                href="/leistungen"
+                className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Leistungen ansehen
+              </Link>
             </p>
           )}
         </Reveal>
