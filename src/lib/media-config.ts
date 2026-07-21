@@ -10,12 +10,12 @@
 export const mediaConfig = {
   heroImage: {
     src: "/images/hero/renoma-hero.jpg",
-    alt: "Heller, modern gestalteter Wohnraum mit maßgefertigtem Einbauregal und natürlichen Akzenten",
-    // Portrait source (768×1024). Desktop 4/5 frame: slight bias keeps
-    // shelving and plant corner visible. Mobile 16/11 frame crops more
-    // vertically — lower bias avoids empty ceiling and keeps the room.
-    objectPosition: "48% 42%",
-    objectPositionMobile: "46% 55%",
+    alt: "Modernes Bad mit beleuchtetem Spiegel, Holz-Waschtisch und Walk-in-Dusche",
+    // Portrait source (764×1024). Desktop 4/5: slight right bias keeps
+    // vanity and lit mirror as focus. Mobile 16/11 crops vertically —
+    // mid bias keeps wash area and shower niche in frame.
+    objectPosition: "55% 44%",
+    objectPositionMobile: "54% 48%",
   } as {
     src: string;
     alt: string;
