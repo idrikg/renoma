@@ -57,14 +57,14 @@ export function MobileNav({ links }: { links: NavLink[] }) {
         >
           <nav aria-label="Hauptnavigation" className="flex flex-col gap-1">
             {links.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-3 text-base font-medium text-ink outline-none hover:bg-paper-dim focus-visible:ring-2 focus-visible:ring-sage"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <Link
               href="/projekt-starten"

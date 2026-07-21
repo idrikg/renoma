@@ -2,11 +2,16 @@ import { hasPublishedReferences } from "@/lib/references-data";
 
 export type NavLink = { href: string; label: string };
 
+/**
+ * Homepage section anchors. Always use root-prefixed hashes (`/#…`) so
+ * links resolve correctly from any route (e.g. `/referenzen/bad-01`),
+ * not as relative hashes that stay on the current page.
+ */
 const allNavLinks: NavLink[] = [
-  { href: "#warum-renoma", label: "Warum RENOMA" },
-  { href: "#referenzen", label: "Referenzen" },
-  { href: "#ablauf", label: "So begleiten wir Sie" },
-  { href: "#ueber-renoma", label: "Über RENOMA" },
+  { href: "/#warum-renoma", label: "Warum RENOMA" },
+  { href: "/#referenzen", label: "Referenzen" },
+  { href: "/#ablauf", label: "So begleiten wir Sie" },
+  { href: "/#ueber-renoma", label: "Über RENOMA" },
 ];
 
 /**
@@ -16,5 +21,5 @@ const allNavLinks: NavLink[] = [
  */
 export function getNavLinks(): NavLink[] {
   if (hasPublishedReferences()) return allNavLinks;
-  return allNavLinks.filter((link) => link.href !== "#referenzen");
+  return allNavLinks.filter((link) => link.href !== "/#referenzen");
 }

@@ -21,13 +21,13 @@ export function SiteHeader() {
           className="hidden items-center gap-8 lg:flex"
         >
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="text-sm font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
