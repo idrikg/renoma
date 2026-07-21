@@ -24,6 +24,11 @@ import {
   saveWizardData,
 } from "@/components/project-assistant/storage";
 import {
+  dataMatchesPreset,
+  getFirstOpenStep,
+  type FunnelPreset,
+} from "@/components/project-assistant/funnel-preset";
+import {
   defaultWizardData,
   type LocalImage,
   type SubmitState,
@@ -102,15 +107,34 @@ type PersistedState = {
   hydrated: boolean;
 };
 
-export function ProjectAssistant() {
-  const [{ data, step, hydrated }, setPersisted] = useState<PersistedState>({
-    data: defaultWizardData,
-    step: 1,
-    hydrated: false,
+type ProjectAssistantProps = {
+  /** Optional allowlisted entry preset from the page URL. Invalid/absent → normal start. */
+  initialPreset?: FunnelPreset | null;
+};
+
+export function ProjectAssistant({
+  initialPreset = null,
+}: ProjectAssistantProps) {
+  const [{ data, step, hydrated }, setPersisted] = useState<PersistedState>(() => {
+    if (!initialPreset) {
+      return { data: defaultWizardData, step: 1, hydrated: false };
+    }
+    const seeded: WizardData = {
+      ...defaultWizardData,
+      mainArea: initialPreset.mainArea,
+      categories: [...initialPreset.categories],
+    };
+    return {
+      data: seeded,
+      step: getFirstOpenStep(seeded),
+      hydrated: false,
+    };
   });
   const [images, setImages] = useState<LocalImage[]>([]);
   const [submitState, setSubmitState] = useState<SubmitState>({ status: "idle" });
   const [isPending, startTransition] = useTransition();
+  /** True when this session opened with a valid URL preset (controls the banner). */
+  const [enteredViaPreset] = useState(() => Boolean(initialPreset));
 
   // Hydrate from session storage once on mount. Deliberately not a lazy
   // useState initializer: that would read sessionStorage during the
@@ -119,21 +143,49 @@ export function ProjectAssistant() {
   // after mount, in an effect, is the correct way to sync with a
   // browser-only external store here — the brief flash from defaults to
   // a stored draft is an acceptable trade-off.
+  //
+  // When a valid URL preset is present it wins for mainArea + categories.
+  // Later-step draft fields are kept; the start step is computed from the
+  // funnel structure (or resumed if the stored draft already matches).
   useEffect(() => {
     const stored = loadWizardData();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional one-time hydration from a client-only store; see comment above.
     setPersisted((current) => {
+      if (initialPreset) {
+        const base = stored?.data ?? current.data;
+        const nextData: WizardData = {
+          ...base,
+          mainArea: initialPreset.mainArea,
+          categories: normalizeCategories([...initialPreset.categories]),
+        };
+        const matchingDraft =
+          stored &&
+          dataMatchesPreset(stored.data, initialPreset) &&
+          stored.step > 3;
+        const nextStep = matchingDraft
+          ? Math.min(Math.max(stored.step, 1), TOTAL_STEPS)
+          : getFirstOpenStep(nextData);
+
+        return {
+          data: nextData,
+          step: nextStep,
+          hydrated: true,
+        };
+      }
+
       const loaded = stored?.data ?? current.data;
       return {
         data: {
           ...loaded,
           categories: normalizeCategories(loaded.categories),
         },
-        step: stored ? Math.min(Math.max(stored.step, 1), TOTAL_STEPS) : current.step,
+        step: stored
+          ? Math.min(Math.max(stored.step, 1), TOTAL_STEPS)
+          : current.step,
         hydrated: true,
       };
     });
-  }, []);
+  }, [initialPreset]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -158,6 +210,7 @@ export function ProjectAssistant() {
   // jump on page load — only actual forward/back navigation does.
   const stepContainerRef = useRef<HTMLDivElement>(null);
   const isFirstRenderRef = useRef(true);
+  const didPresetFocusRef = useRef(false);
   useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false;
@@ -179,6 +232,14 @@ export function ProjectAssistant() {
     container.focus({ preventScroll: true });
   }, [step]);
 
+  // After preset hydration, place focus on the first open step without
+  // forcing a scroll jump (same restraint as draft restore).
+  useEffect(() => {
+    if (!hydrated || !enteredViaPreset || didPresetFocusRef.current) return;
+    didPresetFocusRef.current = true;
+    stepContainerRef.current?.focus({ preventScroll: true });
+  }, [hydrated, enteredViaPreset, step]);
+
   function setStep(next: number | ((current: number) => number)) {
     setPersisted((current) => ({
       ...current,
@@ -199,6 +260,10 @@ export function ProjectAssistant() {
 
   function goBack() {
     setStep((current) => Math.max(current - 1, 1));
+  }
+
+  function changePresetSelection() {
+    setStep(1);
   }
 
   function addImages(files: FileList) {
@@ -242,10 +307,35 @@ export function ProjectAssistant() {
 
   const showActionBar = step >= 2;
   const nextDisabled = !canProceed(step, data);
+  const showPresetBanner =
+    enteredViaPreset &&
+    Boolean(initialPreset) &&
+    step >= 3 &&
+    dataMatchesPreset(data, initialPreset!);
 
   return (
     <div>
       <ProgressIndicator step={step} total={TOTAL_STEPS} label={STEP_TITLES[step - 1]} />
+
+      {showPresetBanner && initialPreset && (
+        <div
+          className="mb-5 flex flex-col gap-2 border-b border-line pb-4 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          role="status"
+          aria-live="polite"
+        >
+          <p className="text-sm leading-relaxed text-muted">
+            Vorausgewählt:{" "}
+            <span className="font-medium text-ink">{initialPreset.summaryLabel}</span>
+          </p>
+          <button
+            type="button"
+            onClick={changePresetSelection}
+            className="inline-flex min-h-11 items-center self-start text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage sm:self-auto"
+          >
+            Auswahl ändern
+          </button>
+        </div>
+      )}
 
       <div
         key={step}

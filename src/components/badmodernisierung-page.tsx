@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
+import { BAD_MODERNIZATION_FUNNEL_HREF } from "@/components/project-assistant/funnel-preset";
 import {
   getDetailImages,
   getPublishedReferenceBySlug,
@@ -113,7 +114,7 @@ export function BadmodernisierungPage() {
               </p>
               <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7 sm:gap-y-4">
                 <Link
-                  href="/projekt-starten"
+                  href={BAD_MODERNIZATION_FUNNEL_HREF}
                   className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
                 >
                   Badprojekt starten
@@ -433,7 +434,7 @@ export function BadmodernisierungPage() {
             </p>
             <div className="mt-10 flex flex-col items-center gap-4">
               <Link
-                href="/projekt-starten"
+                href={BAD_MODERNIZATION_FUNNEL_HREF}
                 className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
               >
                 Badprojekt starten

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { ProjectAssistant } from "@/components/project-assistant/project-assistant";
+import { parseFunnelPreset } from "@/components/project-assistant/funnel-preset";
 
 export const metadata: Metadata = {
   title: "Projekt starten",
@@ -20,7 +21,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProjektStartenPage() {
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function ProjektStartenPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const initialPreset = parseFunnelPreset(params);
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-line">
@@ -44,7 +52,7 @@ export default function ProjektStartenPage() {
 
       <main className="flex-1 py-10 sm:py-24">
         <Container className="max-w-2xl">
-          <ProjectAssistant />
+          <ProjectAssistant initialPreset={initialPreset} />
         </Container>
       </main>
 
