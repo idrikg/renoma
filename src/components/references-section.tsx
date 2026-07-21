@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
 import { ReferencesCarousel } from "@/components/references-carousel";
@@ -15,6 +16,9 @@ import { getPublishedReferences } from "@/lib/references-data";
  */
 export function ReferencesSection() {
   const publishedReferences = getPublishedReferences();
+  const hasBathroomModernization = publishedReferences.some(
+    (reference) => reference.category === "Badmodernisierung",
+  );
 
   return (
     <section id="referenzen" className="scroll-mt-24 overflow-x-clip bg-paper-dim py-24 sm:py-32 lg:py-40">
@@ -26,6 +30,16 @@ export function ReferencesSection() {
           <h2 className="mt-4 text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl">
             Aus Veränderung wird Zuhause.
           </h2>
+          {hasBathroomModernization && (
+            <p className="mt-4 text-[15px] leading-relaxed text-muted">
+              <Link
+                href="/leistungen/badmodernisierung"
+                className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+              >
+                Badmodernisierung ansehen
+              </Link>
+            </p>
+          )}
         </Reveal>
       </Container>
 

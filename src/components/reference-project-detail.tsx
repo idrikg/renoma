@@ -63,6 +63,16 @@ export function ReferenceProjectDetail({
             <p className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
               {teaser}
             </p>
+            {reference.category === "Badmodernisierung" && (
+              <p className="mt-5">
+                <Link
+                  href="/leistungen/badmodernisierung"
+                  className="text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Badmodernisierung ansehen
+                </Link>
+              </p>
+            )}
             {reference.location?.trim() && (
               <p className="mt-4 text-sm text-muted">{reference.location.trim()}</p>
             )}
