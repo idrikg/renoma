@@ -79,19 +79,23 @@ export function ReferenceProjectDetail({
           </Reveal>
 
           <Reveal delayMs={80} className="mt-10 sm:mt-12">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-greige sm:aspect-[16/11] lg:aspect-[21/10] lg:rounded-[1.75rem]">
+            {/*
+              Hero stage matches the portrait source files (~3:4, ~768px wide).
+              Avoid ultra-wide aspect ratios that zoom into a thin band and
+              force Next/Image to upscale beyond the native pixel width.
+            */}
+            <div className="relative mx-auto aspect-[3/4] w-full max-w-[min(100%,42rem,calc(72vh*3/4))] overflow-hidden rounded-[1.5rem] bg-greige lg:rounded-[1.75rem]">
               <Image
                 src={cover.src}
                 alt={cover.alt}
                 fill
                 priority
-                sizes="(min-width: 1280px) 1200px, 100vw"
+                quality={90}
+                sizes="(max-width: 640px) calc(100vw - 3rem), (max-width: 1024px) min(36rem, calc(72vh * 3 / 4)), min(42rem, calc(72vh * 3 / 4))"
                 className="object-cover"
-                style={
-                  cover.objectPosition
-                    ? { objectPosition: cover.objectPosition }
-                    : undefined
-                }
+                style={{
+                  objectPosition: cover.objectPosition ?? "center center",
+                }}
               />
             </div>
             {cover.caption && (
@@ -168,7 +172,11 @@ export function ReferenceProjectDetail({
                 if (!after) {
                   return (
                     <Reveal key={`before-only-${image.src}`}>
-                      <LabeledImage image={image} label="Vorher" sizes="100vw" />
+                      <LabeledImage
+                        image={image}
+                        label="Vorher"
+                        sizes="(max-width: 1023px) calc(100vw - 3rem), 36rem"
+                      />
                     </Reveal>
                   );
                 }
@@ -181,12 +189,12 @@ export function ReferenceProjectDetail({
                     <LabeledImage
                       image={image}
                       label="Vorher"
-                      sizes="(min-width: 1024px) 42vw, 100vw"
+                      sizes="(max-width: 1023px) calc(100vw - 3rem), 28rem"
                     />
                     <LabeledImage
                       image={after}
                       label="Nachher"
-                      sizes="(min-width: 1024px) 42vw, 100vw"
+                      sizes="(max-width: 1023px) calc(100vw - 3rem), 28rem"
                     />
                   </Reveal>
                 );
@@ -194,7 +202,11 @@ export function ReferenceProjectDetail({
               {afterImages.length > beforeImages.length &&
                 afterImages.slice(beforeImages.length).map((image) => (
                   <Reveal key={`after-extra-${image.src}`}>
-                    <LabeledImage image={image} label="Nachher" sizes="100vw" />
+                    <LabeledImage
+                      image={image}
+                      label="Nachher"
+                      sizes="(max-width: 1023px) calc(100vw - 3rem), 36rem"
+                    />
                   </Reveal>
                 ))}
             </div>
@@ -221,18 +233,18 @@ export function ReferenceProjectDetail({
                 <li key={image.src}>
                   <Reveal delayMs={Math.min(index * 40, 120)}>
                     <figure>
-                      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-greige sm:aspect-[3/4]">
+                      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-greige">
                         <Image
                           src={image.src}
                           alt={image.alt}
                           fill
-                          sizes="(min-width: 1024px) 42vw, (min-width: 640px) 46vw, 100vw"
+                          quality={85}
+                          sizes="(min-width: 1024px) 28vw, (min-width: 640px) 45vw, calc(100vw - 3rem)"
                           className="object-cover"
-                          style={
-                            image.objectPosition
-                              ? { objectPosition: image.objectPosition }
-                              : undefined
-                          }
+                          style={{
+                            objectPosition:
+                              image.objectPosition ?? "center center",
+                          }}
                         />
                       </div>
                       {(image.caption || image.alt) && (
@@ -370,18 +382,17 @@ function LabeledImage({
 }) {
   return (
     <figure>
-      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-greige sm:aspect-[3/4] lg:aspect-auto lg:h-[560px]">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-greige">
         <Image
           src={image.src}
           alt={image.alt}
           fill
+          quality={85}
           sizes={sizes}
           className="object-cover"
-          style={
-            image.objectPosition
-              ? { objectPosition: image.objectPosition }
-              : undefined
-          }
+          style={{
+            objectPosition: image.objectPosition ?? "center center",
+          }}
         />
         <span className="absolute bottom-4 left-4 rounded-full bg-ink/75 px-3 py-1 text-xs font-medium tracking-[0.08em] text-paper uppercase">
           {label}

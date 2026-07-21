@@ -109,6 +109,7 @@ export const references: ProjectReference[] = [
     afterImage: "/images/references/bad-01/after.jpg",
     beforeAlt: "Bad vor der Modernisierung",
     afterAlt: "Modernisiertes Bad mit hellem, ruhigem Design",
+    coverObjectPosition: "center 42%",
     isPublished: true,
   },
   {
@@ -131,24 +132,29 @@ export const references: ProjectReference[] = [
       "/images/references/badezimmer-detailmodernisierung/after-01.jpg",
     coverAlt:
       "Modernisiertes Badezimmer mit Walk-in-Dusche, integriertem Waschtisch und hinterleuchtetem Spiegel",
+    coverObjectPosition: "center 40%",
     beforeImages: [
       {
         src: "/images/references/badezimmer-detailmodernisierung/before-01.jpg",
         alt: "Bestehendes Badezimmer mit Waschtisch, Duschkabine und Badewanne vor der Modernisierung",
+        objectPosition: "center 45%",
       },
       {
         src: "/images/references/badezimmer-detailmodernisierung/before-02.jpg",
         alt: "Bestehendes Badezimmer mit Wand-WC, Heizkörper und Badewanne vor der Modernisierung",
+        objectPosition: "center 48%",
       },
     ],
     afterImages: [
       {
         src: "/images/references/badezimmer-detailmodernisierung/after-01.jpg",
         alt: "Modernisiertes Badezimmer mit Walk-in-Dusche, integriertem Waschtisch und hinterleuchtetem Spiegel",
+        objectPosition: "center 40%",
       },
       {
         src: "/images/references/badezimmer-detailmodernisierung/after-02.jpg",
         alt: "Modernisiertes Badezimmer mit wandhängendem WC und Walk-in-Dusche hinter getönter Glaswand",
+        objectPosition: "center 42%",
       },
     ],
     detailImages: [
@@ -156,11 +162,13 @@ export const references: ProjectReference[] = [
         src: "/images/references/badezimmer-detailmodernisierung/detail-drueckerplatte.jpg",
         alt: "In die Wandfliesen integrierte Dual-Flush-Drückerplatte",
         caption: "Verflieste Drückerplatte",
+        objectPosition: "center 45%",
       },
       {
         src: "/images/references/badezimmer-detailmodernisierung/detail-waschbecken.jpg",
         alt: "Integrierter Waschtisch mit wandmontierter Armatur und Linearablauf",
         caption: "Integrierter Waschplatz",
+        objectPosition: "center 45%",
       },
     ],
     services: [
@@ -196,6 +204,7 @@ export const references: ProjectReference[] = [
     afterAlt: "Doppelhaushälfte mit erneuerter Fassade",
     beforeObjectPosition: "50% 35%",
     afterObjectPosition: "50% 40%",
+    coverObjectPosition: "center 38%",
     isPublished: true,
   },
   {
@@ -210,6 +219,7 @@ export const references: ProjectReference[] = [
     afterAlt: "Modernisiertes WC",
     beforeObjectPosition: "50% 50%",
     afterObjectPosition: "50% 45%",
+    coverObjectPosition: "center 42%",
     isPublished: true,
   },
   {
@@ -224,6 +234,7 @@ export const references: ProjectReference[] = [
     afterAlt: "Modernisierte Treppe im Einfamilienhaus",
     beforeObjectPosition: "50% 55%",
     afterObjectPosition: "50% 50%",
+    coverObjectPosition: "60% 52%",
     isPublished: true,
   },
   {
@@ -238,6 +249,7 @@ export const references: ProjectReference[] = [
     afterAlt: "Modernisierte Küche im Einfamilienhaus",
     beforeObjectPosition: "50% 45%",
     afterObjectPosition: "50% 50%",
+    coverObjectPosition: "center 48%",
     isPublished: true,
   },
 ];
@@ -289,14 +301,16 @@ export function getReferenceCover(reference: ProjectReference): ReferenceImage {
   if (reference.coverImage) {
     return {
       src: reference.coverImage,
-      alt: reference.coverAlt?.trim() || reference.title,
-      objectPosition: reference.coverObjectPosition,
+      alt: reference.coverAlt?.trim() || reference.afterAlt || reference.title,
+      objectPosition:
+        reference.coverObjectPosition ?? reference.afterObjectPosition,
     };
   }
   return {
     src: reference.afterImage,
     alt: reference.afterAlt,
-    objectPosition: reference.afterObjectPosition,
+    objectPosition:
+      reference.coverObjectPosition ?? reference.afterObjectPosition,
   };
 }
 
