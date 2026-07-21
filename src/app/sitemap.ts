@@ -27,9 +27,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${siteUrl}/leistungen/badmodernisierung/ludwigsburg`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
       url: `${siteUrl}/leistungen/komplettsanierung`,
       changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/leistungen/komplettsanierung/ludwigsburg`,
+      changeFrequency: "monthly",
+      priority: 0.75,
     },
     {
       url: `${siteUrl}/leistungen/elektroarbeiten`,

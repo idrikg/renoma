@@ -38,6 +38,30 @@ export function SiteFooter() {
               </ul>
             </nav>
 
+            <nav aria-label="Regionale Leistungen">
+              <p className="text-sm font-medium tracking-[0.08em] text-ink uppercase">
+                Region
+              </p>
+              <ul className="mt-4 space-y-3 text-sm text-muted">
+                <li>
+                  <Link
+                    href="/leistungen/badmodernisierung/ludwigsburg"
+                    className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
+                  >
+                    Badmodernisierung Ludwigsburg
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/leistungen/komplettsanierung/ludwigsburg"
+                    className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
+                  >
+                    Komplettsanierung Ludwigsburg
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+
             <nav aria-label="Rechtliches">
               <p className="text-sm font-medium tracking-[0.08em] text-ink uppercase">
                 Kontakt

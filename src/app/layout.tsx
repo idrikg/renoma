@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
+import { JsonLd } from "@/components/json-ld";
+import { buildSitewideStructuredData } from "@/lib/structured-data";
 import { getSiteUrl, homeDescription, homeTitle } from "@/lib/site-url";
 
 // Manrope: functional UI, navigation, body copy, forms.
@@ -19,6 +21,7 @@ const newsreader = Newsreader({
 });
 
 const siteUrl = getSiteUrl();
+const sitewideStructuredData = buildSitewideStructuredData();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -56,7 +59,10 @@ export default function RootLayout({
       lang="de"
       className={`${manrope.variable} ${newsreader.variable} antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        <JsonLd data={sitewideStructuredData} />
+        {children}
+      </body>
     </html>
   );
 }

@@ -301,6 +301,39 @@ export function KomplettsanierungPage() {
       </section>
 
       <section
+        aria-labelledby="region-heading"
+        className="border-t border-line bg-paper-dim py-20 sm:py-28"
+      >
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-20">
+            <Reveal>
+              <h2
+                id="region-heading"
+                className="text-display-2 text-balance text-ink"
+              >
+                Komplettsanierung in Ihrer Region
+              </h2>
+            </Reveal>
+            <Reveal delayMs={50} className="max-w-xl lg:pt-3">
+              <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
+                Für Vorhaben in Ludwigsburg, Remseck am Neckar und der
+                angrenzenden Umgebung finden Sie Hinweise zum Einsatzgebiet und
+                zur persönlichen Begleitung auf der regionalen Seite.
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/leistungen/komplettsanierung/ludwigsburg"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Komplettsanierung in Ludwigsburg und Remseck
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      <section
         aria-labelledby="faq-heading"
         className="border-t border-line py-20 sm:py-28"
       >

@@ -149,6 +149,44 @@ export function LeistungenOverviewPage() {
       </section>
 
       <section
+        aria-labelledby="region-heading"
+        className="border-t border-line bg-paper-dim py-16 sm:py-20"
+      >
+        <Container>
+          <Reveal className="max-w-2xl">
+            <h2
+              id="region-heading"
+              className="text-2xl font-medium tracking-tight text-ink sm:text-3xl"
+            >
+              Regionale Schwerpunkte
+            </h2>
+            <p className="mt-4 text-pretty text-[15px] leading-relaxed text-muted sm:text-base">
+              Für ausgewählte Leistungen gibt es ergänzende Seiten zum
+              Einsatzgebiet Ludwigsburg und Remseck am Neckar.
+            </p>
+            <ul className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10">
+              <li>
+                <Link
+                  href="/leistungen/badmodernisierung/ludwigsburg"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Badmodernisierung in Ludwigsburg und Remseck
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/leistungen/komplettsanierung/ludwigsburg"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Komplettsanierung in Ludwigsburg und Remseck
+                </Link>
+              </li>
+            </ul>
+          </Reveal>
+        </Container>
+      </section>
+
+      <section
         aria-labelledby="ablauf-heading"
         className="py-20 sm:py-28 lg:py-32"
       >
