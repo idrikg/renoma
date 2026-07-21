@@ -10,15 +10,15 @@ const regionBlocks = [
     id: "ludwigsburg",
     title: "Ludwigsburg",
     description:
-      "Ludwigsburg ist ein zentraler Schwerpunkt der persönlichen Projektbegleitung. Von hier aus werden Bad- und Sanierungsvorhaben in der Stadt und der direkten Umgebung eingeordnet – ohne Niederlassung vor Ort zu behaupten.",
+      "In Ludwigsburg begleitet RENOMA Badmodernisierungen und umfassende Sanierungsprojekte persönlich – von den ersten Vorstellungen bis zur abgestimmten Umsetzung.",
     links: [
       {
         href: REGIONAL_PATHS.bad.ludwigsburg,
-        label: "Badmodernisierung in Ludwigsburg und Remseck",
+        label: "Badmodernisierung in Ludwigsburg",
       },
       {
         href: REGIONAL_PATHS.komplett.ludwigsburg,
-        label: "Komplettsanierung in Ludwigsburg und Remseck",
+        label: "Komplettsanierung in Ludwigsburg",
       },
     ],
   },
@@ -26,7 +26,7 @@ const regionBlocks = [
     id: "remseck",
     title: "Remseck am Neckar",
     description:
-      "Remseck gehört zum regionalen Schwerpunkt der Ludwigsburger Seiten. Anfragen aus Remseck werden dort eingeordnet und persönlich geprüft – die URL führt bewusst über die Ludwigsburger Leistungsseiten.",
+      "Auch Projekte in Remseck am Neckar gehören zum regionalen Einsatzgebiet von RENOMA. Umfang, Lage und die nächsten Schritte klären wir persönlich im ersten Austausch.",
     links: [
       {
         href: REGIONAL_PATHS.bad.ludwigsburg,
@@ -42,7 +42,7 @@ const regionBlocks = [
     id: "stuttgart",
     title: "Stuttgart",
     description:
-      "In Stuttgart begleitet RENOMA Badmodernisierungen und Komplettsanierungen beim Kunden. Der Fokus liegt auf klarer Abstimmung und nachvollziehbaren nächsten Schritten – nicht auf einem städtischen Standort.",
+      "In Stuttgart begleitet RENOMA Badmodernisierungen und Komplettsanierungen persönlich – mit klarer Abstimmung und nachvollziehbaren nächsten Schritten.",
     links: [
       {
         href: REGIONAL_PATHS.bad.stuttgart,
@@ -58,7 +58,7 @@ const regionBlocks = [
     id: "heilbronn",
     title: "Heilbronn",
     description:
-      "Für Heilbronn stehen eigene regionale Leistungsseiten bereit. Projekte werden vor Ort begleitet und im ersten Austausch auf Passung zum Einsatzgebiet geprüft.",
+      "In Heilbronn begleitet RENOMA Badprojekte und umfassende Sanierungen beim Kunden. Ob und wie wir Ihr Vorhaben begleiten können, klären wir persönlich im ersten Austausch.",
     links: [
       {
         href: REGIONAL_PATHS.bad.heilbronn,
@@ -74,7 +74,7 @@ const regionBlocks = [
     id: "waiblingen",
     title: "Waiblingen",
     description:
-      "In Waiblingen liegt der sichtbare regionale Schwerpunkt derzeit auf der Badmodernisierung. Größere Gesamtvorhaben können über die allgemeine Komplettsanierungsseite angefragt werden.",
+      "In Waiblingen begleitet RENOMA vor allem Badmodernisierungen persönlich. Größere Gesamtvorhaben können Sie über die allgemeine Komplettsanierung anfragen.",
     links: [
       {
         href: REGIONAL_PATHS.bad.waiblingen,
@@ -87,7 +87,6 @@ const regionBlocks = [
     ],
   },
 ];
-
 const checkSteps = [
   {
     title: "Vorhaben schildern",
@@ -115,7 +114,7 @@ const faqs = [
   {
     question: "In welchen Städten begleitet RENOMA Projekte?",
     answer:
-      "Der bestätigte Schwerpunkt umfasst Ludwigsburg, Remseck am Neckar, Stuttgart, Waiblingen und Heilbronn. Weitere Orte prüfen wir projektbezogen.",
+      "Zum regionalen Schwerpunkt gehören Ludwigsburg, Remseck am Neckar, Stuttgart, Waiblingen und Heilbronn. Weitere Orte prüfen wir projektbezogen.",
   },
   {
     question: "Ist RENOMA auch außerhalb der genannten Städte tätig?",
@@ -125,7 +124,7 @@ const faqs = [
   {
     question: "Begleitet RENOMA Projekte in Remseck am Neckar?",
     answer:
-      "Ja. Remseck gehört zum regionalen Schwerpunkt und ist über die Ludwigsburger Leistungsseiten erreichbar.",
+      "Ja. Remseck am Neckar gehört zum Einsatzgebiet. Umfang und nächste Schritte klären wir persönlich im ersten Austausch.",
   },
   {
     question: "Wie wird geprüft, ob mein Wohnort im Einsatzgebiet liegt?",
@@ -190,8 +189,10 @@ export function EinsatzgebietPage() {
               Regionale Schwerpunkte
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Fünf bestätigte Orte – mit eigenen Leistungsseiten, wo sie bereits
-              existieren. Keine Filiale, keine erfundene Adresse vor Ort.
+              RENOMA begleitet Renovierungs- und Sanierungsprojekte in
+              Ludwigsburg, Remseck am Neckar, Stuttgart, Heilbronn und
+              Waiblingen. Auch Vorhaben in der angrenzenden Umgebung prüfen wir
+              gerne persönlich.
             </p>
           </Reveal>
           <ul className="mt-14 grid list-none gap-12 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-16">
