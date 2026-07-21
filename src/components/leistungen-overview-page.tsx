@@ -161,24 +161,48 @@ export function LeistungenOverviewPage() {
               Regionale Schwerpunkte
             </h2>
             <p className="mt-4 text-pretty text-[15px] leading-relaxed text-muted sm:text-base">
-              Für ausgewählte Leistungen gibt es ergänzende Seiten zum
-              Einsatzgebiet Ludwigsburg und Remseck am Neckar.
+              Übersicht zum Einsatzgebiet und ausgewählte regionale
+              Leistungsseiten – ohne Filialen vor Ort.
             </p>
             <ul className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-x-10">
+              <li>
+                <Link
+                  href="/einsatzgebiet"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Einsatzgebiet ansehen
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/leistungen/badmodernisierung/ludwigsburg"
                   className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
                 >
-                  Badmodernisierung in Ludwigsburg und Remseck
+                  Ludwigsburg &amp; Remseck
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/leistungen/komplettsanierung/ludwigsburg"
+                  href="/leistungen/badmodernisierung/stuttgart"
                   className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
                 >
-                  Komplettsanierung in Ludwigsburg und Remseck
+                  Stuttgart
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/leistungen/badmodernisierung/heilbronn"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Heilbronn
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/leistungen/badmodernisierung/waiblingen"
+                  className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Waiblingen
                 </Link>
               </li>
             </ul>

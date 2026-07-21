@@ -9,128 +9,109 @@ import {
   getReferenceCover,
   getReferenceTeaser,
 } from "@/lib/references-data";
+import { REGIONAL_PATHS } from "@/lib/service-regions";
 
-const whenMakesSense = [
+const timingOptions = [
   {
-    title: "Mehrere Räume sollen modernisiert werden",
+    title: "Sanierung vor dem Einzug",
     description:
-      "Wohnen, Bad, Küche oder Flur greifen ineinander – Einzelentscheidungen reichen dann oft nicht aus.",
+      "Die Immobilie soll vor dem Einzug modernisiert werden – mit klarem Gesamtbild und abgestimmter Reihenfolge.",
   },
   {
-    title: "Technik und Oberflächen hängen zusammen",
+    title: "Modernisierung während der Nutzung",
     description:
-      "Elektrik, Böden, Fenster, Türen und Oberflächen beeinflussen sich gegenseitig und brauchen eine gemeinsame Reihenfolge.",
+      "Sie wohnen bereits in der Immobilie und möchten schrittweise modernisieren – mit sinnvoller Abschnittsplanung.",
   },
   {
-    title: "Vor Einzug umfassend überarbeiten",
+    title: "Teilbereiche zuerst, Rest später",
     description:
-      "Eine Immobilie soll vor dem Einzug klar und nutzbar modernisiert werden – mit abgestimmtem Gesamtbild.",
+      "Nicht alles muss gleichzeitig passieren. Manche Projekte starten mit einem klaren ersten Abschnitt.",
   },
   {
-    title: "Einzelmaßnahmen zum Gesamtprojekt verbinden",
+    title: "Vor Verkauf oder Vermietung",
     description:
-      "Was zunächst getrennt wirkt, soll zu einem nachvollziehbaren Vorhaben zusammengeführt werden.",
+      "Mehrere Bereiche sollen auf den neuesten Stand gebracht werden – mit nachvollziehbarem Ablauf.",
   },
 ];
 
-const combinedAreas = [
+const combinedMeasures = [
   {
-    href: "/leistungen/innenrenovierung",
-    title: "Innenrenovierung",
-    description: "Räume, Oberflächen und Ausbau im Gesamtvorhaben.",
+    title: "Innenräume und Oberflächen",
+    description:
+      "Wände, Böden und Decken greifen in Bad, Küche und Wohnräume ineinander.",
   },
   {
-    href: "/leistungen/badmodernisierung",
-    title: "Badmodernisierung",
-    description: "Sanitär und Badgestaltung als Teil der Sanierung.",
+    title: "Sanitär und Feuchträume",
+    description:
+      "Bad und Küche haben andere Anforderungen als trockene Bereiche und beeinflussen die Reihenfolge.",
   },
   {
-    href: "/leistungen/boden-fliesen",
-    title: "Böden und Fliesen",
-    description: "Material und Verlegung mit angrenzenden Arbeiten.",
+    title: "Technik und Elektrik",
+    description:
+      "Leitungen, Anschlüsse und Beleuchtung sollten vor Oberflächenarbeiten abgeschlossen sein.",
   },
   {
-    href: "/leistungen/elektroarbeiten",
-    title: "Elektroarbeiten",
-    description: "Anschlüsse und Beleuchtung im Ablauf abstimmen.",
-  },
-  {
-    href: "/leistungen/fenster-tueren",
-    title: "Fenster und Türen",
-    description: "Austausch und Anschlüsse mit dem Gesamtprojekt.",
-  },
-  {
-    href: "/leistungen/fassade-aussenbereich",
-    title: "Fassade und Außenbereich",
-    description: "Außenmaßnahmen, sofern sie zum Vorhaben gehören.",
+    title: "Fenster, Türen und Fassade",
+    description:
+      "Außenmaßnahmen können Innenarbeiten beeinflussen – besonders bei Anschlüssen und Dämmung.",
   },
 ];
 
-const coordinationBenefits = [
+const phaseTopics = [
   {
-    title: "Zusammenhänge früh erkennen",
+    title: "Rohinstallation zuerst",
     description:
-      "Abhängigkeiten zwischen Bereichen werden sichtbar, bevor Einzelentscheidungen feststehen.",
+      "Elektrik, Sanitär und Leitungen werden abgeschlossen, bevor Fliesen, Böden oder Anstriche folgen.",
   },
   {
-    title: "Sinnvolle Reihenfolge abstimmen",
+    title: "Feuchte vor trockenen Räumen",
     description:
-      "Arbeiten folgen einer nachvollziehbaren Abfolge statt isolierter Einzelaufträge.",
+      "Bad und Küche haben oft Vorrang, weil angrenzende Arbeiten von deren Abschluss abhängen.",
   },
   {
-    title: "Einen Ansprechpartner behalten",
+    title: "Oberflächen zum Schluss",
     description:
-      "Änderungen und nächste Schritte bleiben während des Projekts klar zuordenbar.",
+      "Anstriche, Böden und Feininstallationen folgen, wenn alle vorbereitenden Arbeiten erledigt sind.",
   },
 ];
 
 const processSteps = [
   {
     number: "01",
-    title: "Ausgangssituation erfassen",
+    title: "Vorhaben und Ziele schildern",
     description:
-      "Sie schildern Immobilie, gewünschte Veränderungen und Prioritäten.",
+      "Sie beschreiben Immobilie, gewünschte Veränderungen und zeitliche Rahmenbedingungen.",
   },
   {
     number: "02",
-    title: "Maßnahmen strukturieren",
+    title: "Maßnahmen zusammenführen",
     description:
-      "Gemeinsam ordnen wir Bereiche und den möglichen Umfang ein.",
+      "Gemeinsam ordnen wir Bereiche und den möglichen Umfang in ein Gesamtbild ein.",
   },
   {
     number: "03",
-    title: "Zusammenhänge und Reihenfolge abstimmen",
+    title: "Abschnitte und Reihenfolge festlegen",
     description:
-      "Abhängigkeiten werden sichtbar gemacht und priorisiert.",
+      "Das Projekt wird in sinnvolle Phasen gegliedert und priorisiert.",
   },
   {
     number: "04",
-    title: "Umsetzung koordinieren und begleiten",
+    title: "Koordiniert begleiten",
     description:
-      "RENOMA hält den Überblick und bleibt Ihr fester Ansprechpartner.",
+      "RENOMA hält den Überblick und bleibt während des Projekts Ihr fester Ansprechpartner.",
   },
 ];
 
 const relatedServices = [
   {
-    href: "/leistungen/komplettsanierung",
-    title: "Komplettsanierung",
-    description: "Zur allgemeinen Leistungsseite.",
-  },
-  {
-    href: "/leistungen/innenrenovierung",
-    title: "Innenrenovierung",
-    description: "Innenräume im Gesamtvorhaben.",
-  },
-  {
-    href: "/leistungen/badmodernisierung/ludwigsburg",
-    title: "Badmodernisierung in der Region",
+    href: REGIONAL_PATHS.bad.heilbronn,
+    title: "Badmodernisierung in Heilbronn",
     description: "Badprojekte im gleichen Einsatzgebiet.",
   },
   {
-    href: "/leistungen/elektroarbeiten",
-    title: "Elektroarbeiten",
-    description: "Anschlüsse und Lichtführung.",
+    href: "/leistungen/komplettsanierung",
+    title: "Komplettsanierung",
+    description: "Zur allgemeinen Leistungsseite.",
   },
   {
     href: "/leistungen/fenster-tueren",
@@ -143,63 +124,54 @@ const relatedServices = [
     description: "Flächen im Sanierungsablauf.",
   },
   {
-    href: "/leistungen/fassade-aussenbereich",
-    title: "Fassade & Außenbereich",
-    description: "Außenmaßnahmen bei Bedarf.",
-  },
-  {
-    href: "/einsatzgebiet",
+    href: REGIONAL_PATHS.einsatzgebiet,
     title: "Einsatzgebiet",
-    description: "Bestätigte Orte und Prüfung der Lage.",
+    description: "Wo RENOMA Projekte begleitet.",
   },
 ];
 
 const faqs = [
   {
-    question: "Begleitet RENOMA Komplettsanierungen in Ludwigsburg?",
+    question: "Begleitet RENOMA Komplettsanierungen in Heilbronn?",
     answer:
-      "Ja. RENOMA begleitet Gesamtvorhaben in diesem Einsatzgebiet – mit klarer Koordination und einem festen Ansprechpartner.",
+      "Ja. Heilbronn gehört zu unseren bestätigten Einsatzgebieten. RENOMA begleitet Gesamtvorhaben dort mit klarer Koordination und einem festen Ansprechpartner.",
   },
   {
-    question: "Ist eine Projektbegleitung auch in Remseck möglich?",
+    question: "Kann während der Nutzung saniert werden?",
     answer:
-      "Ja. Remseck am Neckar gehört zum genannten Einsatzgebiet. Die konkrete Annahme prüfen wir im ersten Gespräch.",
+      "Oft ja – mit sinnvoller Abschnittsplanung. Welche Bereiche wann bearbeitet werden, besprechen wir im konkreten Projekt.",
   },
   {
-    question: "Was kann zu einer Komplettsanierung gehören?",
+    question: "Welche Maßnahmen gehören zusammen?",
     answer:
-      "Je nach Vorhaben Innenräume, Bad, Böden, Elektrik, Fenster und Türen sowie gegebenenfalls Außenmaßnahmen. Der Zuschnitt entsteht aus Ihrer Immobilie und Ihren Zielen.",
+      "Je nach Immobilie Innenräume, Bad, Böden, Elektrik, Fenster und Türen sowie gegebenenfalls Außenmaßnahmen. Der Zuschnitt entsteht aus Ihrer Situation.",
   },
   {
-    question: "Können einzelne Leistungen schrittweise umgesetzt werden?",
+    question: "Wie wird das Projekt in Abschnitte gegliedert?",
     answer:
-      "Oft ja. Manche Projekte starten mit einem klaren ersten Schritt und werden später erweitert – solange der Einstieg zum Gesamtkontext passt.",
+      "Anhand der Abhängigkeiten zwischen den Bereichen – Rohinstallation vor Oberflächen, Feuchträume vor trockenen Räumen.",
   },
   {
-    question: "Wie wird die Reihenfolge der Arbeiten abgestimmt?",
+    question: "Kann ich schrittweise vorgehen?",
     answer:
-      "Gemeinsam anhand der Abhängigkeiten zwischen den Bereichen. Pauschale Bauzeit- oder Preiszusagen gibt es nicht.",
+      "Manche Projekte starten mit einem klaren ersten Abschnitt und werden später erweitert – solange der Einstieg zum Gesamtkontext passt.",
   },
   {
-    question: "Kann ich Bilder und Informationen zur Immobilie übermitteln?",
+    question: "Gibt es eine Niederlassung in Heilbronn?",
     answer:
-      "Ja. Über den Projektassistenten können Sie Bilder und vorhandene Angaben mitschicken.",
+      "Nein. RENOMA begleitet Projekte beim Kunden vor Ort – ohne lokales Büro oder Niederlassung zu behaupten.",
   },
   {
-    question: "Wie wird das Einsatzgebiet geprüft?",
+    question: "Wie übermittle ich Informationen zur Immobilie?",
     answer:
-      "Ob Ihr Projekt innerhalb unseres Einsatzgebiets liegt, klären wir direkt im ersten Austausch.",
+      "Über den Projektassistenten können Sie Bilder und vorhandene Angaben mitschicken. RENOMA prüft alles persönlich.",
   },
 ];
 
 /** Real projects showing modernized areas — not labeled as full renovations. */
-const INSIGHT_SLUGS = [
-  "badezimmer-detailmodernisierung",
-  "kueche-01",
-  "fassade-01",
-] as const;
+const INSIGHT_SLUGS = ["treppe-01", "bad-01", "kueche-01"] as const;
 
-export function KomplettsanierungLudwigsburgPage() {
+export function KomplettsanierungHeilbronnPage() {
   const insights = INSIGHT_SLUGS.map((slug) =>
     getPublishedReferenceBySlug(slug),
   ).filter(Boolean);
@@ -216,28 +188,27 @@ export function KomplettsanierungLudwigsburgPage() {
                 label: "Komplettsanierung",
                 href: "/leistungen/komplettsanierung",
               },
-              { label: "Ludwigsburg & Remseck" },
+              { label: "Heilbronn" },
             ]}
           />
           <p className="mt-8 text-sm font-medium tracking-[0.18em] text-clay uppercase">
             Komplettsanierung in Ihrer Region
           </p>
           <h1 className="mt-5 max-w-3xl text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12]">
-            Komplettsanierung in Ludwigsburg, Remseck und Umgebung.
+            Komplettsanierung in Heilbronn – Maßnahmen sinnvoll verbinden.
           </h1>
           <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
-            Wenn mehrere Bereiche einer Immobilie modernisiert werden sollen,
-            müssen Entscheidungen, Reihenfolge und beteiligte Arbeiten sinnvoll
-            zusammenpassen. RENOMA begleitet Komplettsanierungen in Ludwigsburg,
-            Remseck am Neckar und der angrenzenden Umgebung mit einer festen
-            Ansprechperson.
+            Sollen mehrere Räume oder Bereiche modernisiert werden, reicht es
+            nicht, jede Maßnahme einzeln zu betrachten. RENOMA hilft dabei, das
+            Projekt in Heilbronn sinnvoll zu strukturieren und die nächsten
+            Schritte miteinander abzustimmen.
           </p>
           <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
             <Link
               href={KOMPLETTSANIERUNG_FUNNEL_HREF}
               className="flex min-h-11 w-full items-center justify-center rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper sm:w-auto"
             >
-              Sanierungsprojekt starten
+              Sanierungsprojekt in Heilbronn starten
             </Link>
             <Link
               href="/leistungen/komplettsanierung"
@@ -250,24 +221,24 @@ export function KomplettsanierungLudwigsburgPage() {
       </header>
 
       <section
-        aria-labelledby="wann-heading"
+        aria-labelledby="timing-heading"
         className="border-b border-line py-20 sm:py-28"
       >
         <Container>
           <Reveal className="max-w-2xl">
             <h2
-              id="wann-heading"
+              id="timing-heading"
               className="text-3xl font-medium tracking-tight text-ink sm:text-4xl"
             >
-              Wann eine Komplettsanierung sinnvoll sein kann
+              Sanierung vor Einzug oder während der Nutzung
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Keine baurechtliche oder wirtschaftliche Beratung – sondern eine
-              Einordnung, wann Abstimmung mehrerer Bereiche hilft.
+              Der zeitliche Rahmen beeinflusst, wie ein Projekt gegliedert wird
+              – ohne pauschale Versprechen zu Bauzeit oder Ablauf.
             </p>
           </Reveal>
           <ul className="mt-12 grid gap-8 sm:grid-cols-2">
-            {whenMakesSense.map((item, index) => (
+            {timingOptions.map((item, index) => (
               <Reveal key={item.title} delayMs={index * 35}>
                 <li className="border-t border-line pt-6">
                   <h3 className="text-xl font-medium text-ink">{item.title}</h3>
@@ -282,64 +253,56 @@ export function KomplettsanierungLudwigsburgPage() {
       </section>
 
       <section
-        aria-labelledby="bereiche-heading"
+        aria-labelledby="massnahmen-heading"
         className="bg-paper-dim py-20 sm:py-28"
       >
         <Container>
           <Reveal className="max-w-2xl">
             <h2
-              id="bereiche-heading"
+              id="massnahmen-heading"
               className="text-3xl font-medium tracking-tight text-ink sm:text-4xl"
             >
-              Welche Bereiche zusammenkommen können
+              Welche Maßnahmen zusammengehören
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Auch Maler- und Oberflächenarbeiten können Teil des Vorhabens sein
-              – sie werden im Projektablauf mit den übrigen Maßnahmen
-              abgestimmt.
+              Bei einer Komplettsanierung greifen Bereiche ineinander. Diese
+              Zusammenhänge werden im Projekt betrachtet.
             </p>
           </Reveal>
-          <ul className="mt-12 grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {combinedAreas.map((area, index) => (
-              <li key={area.href}>
-                <Reveal delayMs={index * 30}>
-                  <Link
-                    href={area.href}
-                    className="group block border-t border-line pt-6 outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper-dim"
-                  >
-                    <h3 className="text-lg font-medium text-ink transition-colors group-hover:text-ink-soft">
-                      {area.title}
-                    </h3>
-                    <p className="mt-3 text-[15px] leading-relaxed text-muted">
-                      {area.description}
-                    </p>
-                  </Link>
-                </Reveal>
-              </li>
+          <ul className="mt-12 grid gap-8 sm:grid-cols-2">
+            {combinedMeasures.map((item, index) => (
+              <Reveal key={item.title} delayMs={index * 35}>
+                <li className="border-t border-line pt-6">
+                  <h3 className="text-xl font-medium text-ink">{item.title}</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-muted">
+                    {item.description}
+                  </p>
+                </li>
+              </Reveal>
             ))}
           </ul>
         </Container>
       </section>
 
       <section
-        aria-labelledby="koordination-heading"
+        aria-labelledby="abschnitte-heading"
         className="border-y border-line py-20 sm:py-28"
       >
         <Container>
           <Reveal className="max-w-2xl">
             <h2
-              id="koordination-heading"
+              id="abschnitte-heading"
               className="text-3xl font-medium tracking-tight text-ink sm:text-4xl"
             >
-              Koordination statt Einzelentscheidungen
+              Projekt in sinnvolle Abschnitte gliedern
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Ohne Garantie für Bauzeit, Preis oder vollständige
-              Störungsfreiheit: Der Mehrwert liegt in Klarheit und Abstimmung.
+              Nicht alles muss gleichzeitig passieren. Eine klare Phasenplanung
+              hält den Ablauf übersichtlich.
             </p>
           </Reveal>
           <ul className="mt-12 grid gap-8 sm:grid-cols-3">
-            {coordinationBenefits.map((item, index) => (
+            {phaseTopics.map((item, index) => (
               <Reveal key={item.title} delayMs={index * 35}>
                 <li className="border-t border-line pt-6">
                   <h3 className="text-xl font-medium text-ink">{item.title}</h3>
@@ -364,18 +327,18 @@ export function KomplettsanierungLudwigsburgPage() {
                 id="begleitung-heading"
                 className="text-display-2 text-balance text-ink"
               >
-                Persönliche Begleitung vor Ort
+                Persönliche Begleitung in Heilbronn
               </h2>
             </Reveal>
             <Reveal delayMs={50} className="max-w-xl space-y-5 lg:pt-3">
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                Ludwigsburg und Remseck am Neckar sind Teil unseres
-                Einsatzgebiets – keine erfundene Niederlassung. Ob wir Ihr
-                Vorhaben annehmen, prüfen wir individuell.
+                RENOMA begleitet Sanierungsprojekte in Heilbronn persönlich –
+                vom ersten Austausch bis zur koordinierten Umsetzung. Eine feste
+                Ansprechperson hält den Überblick über die beteiligten Maßnahmen.
               </p>
               <p className="text-pretty text-base leading-relaxed text-muted sm:text-lg">
-                Der Erstkontakt erfolgt über den Projektassistenten. Ort und
-                PLZ geben Sie dort wie gewohnt an.
+                Ob Ihr Vorhaben angenommen wird, prüfen wir individuell – ohne
+                erfundene Niederlassung vor Ort.
               </p>
             </Reveal>
           </div>
@@ -383,29 +346,8 @@ export function KomplettsanierungLudwigsburgPage() {
       </section>
 
       <section
-        aria-labelledby="einsatzgebiet-heading"
-        className="border-t border-line bg-paper-dim py-20 sm:py-28"
-      >
-        <Container>
-          <Reveal className="max-w-2xl">
-            <h2
-              id="einsatzgebiet-heading"
-              className="text-3xl font-medium tracking-tight text-ink sm:text-4xl"
-            >
-              Einsatzgebiet
-            </h2>
-            <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Ludwigsburg, Remseck am Neckar und angrenzende Umgebung nach
-              projektbezogener Prüfung. Ob Ihr Projekt innerhalb unseres
-              Einsatzgebiets liegt, klären wir direkt im ersten Austausch.
-            </p>
-          </Reveal>
-        </Container>
-      </section>
-
-      <section
         aria-labelledby="ablauf-heading"
-        className="border-t border-line py-20 sm:py-28 lg:py-32"
+        className="border-t border-line bg-paper-dim py-20 sm:py-28 lg:py-32"
       >
         <Container>
           <Reveal className="max-w-2xl">
@@ -439,7 +381,7 @@ export function KomplettsanierungLudwigsburgPage() {
       {insights.length > 0 && (
         <section
           aria-labelledby="einblicke-heading"
-          className="border-t border-line bg-paper-dim py-20 sm:py-28"
+          className="border-t border-line py-20 sm:py-28"
         >
           <Container>
             <Reveal className="max-w-2xl">
@@ -464,7 +406,7 @@ export function KomplettsanierungLudwigsburgPage() {
                     <Reveal delayMs={index * 35}>
                       <Link
                         href={`/referenzen/${reference.slug}`}
-                        className="group block outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper-dim"
+                        className="group block outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper"
                       >
                         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-greige">
                           <Image
@@ -500,7 +442,7 @@ export function KomplettsanierungLudwigsburgPage() {
 
       <section
         aria-labelledby="verknuepft-heading"
-        className="border-t border-line py-20 sm:py-28"
+        className="border-t border-line bg-paper-dim py-20 sm:py-28"
       >
         <Container>
           <Reveal className="max-w-2xl">
@@ -517,7 +459,7 @@ export function KomplettsanierungLudwigsburgPage() {
                 <Reveal delayMs={index * 30}>
                   <Link
                     href={service.href}
-                    className="group block border-t border-line pt-6 outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper"
+                    className="group block border-t border-line pt-6 outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper-dim"
                   >
                     <h3 className="text-lg font-medium text-ink transition-colors group-hover:text-ink-soft">
                       {service.title}
@@ -530,20 +472,12 @@ export function KomplettsanierungLudwigsburgPage() {
               </li>
             ))}
           </ul>
-          <Reveal className="mt-10">
-            <Link
-              href="/leistungen"
-              className="inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
-            >
-              Zur Leistungsübersicht
-            </Link>
-          </Reveal>
         </Container>
       </section>
 
       <section
         aria-labelledby="faq-heading"
-        className="border-t border-line bg-paper-dim py-20 sm:py-28"
+        className="border-t border-line py-20 sm:py-28"
       >
         <Container>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-20">
@@ -582,18 +516,18 @@ export function KomplettsanierungLudwigsburgPage() {
         <Container>
           <Reveal className="mx-auto max-w-xl text-center">
             <h2 className="text-display-2 text-balance text-ink">
-              Bringen Sie Struktur in Ihr Sanierungsprojekt.
+              Maßnahmen in Heilbronn sinnvoll verbinden.
             </h2>
             <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Schildern Sie uns Ihre Ausgangssituation. RENOMA bespricht mit
-              Ihnen die nächsten sinnvollen Schritte.
+              Schildern Sie uns Ihre Ausgangssituation – RENOMA bespricht mit
+              Ihnen die nächsten Schritte persönlich.
             </p>
             <div className="mt-10">
               <Link
                 href={KOMPLETTSANIERUNG_FUNNEL_HREF}
                 className="inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper outline-none transition-colors hover:bg-ink-soft focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               >
-                Sanierungsprojekt starten
+                Sanierungsprojekt in Heilbronn starten
               </Link>
             </div>
           </Reveal>

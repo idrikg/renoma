@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { getContactEmail, legalConfig } from "@/lib/legal-config";
+import { FOOTER_REGION_LINKS } from "@/lib/service-regions";
 import { serviceCards } from "@/lib/service-pages";
 
 export function SiteFooter() {
@@ -43,22 +44,16 @@ export function SiteFooter() {
                 Region
               </p>
               <ul className="mt-4 space-y-3 text-sm text-muted">
-                <li>
-                  <Link
-                    href="/leistungen/badmodernisierung/ludwigsburg"
-                    className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
-                  >
-                    Badmodernisierung Ludwigsburg
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/leistungen/komplettsanierung/ludwigsburg"
-                    className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
-                  >
-                    Komplettsanierung Ludwigsburg
-                  </Link>
-                </li>
+                {FOOTER_REGION_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="rounded-sm outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-sage"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </nav>
 

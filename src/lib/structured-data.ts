@@ -1,4 +1,5 @@
 import { getContactEmail, legalConfig } from "@/lib/legal-config";
+import { CONFIRMED_SERVICE_CITIES } from "@/lib/service-regions";
 import { getSiteUrl, homeDescription } from "@/lib/site-url";
 
 /**
@@ -11,6 +12,8 @@ import { getSiteUrl, homeDescription } from "@/lib/site-url";
 export const ORGANIZATION_ID = "https://renoma-zuhause.de/#organization";
 export const BRAND_ID = "https://renoma-zuhause.de/#brand";
 export const WEBSITE_ID = "https://renoma-zuhause.de/#website";
+export const EINSATZGEBIET_PAGE_ID =
+  "https://renoma-zuhause.de/einsatzgebiet#webpage";
 
 const LOGO_PATH = "/brand/renoma-logo-square.png";
 
@@ -44,6 +47,15 @@ function absoluteUrl(path: string): string {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+function cityNodes(cities: readonly { name: string }[]) {
+  return cities.map((city) =>
+    compact({
+      "@type": "City",
+      name: city.name,
+    }),
+  );
+}
+
 export function buildOrganizationNode() {
   const email = getContactEmail();
 
@@ -64,6 +76,7 @@ export function buildOrganizationNode() {
       addressLocality: legalConfig.city,
       addressCountry: "DE",
     },
+    areaServed: cityNodes(CONFIRMED_SERVICE_CITIES),
     brand: {
       "@id": BRAND_ID,
     },
@@ -128,12 +141,45 @@ export function buildServiceStructuredData(input: ServiceStructuredDataInput) {
     provider: {
       "@id": ORGANIZATION_ID,
     },
-    areaServed: input.areaServed.map((city) =>
-      compact({
-        "@type": "City",
-        name: city.name,
-      }),
-    ),
+    areaServed: cityNodes(input.areaServed),
+  });
+}
+
+export function buildEinsatzgebietStructuredData(input: {
+  name: string;
+  description: string;
+}) {
+  const pageUrl = absoluteUrl("/einsatzgebiet");
+
+  return compact({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": EINSATZGEBIET_PAGE_ID,
+    url: pageUrl,
+    name: input.name,
+    description: input.description,
+    inLanguage: "de-DE",
+    isPartOf: {
+      "@id": WEBSITE_ID,
+    },
+    about: {
+      "@id": ORGANIZATION_ID,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      name: "Bestätigte Einsatzgebiete",
+      itemListElement: CONFIRMED_SERVICE_CITIES.map((city, index) =>
+        compact({
+          "@type": "ListItem",
+          position: index + 1,
+          name: city.name,
+          item: {
+            "@type": "City",
+            name: city.name,
+          },
+        }),
+      ),
+    },
   });
 }
 
@@ -143,7 +189,18 @@ export const LUDWIGSBURG_AREA_SERVED = [
   { name: "Remseck am Neckar" },
 ] as const;
 
+export const STUTTGART_AREA_SERVED = [{ name: "Stuttgart" }] as const;
+export const HEILBRONN_AREA_SERVED = [{ name: "Heilbronn" }] as const;
+export const WAIBLINGEN_AREA_SERVED = [{ name: "Waiblingen" }] as const;
+
 export const BAD_LUDWIGSBURG_PATH =
   "/leistungen/badmodernisierung/ludwigsburg";
 export const KOMPLETT_LUDWIGSBURG_PATH =
   "/leistungen/komplettsanierung/ludwigsburg";
+export const BAD_STUTTGART_PATH = "/leistungen/badmodernisierung/stuttgart";
+export const KOMPLETT_STUTTGART_PATH =
+  "/leistungen/komplettsanierung/stuttgart";
+export const BAD_HEILBRONN_PATH = "/leistungen/badmodernisierung/heilbronn";
+export const KOMPLETT_HEILBRONN_PATH =
+  "/leistungen/komplettsanierung/heilbronn";
+export const BAD_WAIBLINGEN_PATH = "/leistungen/badmodernisierung/waiblingen";

@@ -22,6 +22,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
+      url: `${siteUrl}/einsatzgebiet`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${siteUrl}/leistungen/badmodernisierung`,
       changeFrequency: "monthly",
       priority: 0.8,
@@ -32,12 +37,37 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
+      url: `${siteUrl}/leistungen/badmodernisierung/stuttgart`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
+      url: `${siteUrl}/leistungen/badmodernisierung/heilbronn`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
+      url: `${siteUrl}/leistungen/badmodernisierung/waiblingen`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
       url: `${siteUrl}/leistungen/komplettsanierung`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${siteUrl}/leistungen/komplettsanierung/ludwigsburg`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
+      url: `${siteUrl}/leistungen/komplettsanierung/stuttgart`,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
+      url: `${siteUrl}/leistungen/komplettsanierung/heilbronn`,
       changeFrequency: "monthly",
       priority: 0.75,
     },
