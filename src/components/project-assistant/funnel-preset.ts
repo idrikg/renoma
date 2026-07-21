@@ -9,9 +9,10 @@ import type { WizardData } from "@/components/project-assistant/types";
 /**
  * Marketing entry presets for /projekt-starten.
  * Query: ?bereich=<mainAreaOptions.value>&leistung=<renovationCategories.value>
+ * Or area-only: ?bereich=<mainAreaOptions.value> (no leistung) for pages
+ * without a single matching leaf category.
  *
- * Only allowlisted combinations that exist in validation.ts are supported —
- * never invent parallel IDs for marketing URLs.
+ * Only allowlisted combinations that exist in validation.ts are supported.
  */
 
 export const BAD_MODERNIZATION_FUNNEL_HREF =
@@ -26,6 +27,17 @@ export const ELEKTRIK_FUNNEL_HREF =
 export const FENSTER_TUEREN_FUNNEL_HREF =
   "/projekt-starten?bereich=innen&leistung=fenster-tueren";
 
+/** No single “Innenrenovierung” leaf ID — preselect Innenbereich only. */
+export const INNENRENOVIERUNG_FUNNEL_HREF =
+  "/projekt-starten?bereich=innen";
+
+export const BODEN_FLIESEN_FUNNEL_HREF =
+  "/projekt-starten?bereich=innen&leistung=boden";
+
+/** No combined Fassade+Außen leaf ID — preselect Außenbereich only. */
+export const FASSADE_AUSSEN_FUNNEL_HREF =
+  "/projekt-starten?bereich=aussen";
+
 const ALLOWED_BEREICH: ReadonlySet<string> = new Set(
   mainAreaOptions.map((option) => option.value),
 );
@@ -35,11 +47,12 @@ const ALLOWED_LEISTUNG: ReadonlySet<string> = new Set(
 
 export type FunnelPreset = {
   mainArea: string;
+  /** Empty when only the main area is preselected. */
   categories: readonly string[];
   summaryLabel: string;
 };
 
-const PRESETS: readonly FunnelPreset[] = [
+const FULL_PRESETS: readonly FunnelPreset[] = [
   {
     mainArea: "innen",
     categories: ["bad-sanitaer"],
@@ -60,7 +73,26 @@ const PRESETS: readonly FunnelPreset[] = [
     categories: ["fenster-tueren"],
     summaryLabel: "Innenbereich · Fenster & Türen",
   },
+  {
+    mainArea: "innen",
+    categories: ["boden"],
+    summaryLabel: "Innenbereich · Böden",
+  },
 ];
+
+/** Area-only entries — only when `leistung` is omitted from the URL. */
+const AREA_ONLY_PRESETS: Readonly<Record<string, FunnelPreset>> = {
+  innen: {
+    mainArea: "innen",
+    categories: [],
+    summaryLabel: "Innenbereich",
+  },
+  aussen: {
+    mainArea: "aussen",
+    categories: [],
+    summaryLabel: "Außenbereich",
+  },
+};
 
 function readParam(
   params: URLSearchParams | Record<string, string | string[] | undefined>,
@@ -78,9 +110,9 @@ function readParam(
   return null;
 }
 
-function findPreset(bereich: string, leistung: string): FunnelPreset | null {
+function findFullPreset(bereich: string, leistung: string): FunnelPreset | null {
   return (
-    PRESETS.find(
+    FULL_PRESETS.find(
       (preset) =>
         preset.mainArea === bereich && preset.categories[0] === leistung,
     ) ?? null
@@ -88,9 +120,9 @@ function findPreset(bereich: string, leistung: string): FunnelPreset | null {
 }
 
 /**
- * Returns a preset only when both query values are present, allowlisted,
- * belong together in categoriesByMainArea, and match a supported marketing
- * entry. Unknown or partial params yield null — the funnel starts normally.
+ * Returns a preset when query values are allowlisted and match a supported
+ * marketing entry. Area-only presets require `bereich` without `leistung`.
+ * Unknown or invalid params yield null — the funnel starts normally.
  */
 export function parseFunnelPreset(
   params: URLSearchParams | Record<string, string | string[] | undefined>,
@@ -98,15 +130,18 @@ export function parseFunnelPreset(
   const bereich = readParam(params, "bereich");
   const leistung = readParam(params, "leistung");
 
-  if (!bereich || !leistung) return null;
-  if (!ALLOWED_BEREICH.has(bereich) || !ALLOWED_LEISTUNG.has(leistung)) {
-    return null;
+  if (!bereich || !ALLOWED_BEREICH.has(bereich)) return null;
+
+  if (!leistung) {
+    return AREA_ONLY_PRESETS[bereich] ?? null;
   }
+
+  if (!ALLOWED_LEISTUNG.has(leistung)) return null;
 
   const allowedForArea = categoriesByMainArea[bereich] ?? [];
   if (!allowedForArea.includes(leistung)) return null;
 
-  return findPreset(bereich, leistung);
+  return findFullPreset(bereich, leistung);
 }
 
 /** First step that still needs attention after applying known answers. */

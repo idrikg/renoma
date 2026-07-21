@@ -183,8 +183,15 @@ export function BadmodernisierungPage() {
               <p className="mt-5 text-pretty text-base leading-relaxed text-muted sm:text-lg">
                 RENOMA hilft dabei, die einzelnen Entscheidungen zu strukturieren
                 und das Vorhaben verständlich aufzubauen – damit aus vielen
-                Einzelheiten ein klarer nächster Schritt wird. Gehört das Bad zu
-                einem größeren Vorhaben, kann auch eine{" "}
+                Einzelheiten ein klarer nächster Schritt wird. Fliesenflächen und
+                Bodenbeläge werden dabei oft mitbetrachtet – mehr dazu unter{" "}
+                <Link
+                  href="/leistungen/boden-fliesen"
+                  className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"
+                >
+                  Boden &amp; Fliesen
+                </Link>
+                . Gehört das Bad zu einem größeren Vorhaben, kann auch eine{" "}
                 <Link
                   href="/leistungen/komplettsanierung"
                   className="font-medium text-ink underline decoration-line underline-offset-4 outline-none transition-colors hover:decoration-clay focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-sage"

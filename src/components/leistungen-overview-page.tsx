@@ -75,27 +75,43 @@ export function LeistungenOverviewPage() {
             </p>
           </Reveal>
 
-          <ul className="mt-12 grid list-none gap-6 sm:mt-14 sm:grid-cols-2 lg:gap-8">
-            {serviceCards.map((service, index) => (
-              <li key={service.slug}>
-                <Reveal delayMs={index * 40}>
-                  <Link
-                    href={service.href}
-                    className="group flex h-full flex-col border-t border-line pt-6 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper"
-                  >
-                    <h3 className="text-xl font-medium text-ink transition-colors group-hover:text-ink-soft sm:text-2xl">
-                      {service.title}
-                    </h3>
-                    <p className="mt-4 flex-1 text-pretty text-[15px] leading-relaxed text-muted sm:text-base">
-                      {service.description}
-                    </p>
-                    <span className="mt-6 inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 transition-colors group-hover:decoration-clay">
-                      Mehr erfahren
-                    </span>
-                  </Link>
-                </Reveal>
-              </li>
-            ))}
+          <ul className="mt-12 grid list-none gap-6 sm:mt-14 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+            {serviceCards.map((service, index) => {
+              const isLastOddInThree =
+                serviceCards.length % 3 === 1 &&
+                index === serviceCards.length - 1;
+              const isLastOddInTwo =
+                serviceCards.length % 2 === 1 &&
+                index === serviceCards.length - 1;
+              return (
+                <li
+                  key={service.slug}
+                  className={[
+                    isLastOddInTwo ? "sm:col-span-2 sm:mx-auto sm:w-full sm:max-w-md lg:col-span-1 lg:mx-0 lg:max-w-none" : "",
+                    isLastOddInThree ? "lg:col-start-2" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  <Reveal delayMs={Math.min(index * 35, 140)}>
+                    <Link
+                      href={service.href}
+                      className="group flex h-full flex-col border-t border-line pt-6 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-4 focus-visible:ring-offset-paper"
+                    >
+                      <h3 className="text-xl font-medium text-ink transition-colors group-hover:text-ink-soft sm:text-2xl">
+                        {service.title}
+                      </h3>
+                      <p className="mt-4 flex-1 text-pretty text-[15px] leading-relaxed text-muted sm:text-base">
+                        {service.description}
+                      </p>
+                      <span className="mt-6 inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline decoration-line underline-offset-4 transition-colors group-hover:decoration-clay">
+                        Mehr erfahren
+                      </span>
+                    </Link>
+                  </Reveal>
+                </li>
+              );
+            })}
           </ul>
         </Container>
       </section>

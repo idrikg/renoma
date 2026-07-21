@@ -20,11 +20,11 @@ export function SiteFooter() {
           </div>
 
           <div className="flex flex-col gap-10 sm:flex-row sm:gap-16">
-            <nav aria-label="Leistungen">
+            <nav aria-label="Leistungen" className="min-w-0 sm:min-w-[16rem]">
               <p className="text-sm font-medium tracking-[0.08em] text-ink uppercase">
                 Leistungen
               </p>
-              <ul className="mt-4 space-y-3 text-sm text-muted">
+              <ul className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 text-sm text-muted sm:grid-cols-2">
                 {serviceCards.map((service) => (
                   <li key={service.slug}>
                     <Link

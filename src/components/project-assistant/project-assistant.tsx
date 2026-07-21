@@ -321,8 +321,8 @@ export function ProjectAssistant({
   const showPresetBanner =
     enteredViaPreset &&
     Boolean(initialPreset) &&
-    step >= 3 &&
-    dataMatchesPreset(data, initialPreset!);
+    dataMatchesPreset(data, initialPreset!) &&
+    (initialPreset!.categories.length === 0 ? step >= 2 : step >= 3);
 
   return (
     <div>

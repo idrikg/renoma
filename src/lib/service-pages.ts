@@ -35,6 +35,27 @@ export const serviceCards: ServiceCard[] = [
     description:
       "Austausch und Modernisierung von Fenstern und Türen – abgestimmt auf Komfort, Gestaltung und den Charakter Ihres Zuhauses.",
   },
+  {
+    slug: "innenrenovierung",
+    href: "/leistungen/innenrenovierung",
+    title: "Innenrenovierung",
+    description:
+      "Einzelne Räume oder mehrere Innenbereiche: Oberflächen, Böden und Ausbau werden aufeinander abgestimmt und persönlich begleitet.",
+  },
+  {
+    slug: "boden-fliesen",
+    href: "/leistungen/boden-fliesen",
+    title: "Boden & Fliesen",
+    description:
+      "Material, Format und Verlegung prägen die Raumwirkung. RENOMA begleitet die Auswahl und stimmt die Umsetzung mit angrenzenden Arbeiten ab.",
+  },
+  {
+    slug: "fassade-aussenbereich",
+    href: "/leistungen/fassade-aussenbereich",
+    title: "Fassade & Außenbereich",
+    description:
+      "Fassade, Eingang und Außenflächen werden gestalterisch und zeitlich aufeinander abgestimmt – mit klarer Koordination der nächsten Schritte.",
+  },
 ];
 
 export const sharedProcessSteps = [

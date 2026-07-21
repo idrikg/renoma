@@ -59,6 +59,21 @@ const faqs = [
 
 const relatedServices = [
   {
+    href: "/leistungen/innenrenovierung",
+    title: "Innenrenovierung",
+    description: "Innenräume und Oberflächen im Gesamtvorhaben abstimmen.",
+  },
+  {
+    href: "/leistungen/boden-fliesen",
+    title: "Boden & Fliesen",
+    description: "Material und Verlegung in den Ablauf einbinden.",
+  },
+  {
+    href: "/leistungen/fassade-aussenbereich",
+    title: "Fassade & Außenbereich",
+    description: "Außenmaßnahmen mit dem Gesamtprojekt verbinden.",
+  },
+  {
     href: "/leistungen/badmodernisierung",
     title: "Badmodernisierung",
     description: "Wenn das Bad Teil Ihrer Gesamterneuerung ist.",
@@ -260,7 +275,7 @@ export function KomplettsanierungPage() {
               auch für sich stehen.
             </p>
           </Reveal>
-          <ul className="mt-12 grid list-none gap-8 sm:grid-cols-3">
+          <ul className="mt-12 grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {relatedServices.map((service, index) => (
               <li key={service.href}>
                 <Reveal delayMs={index * 40}>
