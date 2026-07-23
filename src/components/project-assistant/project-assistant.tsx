@@ -9,7 +9,6 @@ import { Confirmation } from "@/components/project-assistant/confirmation";
 import { FunnelActionBar } from "@/components/project-assistant/funnel-action-bar";
 import { StepSummary } from "@/components/project-assistant/step-summary";
 import {
-  StepBudget,
   StepCategories,
   StepContact,
   StepImages,
@@ -35,7 +34,7 @@ import {
   type WizardData,
 } from "@/components/project-assistant/types";
 
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 8;
 
 const STEP_TITLES = [
   "Bereich wählen",
@@ -43,9 +42,8 @@ const STEP_TITLES = [
   "Bilder",
   "Angaben zum Objekt",
   "Gewünschter Start",
-  "Investitionsrahmen",
   "Persönliche Angaben",
-  "Ihre Wünsche",
+  "Wünsche & weitere Informationen",
   "Zusammenfassung",
 ];
 
@@ -67,7 +65,7 @@ function canProceed(step: number, data: WizardData): boolean {
     case 2:
       return data.categories.length > 0;
     case 3:
-    case 8:
+    case 7:
       return true;
     case 4:
       return (
@@ -79,8 +77,6 @@ function canProceed(step: number, data: WizardData): boolean {
     case 5:
       return Boolean(data.desiredStart);
     case 6:
-      return Boolean(data.budgetRange);
-    case 7:
       return (
         data.firstName.trim().length >= 2 &&
         data.lastName.trim().length >= 2 &&
@@ -88,7 +84,7 @@ function canProceed(step: number, data: WizardData): boolean {
         Boolean(data.preferredContact) &&
         (data.preferredContact !== "phone" || data.phone.trim().length >= 4)
       );
-    case 9:
+    case 8:
       return data.consent;
     default:
       return true;
@@ -311,7 +307,7 @@ export function ProjectAssistant({
   const nextDisabled =
     step === 3 ? imagesBusy : !canProceed(step, data);
   const nextLabel =
-    step === 9
+    step === 8
       ? "Projekt starten"
       : step === 3 && imagesBusy
         ? "Bild wird verarbeitet …"
@@ -376,15 +372,12 @@ export function ProjectAssistant({
           <StepTiming data={data} update={update} onNext={goNext} />
         )}
         {step === 6 && (
-          <StepBudget data={data} update={update} onNext={goNext} />
-        )}
-        {step === 7 && (
           <StepContact data={data} update={update} onNext={goNext} />
         )}
-        {step === 8 && (
+        {step === 7 && (
           <StepWishes data={data} update={update} onNext={goNext} />
         )}
-        {step === 9 && (
+        {step === 8 && (
           <StepSummary
             data={data}
             imageCount={images.length}
@@ -401,7 +394,7 @@ export function ProjectAssistant({
         <FunnelActionBar
           onBack={goBack}
           nextDisabled={nextDisabled}
-          pending={step === 9 ? isPending : false}
+          pending={step === 8 ? isPending : false}
           nextLabel={nextLabel}
           statusLabel={step === 2 ? categoryStatusLabel(data.categories.length) : undefined}
         />

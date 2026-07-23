@@ -2,7 +2,6 @@ import { Resend } from "resend";
 import { logServerError } from "@/lib/logger";
 import { getContactEmail, legalConfig } from "@/lib/legal-config";
 import {
-  budgetLabel,
   categoryLabels,
   contactPreferenceLabel,
   desiredStartLabel,
@@ -112,10 +111,7 @@ function buildNotificationEmail(input: ProjectRequestInput): string {
     ["Bereiche", categoryLabels(input.categories).join(", ")],
     ["PLZ / Ort", `${input.postalCode} ${input.city}`],
     ["Objektart", objectDescription(input.objectType, input.houseSubtype ?? "")],
-    ["Ungefähre Fläche", input.areaSqm || "—"],
-    ["Baujahr", input.constructionYear || "—"],
     ["Gewünschter Start", desiredStartLabel(input.desiredStart)],
-    ["Investitionsrahmen", budgetLabel(input.budgetRange)],
     [
       "Bilder",
       input.imageCount > 0
@@ -140,7 +136,7 @@ function buildNotificationEmail(input: ProjectRequestInput): string {
       </table>
       ${
         input.wishes
-          ? `<p style="margin-top: 16px; font-size: 14px; color: #5a564f;">Wünsche</p>
+          ? `<p style="margin-top: 16px; font-size: 14px; color: #5a564f;">Wünsche & weitere Informationen</p>
              <p style="font-size: 15px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(input.wishes)}</p>`
           : ""
       }
@@ -190,11 +186,6 @@ function buildConfirmationSummaryRows(
   const start = desiredStartLabel(input.desiredStart);
   if (start.trim().length > 0) {
     rows.push(["Gewünschter Beginn", start]);
-  }
-
-  const budget = budgetLabel(input.budgetRange);
-  if (budget.trim().length > 0) {
-    rows.push(["Investitionsrahmen", budget]);
   }
 
   return rows;

@@ -139,15 +139,6 @@ export const desiredStartOptions = [
   { value: "later", label: "Später" },
 ] as const;
 
-export const budgetOptions = [
-  { value: "under_10k", label: "Unter 10.000 €" },
-  { value: "10k_25k", label: "10.000–25.000 €" },
-  { value: "25k_50k", label: "25.000–50.000 €" },
-  { value: "50k_100k", label: "50.000–100.000 €" },
-  { value: "over_100k", label: "Über 100.000 €" },
-  { value: "unclear", label: "Noch unklar" },
-] as const;
-
 export const contactPreferenceOptions = [
   { value: "phone", label: "Telefon" },
   { value: "email", label: "E-Mail" },
@@ -179,13 +170,8 @@ const baseProjectRequestSchema = z.object({
   }),
   // Only required when objectType is "haus" — enforced via .refine below.
   houseSubtype: z.string().trim().optional().or(z.literal("")),
-  areaSqm: z.string().trim().max(20).optional().or(z.literal("")),
-  constructionYear: z.string().trim().max(4).optional().or(z.literal("")),
   desiredStart: z.enum(values(desiredStartOptions), {
     message: "Bitte wählen Sie den gewünschten Start aus.",
-  }),
-  budgetRange: z.enum(values(budgetOptions), {
-    message: "Bitte wählen Sie einen Investitionsrahmen aus.",
   }),
   firstName: z.string().trim().min(2, "Bitte geben Sie Ihren Vornamen an.").max(80),
   lastName: z.string().trim().min(2, "Bitte geben Sie Ihren Nachnamen an.").max(80),
@@ -266,10 +252,6 @@ export function objectDescription(objectType: string, houseSubtype: string): str
 
 export function desiredStartLabel(value: string): string {
   return labelFor(desiredStartOptions, value);
-}
-
-export function budgetLabel(value: string): string {
-  return labelFor(budgetOptions, value);
 }
 
 export function contactPreferenceLabel(value: string): string {

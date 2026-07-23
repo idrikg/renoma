@@ -3,7 +3,6 @@
 import { Check } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import {
-  budgetOptions,
   categoriesForMainArea,
   contactPreferenceOptions,
   desiredStartOptions,
@@ -657,26 +656,9 @@ export function StepObject({ data, update, onNext }: StepProps) {
             value={data.city}
             onChange={handleCityChange}
             autoComplete="address-level2"
-            enterKeyHint="next"
+            enterKeyHint="done"
             required
             error={errors.city}
-          />
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
-          <TextField
-            label="Ungefähre Fläche (optional)"
-            value={data.areaSqm}
-            onChange={(value) => update({ areaSqm: value })}
-            type="text"
-            inputMode="decimal"
-          />
-          <TextField
-            label="Baujahr (optional)"
-            value={data.constructionYear}
-            onChange={(value) => update({ constructionYear: value })}
-            type="text"
-            inputMode="numeric"
-            maxLength={4}
           />
         </div>
       </div>
@@ -705,32 +687,6 @@ export function StepTiming({ data, update, onNext }: StepProps) {
         value={data.desiredStart}
         onChange={(value) => update({ desiredStart: value })}
         error={showError && !isValid ? "Bitte wählen Sie den gewünschten Start aus." : undefined}
-      />
-    </StepShell>
-  );
-}
-
-export function StepBudget({ data, update, onNext }: StepProps) {
-  const [showError, setShowError] = useState(false);
-  const isValid = Boolean(data.budgetRange);
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!isValid) {
-      setShowError(true);
-      return;
-    }
-    onNext();
-  }
-
-  return (
-    <StepShell title="Geplanter Investitionsrahmen" onSubmit={handleSubmit}>
-      <OptionCardGroup
-        legend="Investitionsrahmen"
-        options={budgetOptions}
-        value={data.budgetRange}
-        onChange={(value) => update({ budgetRange: value })}
-        error={showError && !isValid ? "Bitte wählen Sie einen Investitionsrahmen aus." : undefined}
       />
     </StepShell>
   );
@@ -833,8 +789,8 @@ export function StepWishes({ data, update, onNext }: StepProps) {
 
   return (
     <StepShell
-      title="Ihre Wünsche"
-      description="Möchten Sie uns noch etwas mitgeben?"
+      title="Wünsche & weitere Informationen"
+      description="Gibt es noch etwas, das wir über Ihr Vorhaben wissen sollten? Diese Angaben sind freiwillig und helfen uns, uns optimal auf das erste Gespräch vorzubereiten."
       onSubmit={handleSubmit}
     >
       <div>
@@ -843,6 +799,11 @@ export function StepWishes({ data, update, onNext }: StepProps) {
           rows={4}
           value={data.wishes}
           onChange={(event) => update({ wishes: event.target.value })}
+          placeholder={`Beispiel:
+• Das Badezimmer ist ca. 12 m² groß.
+• Die Badewanne soll durch eine bodengleiche Dusche ersetzt werden.
+• Neue Fliesen und ein neuer Waschtisch sind geplant.
+• Weitere Wünsche oder Besonderheiten.`}
           className="w-full scroll-mt-28 resize-none rounded-xl border border-line bg-transparent p-4 text-base leading-relaxed text-ink outline-none transition-colors focus:border-clay sm:scroll-mt-8 sm:text-[15px]"
         />
         <p className="mt-2 text-sm text-muted">Dieser Schritt ist optional.</p>

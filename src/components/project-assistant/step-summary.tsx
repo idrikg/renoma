@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  budgetLabel,
   categoryLabels,
   contactPreferenceLabel,
   desiredStartLabel,
@@ -16,9 +15,8 @@ const STEP_FOR_FIELD = {
   images: 3,
   object: 4,
   desiredStart: 5,
-  budgetRange: 6,
-  contact: 7,
-  wishes: 8,
+  contact: 6,
+  wishes: 7,
 } as const;
 
 export function StepSummary({
@@ -57,14 +55,20 @@ export function StepSummary({
       field: "object",
     },
     { label: "Gewünschter Start", value: desiredStartLabel(data.desiredStart), field: "desiredStart" },
-    { label: "Investitionsrahmen", value: budgetLabel(data.budgetRange), field: "budgetRange" },
     {
       label: "Kontakt",
       value: `${data.firstName} ${data.lastName} · ${data.email}${data.phone ? ` · ${data.phone}` : ""} · ${contactPreferenceLabel(data.preferredContact)}`,
       field: "contact",
     },
-    { label: "Ihre Wünsche", value: data.wishes || "—", field: "wishes" },
   ];
+
+  if (data.wishes.trim().length > 0) {
+    rows.push({
+      label: "Wünsche & weitere Informationen",
+      value: data.wishes,
+      field: "wishes",
+    });
+  }
 
   return (
     <StepShell

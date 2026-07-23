@@ -29,7 +29,7 @@ async function getClientIdentifier(): Promise<string> {
 /**
  * Submits the completed project assistant. Invoked directly as a function
  * call from the client (rather than bound to a single `<form action>`)
- * because the input is assembled across nine sequential steps rather than
+ * because the input is assembled across eight sequential steps rather than
  * one physical form. This is a supported Server Function invocation
  * pattern — see Next.js docs on invoking Server Functions from event
  * handlers.
