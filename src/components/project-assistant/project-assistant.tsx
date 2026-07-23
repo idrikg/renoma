@@ -311,7 +311,8 @@ export function ProjectAssistant({
       ? "Projekt starten"
       : step === 3 && imagesBusy
         ? "Bild wird verarbeitet …"
-        : step === 3 && images.length === 0
+        : (step === 3 && images.length === 0) ||
+            (step === 7 && data.wishes.trim().length === 0)
           ? "Überspringen"
           : "Weiter";
   const showPresetBanner =
